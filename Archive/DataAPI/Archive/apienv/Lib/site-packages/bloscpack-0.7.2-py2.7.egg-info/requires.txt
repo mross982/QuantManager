@@ -1,0 +1,9 @@
+blosc>=1.2.0
+numpy
+
+[tests]
+nose
+cram>=0.6
+mock
+coverage
+coveralls

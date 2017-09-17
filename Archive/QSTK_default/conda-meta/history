@@ -1,0 +1,8 @@
+==> 2017-02-19 17:09:37 <==
+# cmd: C:\Users\Michael\Anaconda3\Scripts\conda-script.py create --yes --json --mkdir --name QSTK python=2.7 --override-channels --channel https://repo.continuum.io/pkgs/pro --channel https://repo.continuum.io/pkgs/free
++pip-9.0.1-py27_1
++python-2.7.13-0
++setuptools-27.2.0-py27_1
++vs2008_runtime-9.00.30729.5054-0
++wheel-0.29.0-py27_0
+# create specs: ['python 2.7*']

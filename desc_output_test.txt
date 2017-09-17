@@ -1,0 +1,12 @@
+<script>
+	/*global NS:true, msind:true */
+	NS('msind.Data').Security = {"securityName":"Vanguard Federal Money Market Investor","ticker":"VMFXX","secId":"FMUSA0004K","starRating":null,"analystRating":null,"categoryId":"$FOCA$TM$$","exchangeId":"XNAS","fundFamilyId":"0C00001YUF","fundCategoryName":"Money Market - Taxable","sectorCode":null,"identifier":"922906300","regionId":"USA","GFRAvailableFlag":false,"securityType":"FM","performanceId":"0P00002LCR","ISIN":"US9229063006","instrumentId":"52.15.VMFXX","EPUsedForOverallRating":null} || {};
+	NS('msind.Data').PageAdData = {
+		ticker: msind.Data.Security.ticker,
+		secCode: msind.Data.Security.sectorCode,
+		familyid: msind.Data.Security.fundFamilyId,
+		fundcat: msind.Utils.validString(msind.Data.Security.fundCategoryName).replace(new RegExp("[^a-zA-Z0-9]",'g'),"")
+	};
+	msind.Utils.transferProperties(msind.Data.PageAdData, msind.Ads.Data);
+	msiip.Utils.tokenSources.push(msind.Data.Security);
+</script>

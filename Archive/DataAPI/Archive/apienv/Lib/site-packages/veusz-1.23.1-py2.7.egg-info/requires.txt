@@ -1,0 +1,8 @@
+numpy
+
+[optional]
+astropy
+pyemf
+sampy
+pyMinuit
+h5py

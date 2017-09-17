@@ -1,0 +1,4 @@
+[gui_scripts]
+veusz = veusz.veusz_main:run
+veusz_listen = veusz.veusz_listen:run
+

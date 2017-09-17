@@ -1,0 +1,8 @@
+[console_scripts]
+enver = jaraco.windows.environ:enver
+find-symlinks = jaraco.windows.filesystem:find_symlinks_cmd
+gclip = jaraco.windows.clipboard:stdin_copy
+mklink = jaraco.windows.filesystem:mklink
+pclip = jaraco.windows.clipboard:paste_stdout
+xmouse = jaraco.windows.xmouse:Command.invoke
+

@@ -1,0 +1,9 @@
+README
+ipdbplugin.py
+setup.py
+ipdbplugin.egg-info/PKG-INFO
+ipdbplugin.egg-info/SOURCES.txt
+ipdbplugin.egg-info/dependency_links.txt
+ipdbplugin.egg-info/entry_points.txt
+ipdbplugin.egg-info/requires.txt
+ipdbplugin.egg-info/top_level.txt
