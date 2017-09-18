@@ -1,6 +1,4 @@
 '''
-Created on Jan 15, 2013
-
 @author: Michael Williams
 @contact: mross982@gmail.com
 @summary: Data Access python library.
@@ -34,6 +32,7 @@ class DataItem (object):
     ADJUSTED_CLOSE = "Adj Close"
     DESCRIPTION = "Description"
     DESCRIPTIVE_INFO = "DescriptiveInfo"
+    INDEX_SP500_SECTORS = "sp500 sectors"
 
 class DataSource(object):
     GOOGLE = 'Google' # stock/bond data
@@ -175,7 +174,31 @@ class DataAccess(object):
         return ls_alldata
 
 
+    def get_index_df(self):
+        '''
+        Returns all of the dataframes available in the Index directory.
+        '''
+        index_path = self.indexdir
+        frames = []
+
+        for index_file in os.listdir(index_path):
+            filename = str(index_file)
+            # filename = filename.replace('.pkl','')
+
+            path = os.path.join(index_path, filename)
+            data = pd.read_pickle(path)
+            frames.append(data)
+            path = ''
+        
+        result = pd.concat(frames, axis=1)
+        return result
+
+
+
     def get_dataframe(self, ls_acctdata, st_dataitem=DataItem.ADJUSTED_CLOSE):
+        '''
+        given the ls_acctdata, takes the account name and returns the dataframe associated with the data item.
+        '''
         
         frames = []
 
@@ -194,6 +217,9 @@ class DataAccess(object):
 
 
     def dataframe_to_csv(path, df_data, abbr=True):
+        '''
+        This creates a csv file of a dataframe to test values to make sure they make sense.
+        '''
 
         filename = 'test.csv'
 
@@ -211,11 +237,12 @@ if __name__ == '__main__':
     else:
         c_dataobj = DataAccess(sourcein=DataSource.YAHOO, verbose=False)
 
+    df_index = c_dataobj.get_index_df()
+    print(df_index.head())
 
     ls_data = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
 
     # df_data = c_dataobj.get_dataframe(ls_data, DataItem.DESCRIPTIVE_INFO)
-    df_data = c_dataobj.get_dataframe(ls_data)
     
     DataAccess.dataframe_to_csv(c_dataobj.datafolder, df_data, abbr=False)
 

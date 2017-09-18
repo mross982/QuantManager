@@ -33,6 +33,43 @@ class DateRange(object):
 	r10YEAR = (dt.date.today() + dt.timedelta(weeks=-520)).strftime('%m/%d/%Y')
 
 
+class Account_Info(object):
+	'''
+	Do only what is needed. I should have just one function that gets ls_acctdata and returns the acctNames,
+	acctBalances and acctSymbols.
+	'''
+
+	def accountNames(self):
+		'''
+		takes the list of account data and returns just the account name
+		'''
+		acctnames = []
+		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
+		for acct in ls_acctdata:
+			acctnames.append(acct[0])
+		return acctnames
+
+	def accountBalances(ls_acctdata):
+		'''
+		takes the list of account data and returns just the account balance
+		'''
+		balances = []
+		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
+		for acct in ls_acctdata:
+			balances.append(acct[1])
+		return balances
+
+	def accountSymbols(ls_acctdata):
+		'''
+		takes the list of account data and returns a list of tickers
+		'''
+		syms = []
+		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
+		for acct in ls_acctdata:
+			syms.append(acct[2:])
+		return syms
+
+
 class Price_API(object):
 	'''
 	@Summary: this class contains functions that receive a data path, list of symbols and time frame which is then used 
