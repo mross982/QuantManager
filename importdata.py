@@ -1,3 +1,4 @@
+
 import os
 import pickle as pkl
 import datetime as dt
@@ -11,15 +12,14 @@ import DataAccess as da
 from os import listdir
 from os.path import isfile, join
 import pandas as pd
-# import pandas_datareader as pdr
-# import pandas_datareader.data as web
-
-# Yahoo Fix
-from pandas_datareader import data as pdr
-import fix_yahoo_finance
+import pandas_datareader as pdr
+import pandas_datareader.data as web
 
 class DateRange(object):
-	NOW = dt.datetime.now() #maybe different class for time ranges
+	'''
+	this sets date time frames for pulling data via API
+	'''
+	NOW = dt.datetime.now()
 	TODAY = dt.date.today()
 	r1DAY = (dt.date.today() + dt.timedelta(days=-1)).strftime('%m/%d/%Y')
 	r1WEEK = (dt.date.today() + dt.timedelta(weeks=-1)).strftime('%m/%d/%Y')
@@ -33,47 +33,10 @@ class DateRange(object):
 	r10YEAR = (dt.date.today() + dt.timedelta(weeks=-520)).strftime('%m/%d/%Y')
 
 
-class Account_Info(object):
-	'''
-	Do only what is needed. I should have just one function that gets ls_acctdata and returns the acctNames,
-	acctBalances and acctSymbols.
-	'''
-
-	def accountNames(self):
-		'''
-		takes the list of account data and returns just the account name
-		'''
-		acctnames = []
-		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-		for acct in ls_acctdata:
-			acctnames.append(acct[0])
-		return acctnames
-
-	def accountBalances(ls_acctdata):
-		'''
-		takes the list of account data and returns just the account balance
-		'''
-		balances = []
-		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-		for acct in ls_acctdata:
-			balances.append(acct[1])
-		return balances
-
-	def accountSymbols(ls_acctdata):
-		'''
-		takes the list of account data and returns a list of tickers
-		'''
-		syms = []
-		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-		for acct in ls_acctdata:
-			syms.append(acct[2:])
-		return syms
-
-
-class Price_API(object):
+class API(object):
 	'''
 	@Summary: this class contains functions that receive a data path, list of symbols and time frame which is then used 
-	download financial data and save as pickle file.
+	download financial data in both csv and pkl formats.
 	'''
 	def __init__(self):
 		if c_dataobj.source == da.DataSource.GOOGLE:
@@ -83,69 +46,45 @@ class Price_API(object):
 			self.today = DateRange.TODAY
 			self.dataTimeStart = DateRange.r1YEAR
 
-	def accountNames(self):
+
+	def getGoogleData(self):
 		'''
-		takes the list of account data and returns just the account name
+		API that gets stock and bond information then saves a dataframe pickle file into QSdata/google directory
 		'''
-		acctnames = []
+		data_path = c_dataobj.datafolder
 		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
+		items = [da.DataItem.CLOSE, da.DataItem.VOLUME]
 		for acct in ls_acctdata:
-			acctnames.append(acct[0])
-		return acctnames
+			ls_symbols = acct[2:]
+			account = str(acct[0])
+			d_path = data_path
 
-	def accountBalances(ls_acctdata):
-		'''
-		takes the list of account data and returns just the account balance
-		'''
-		balances = []
-		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-		for acct in ls_acctdata:
-			balances.append(acct[1])
-		return balances
-
-	def accountSymbols(ls_acctdata):
-		'''
-		takes the list of account data and returns a list of tickers
-		'''
-		syms = []
-		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-		for acct in ls_acctdata:
-			syms.append(acct[2:])
-		return syms
-
-	def getGoogleData(self, ls_acctnames, ls_tickers, st_datapath):
-		'''
-		API that pulls pricing data from google mainly for stocks and bonds
-		'''
-		items = [da.DataItem.CLOSE]
-
-		accts = dict(zip(ls_acctnames, ls_tickers))
-	
-		for acct in accts:
 			for item in items:
-				filename = acct + '-' + item + '.pkl'
-				filename = filename.replace(' ', '')
-				path = os.path.join(st_datapath, filename)
-				df = web.DataReader(accts[acct], 'google', start=self.dataTimeStart)[item]			
+				path = os.path.join(d_path, da.DataSource.GOOGLE, account + '-' + item + '.pkl')
+				df = web.DataReader(ls_symbols, 'google', start=self.dataTimeStart)
+				stock_data = df.to_frame()
 				df.to_pickle(path)
 				path = ''
 
 
-	def getYahooData(self, ls_acctnames, ls_tickers, st_datapath):
+	def getYahooData(self, ls_acctdata, items=[da.DataItem.ADJUSTED_CLOSE]):
 			'''
-			API that pulls pricing data from yahoo for funds. 
+			API that gets fund information then saves a dataframe pickle file into QSdata/yahoo directory.
 			'''
-			items = [da.DataItem.ADJUSTED_CLOSE]
+			data_path = c_dataobj.datafolder
+			symbols = []
+
+			for acct in ls_acctdata:
+				ls_symbols = acct[2:]
+				symbols = ls_symbols
+				account = str(acct[0])
+				d_path = data_path
 			
-			accts = dict(zip(ls_acctnames, ls_tickers))
-	
-			for acct in accts:
 				for item in items:
-					filename = acct + '-' + item + '.pkl'
+					filename = account + '-' + item + '.pkl'
 					filename = filename.replace(' ', '')
-					path = os.path.join(st_datapath, filename)
-					# df = web.DataReader(accts[acct], 'yahoo', start=self.dataTimeStart)[item]			
-					df = pdr.get_data_yahoo(accts[acct], start=self.dataTimeStart)[item]
+					path = os.path.join(d_path, filename)
+					df = web.DataReader(symbols, 'yahoo', start=DateRange.r5YEAR)[item]			
 					df.to_pickle(path)
 					path = ''
 		
@@ -158,23 +97,17 @@ if __name__ == '__main__':
 		c_dataobj = da.DataAccess(da.DataSource.YAHOO)
 
 	if c_dataobj.source == da.DataSource.GOOGLE:
-		API = Price_API()
-		API.getGoogleData(API.accountNames(), API.accountSymbols(), c_dataobj.datafolder)
+		API = API()
+		API.getGoogleData(c_dataobj.datadir, ls_acctdata, c_dataobj.accounttype)
 
 	elif c_dataobj.source == da.DataSource.YAHOO:
-		API = Price_API()
-		API.getYahooData(API.accountNames(), API.accountSymbols(), c_dataobj.datafolder)
+		API.getYahooData(c_dataobj, da.DataAccess.get_info_from_account(c_dataobj))
 
 	
 	elif c_dataobj.source == da.DataSource.CRYPTOCOMPARE:
-		API = Price_API()
+		API = API()
 		today = DateRange.TODAY
 		dataTimeStart = DateRange.r1YEAR
 		ls_acctfiles = c_dataobj.accountfiles
-		# self, st_acctname, ls_tickers, datatype
 		ls_acctdata = c_dataobj.get_info_from_account(ls_acctfiles) # ls_accotdata contains lists where [0] = account, [1] = balance, [2:] = symbols
 		
-
-	else:
-		print('no source match?')
-	

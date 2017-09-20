@@ -17,9 +17,10 @@ import tempfile
 import copy
 import sys
 from itertools import islice
+import json
 
-class WebDriver(object):
-    DRIVERDIR = 'C:\\Users\\Michael\\Anaconda3\\envs\\QS\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe'
+# class WebDriver(object):
+#     DRIVERDIR = 'C:\\Users\\Michael\\Anaconda3\\envs\\QS\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe'
 
 class DataItem (object):
     DATE = "Date"
@@ -32,7 +33,8 @@ class DataItem (object):
     ADJUSTED_CLOSE = "Adj Close"
     DESCRIPTION = "Description"
     DESCRIPTIVE_INFO = "DescriptiveInfo"
-    INDEX_SP500_SECTORS = "sp500 sectors"
+    INDEX_SP500_SECTORS = "SP500 sectors"
+    FUND_CONTENT = "FundContent"
 
 class DataSource(object):
     GOOGLE = 'Google' # stock/bond data
@@ -42,6 +44,10 @@ class DataSource(object):
     MARKETCAP = 'Marketcap' # market data crypto
 
 class DataType(object):
+    '''
+    This is currently not in use. However, I will need some way to identify the difference between fund tickers and 
+    stock/bond tickers as the data is obtained from different sources (fund = yahoo, stock/bond = google)
+    '''
     MUTUAL_FUND = 'Mutual Fund'
     OPTION = 'Option'  #either stock or bond
     CRYPTO = 'Cryptocurrency'
@@ -52,7 +58,7 @@ class DataAccess(object):
     and returns that object. The {main} function currently demonstrates use.
     @note: The earliest time for which this works is platform dependent because the python date functionality is platform dependent.
     '''
-    def __init__(self, sourcein=DataSource.GOOGLE, s_datapath=None,
+    def __init__(self, sourcein=DataSource.YAHOO, s_datapath=None,
                  s_scratchpath=None, cachestalltime=12, verbose=False):
         '''
         @param sourcestr: Specifies the source of the data. Initializes paths based on source.
@@ -138,7 +144,7 @@ class DataAccess(object):
             self.fileExtensionToRemove = '.txt'
 
 
-    def get_info_from_account(self, ls_accountfiles):
+    def get_info_from_account(self):
         ''' 
         Returns account name, balance and list of symbols for one account file. 
         If the account type is mutualfund, then the third item on in the list will be a dictionary of {symbol, fee}
@@ -146,6 +152,7 @@ class DataAccess(object):
         balance at index[1], then data at index [2:]
         '''   
 
+        ls_accountfiles = self.accountfiles
         ls_alldata = []
         acctBalance = 0
 
@@ -174,38 +181,37 @@ class DataAccess(object):
         return ls_alldata
 
 
-    def get_index_df(self):
+    def get_index_json(self):
         '''
-        Returns all of the dataframes available in the Index directory.
+        Returns a list of all of the json files available in the Index directory. The first item always the name of the
+        index (i.e. the file name)
         '''
         index_path = self.indexdir
-        frames = []
-
+        list_of_jsons = []
+        
         for index_file in os.listdir(index_path):
             filename = str(index_file)
-            # filename = filename.replace('.pkl','')
-
+            file = filename.replace('.txt','')
             path = os.path.join(index_path, filename)
-            data = pd.read_pickle(path)
-            frames.append(data)
-            path = ''
-        
-        result = pd.concat(frames, axis=1)
-        return result
+            with open(path) as json_file:
+                data = json.load(json_file)
+                list_of_jsons.append(data)
+                list_of_jsons.insert(0,str(file))
+            
+        return list_of_jsons
 
 
-
-    def get_dataframe(self, ls_acctdata, st_dataitem=DataItem.ADJUSTED_CLOSE):
+    def get_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE):
         '''
-        given the ls_acctdata, takes the account name and returns the dataframe associated with the data item.
+        given the data object and item, and returns the dataframe from the object's source associated with the data item.
         '''
-        
+        ls_acctdata = c_dataobj.get_info_from_account()
         frames = []
 
         for acct in ls_acctdata:
             account = acct[0]
 
-            filename = account + '-' + st_dataitem.replace(' ','') + '.pkl'
+            filename = account + '-' + dataitem.replace(' ','') + '.pkl'
             filename = filename.replace(' ', '')
             path = os.path.join(c_dataobj.datafolder, filename)
             data = pd.read_pickle(path)
@@ -216,12 +222,14 @@ class DataAccess(object):
         return result
 
 
-    def dataframe_to_csv(path, df_data, abbr=True):
+    def dataframe_to_csv(self, df_data, abbr=False):
         '''
-        This creates a csv file of a dataframe to test values to make sure they make sense.
+        This creates a csv file of a dataframe to test values to make sure they make sense. The abbreviate argument allows
+        you to only print the top five rows of data in a dataframe to csv.
         '''
 
-        filename = 'test.csv'
+        path = c_dataobj.datafolder
+        filename = 'test9_20.csv'
 
         # if isinstance(df_data, pd.dataframe):
         if abbr == True:
@@ -237,12 +245,15 @@ if __name__ == '__main__':
     else:
         c_dataobj = DataAccess(sourcein=DataSource.YAHOO, verbose=False)
 
-    df_index = c_dataobj.get_index_df()
-    print(df_index.head())
+    # ls_acctdata = c_dataobj.get_info_from_account()
 
-    ls_data = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
+    index = c_dataobj.get_index_json()
 
-    # df_data = c_dataobj.get_dataframe(ls_data, DataItem.DESCRIPTIVE_INFO)
-    
-    DataAccess.dataframe_to_csv(c_dataobj.datafolder, df_data, abbr=False)
+    # Default call is for Adjusted Close data frame (which only works with Yahoo data)
+    # df_data = c_dataobj.get_dataframe(DataItem.DESCRIPTIVE_INFO)
+    df_data = c_dataobj.get_dataframe()
+
+    # Note the difference between running the function on the object or passing the object as an argument.
+    # DataAccess.dataframe_to_csv(c_dataobj, df_data, abbr=True)
+    c_dataobj.dataframe_to_csv(df_data, abbr=False)
 
