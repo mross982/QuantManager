@@ -261,9 +261,12 @@ if __name__ == '__main__':
     # df_data = c_dataobj.get_dataframe(DataItem.DESCRIPTIVE_INFO)
     df_data = c_dataobj.get_dataframe()
 
-    cleandata = c_dataobj.clean_data(df_data)
+    cleandata = DataAccess.clean_data(df_data)
+    print(cleandata.head())
 
     # Note the difference between running the function on the object or passing the object as an argument.
     # DataAccess.dataframe_to_csv(c_dataobj, df_data, abbr=True)
-    c_dataobj.dataframe_to_csv(cleandata, abbr=False)
+    
+    # the data frame to csv function is used exclusively to view and verify the data.
+    # c_dataobj.dataframe_to_csv(cleandata, abbr=False)
 
