@@ -64,6 +64,8 @@ class DataAccess(object):
         @param sourcestr: Specifies the source of the data. Initializes paths based on source.
         @note: No data is actually read in the constructor. Only paths for the source are initialized
         @param: Scratch defaults to a directory in /tmp/QSScratch
+
+        @******* You need to set the QSREPO and QSDATA environmental variables before this will run **********
         '''
         # self.accountdir = list()
         self.folderList = list()
@@ -92,15 +94,10 @@ class DataAccess(object):
                 self.datadir = os.path.join(self.rootdir, 'QSData')
                 self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
 
-        try:
-            self.accountdir = os.environ['ACCOUNTS']
-        except:
-            self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
+       
+        self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
 
-        try:
-            self.indexdir = os.environ['INDEXES']
-        except:
-            self.indexdir = os.path.join(self.datadir, 'Indexes\\')
+        self.indexdir = os.path.join(self.datadir, 'Indexes\\')
   
         if verbose:
             print("Scratch Directory: ", self.scratchdir)
@@ -205,7 +202,7 @@ class DataAccess(object):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data item.
         '''
-        ls_acctdata = c_dataobj.get_info_from_account()
+        ls_acctdata = self.get_info_from_account()
         frames = []
 
         for acct in ls_acctdata:
@@ -213,7 +210,7 @@ class DataAccess(object):
 
             filename = account + '-' + dataitem.replace(' ','') + '.pkl'
             filename = filename.replace(' ', '')
-            path = os.path.join(c_dataobj.datafolder, filename)
+            path = os.path.join(self.datafolder, filename)
             data = pd.read_pickle(path)
             frames.append(data)
             path = ''
@@ -228,7 +225,7 @@ class DataAccess(object):
         you to only print the top five rows of data in a dataframe to csv.
         '''
 
-        path = c_dataobj.datafolder
+        path = self.datafolder
         filename = 'test9_20.csv'
 
         # if isinstance(df_data, pd.dataframe):
@@ -236,6 +233,17 @@ class DataAccess(object):
             df_data.head().to_csv(os.path.join(path,filename))
         else:
             df_data.to_csv(os.path.join(path, filename))
+
+
+    def clean_data(df_data):
+        '''
+        takes a data frame then forward fills any missing values by continuing the last given value. Then back
+        fills the data incase there are no preceding values. This ensures the information derived from the data
+        remains consistent when there are gaps.
+        @notes: must clean the data before any analysis.
+        '''
+        cleanData = df_data.fillna(method='ffill').fillna(method='bfill')
+        return cleanData
 
     
 if __name__ == '__main__':
@@ -253,7 +261,9 @@ if __name__ == '__main__':
     # df_data = c_dataobj.get_dataframe(DataItem.DESCRIPTIVE_INFO)
     df_data = c_dataobj.get_dataframe()
 
+    cleandata = c_dataobj.clean_data(df_data)
+
     # Note the difference between running the function on the object or passing the object as an argument.
     # DataAccess.dataframe_to_csv(c_dataobj, df_data, abbr=True)
-    c_dataobj.dataframe_to_csv(df_data, abbr=False)
+    c_dataobj.dataframe_to_csv(cleandata, abbr=False)
 
