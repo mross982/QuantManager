@@ -33,6 +33,7 @@ import pandas as pd
 import cvxopt as opt
 import cvxopt.solvers as optsolvers
 import warnings
+import sys
 
 
 __all__ = ['markowitz_portfolio',
@@ -110,8 +111,16 @@ def markowitz_portfolio(cov_mat, exp_rets, target_ret,
     else:
         b = opt.matrix(0.0)
 
+    print(P)
+    print(q)
+    print(G)
+    print(h)
+    print(A)
+    print(b)
+    sys.exit(0)
+
     # Solve
-    optsolvers.options['show_progress'] = True
+    optsolvers.options['show_progress'] = False
     sol = optsolvers.qp(P, q, G, h, A, b)
 
     if sol['status'] != 'optimal':

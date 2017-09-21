@@ -2,13 +2,22 @@ import numpy as np
 import pandas as pd
 import DataAccess as da
 import sys
+import portfolioopt as po
 
-def optimize(df_data):
+def optimize_data(df_data):
 	
 	returns = df_data.pct_change()
 	mean_daily_returns = returns.mean()
 	cov_matrix = returns.cov()
-	print(returns.head())
+
+	target_ret = 0.08
+	
+	# weights = po.markowitz_portfolio(cov_matrix, mean_daily_returns, target_ret)
+
+	weights = po.min_var_portfolio(cov_matrix)
+
+	print(weights)
+
 	'''
 	Computes a Markowitz portfolio.
 
@@ -45,4 +54,4 @@ if __name__ == '__main__':
 	df_data = da.DataAccess.get_dataframe(c_dataobj)
 	clean_data = da.DataAccess.clean_data(df_data)
 	
-	optimize(clean_data)
+	optimize_data(clean_data)
