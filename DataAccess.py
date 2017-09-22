@@ -19,8 +19,6 @@ import sys
 from itertools import islice
 import json
 
-# class WebDriver(object):
-#     DRIVERDIR = 'C:\\Users\\Michael\\Anaconda3\\envs\\QS\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe'
 
 class DataItem (object):
     DATE = "Date"
@@ -36,6 +34,7 @@ class DataItem (object):
     INDEX_SP500_SECTORS = "SP500 sectors"
     FUND_CONTENT = "FundContent"
 
+
 class DataSource(object):
     GOOGLE = 'Google' # stock/bond data
     YAHOO = 'Yahoo'  # mutual fund/stock/bond data
@@ -43,14 +42,6 @@ class DataSource(object):
     POLONIEX = 'Poloniex' # intra day crypto data
     MARKETCAP = 'Marketcap' # market data crypto
 
-class DataType(object):
-    '''
-    This is currently not in use. However, I will need some way to identify the difference between fund tickers and 
-    stock/bond tickers as the data is obtained from different sources (fund = yahoo, stock/bond = google)
-    '''
-    MUTUAL_FUND = 'Mutual Fund'
-    OPTION = 'Option'  #either stock or bond
-    CRYPTO = 'Cryptocurrency'
 
 class DataAccess(object):
     '''
@@ -116,28 +107,24 @@ class DataAccess(object):
             self.source = DataSource.GOOGLE
             self.datafolder = os.path.join(self.datadir + "\Google\\")
             self.accountfiles = ['test.txt', 'test2.txt']
-            self.accounttype = DataType.OPTION
             self.fileExtensionToRemove = '.txt'
 
         if (sourcein == DataSource.YAHOO):
             self.source = DataSource.YAHOO
             self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
             self.accountfiles = ['403b.txt'] # add HSA.txt & 403b.txt after testing
-            self.accounttype = DataType.MUTUAL_FUND
             self.fileExtensionToRemove = '.txt'
 
         elif (sourcein == DataSource.CRYPTOCOMPARE):
             self.source = DataSource.CRYPTOCOMPARE
             self.datafolder = os.path.join(self.datadir + "\Cryptocompare\\")
             self.accountfiles = ['test.txt', 'test2.txt']
-            self.accounttype = DataType.CRYPTO
             self.fileExtensionToRemove = '.txt'
 
         elif (sourcein == DataSource.POLONIEX):
             self.source = DataSource.POLONIEX
             self.datafolder = os.path.join(self.datadir + "\Poloniex\\")
             self.accountfiles = ['test.txt']
-            self.accounttype = DataType.CRYPTO
             self.fileExtensionToRemove = '.txt'
 
 
@@ -262,7 +249,6 @@ if __name__ == '__main__':
     df_data = c_dataobj.get_dataframe()
 
     cleandata = DataAccess.clean_data(df_data)
-    print(cleandata.head())
 
     # Note the difference between running the function on the object or passing the object as an argument.
     # DataAccess.dataframe_to_csv(c_dataobj, df_data, abbr=True)
