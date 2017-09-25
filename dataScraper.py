@@ -12,6 +12,9 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from datetime import datetime as dt
 import json
+from slimit import ast 
+from slimit.parser import Parser
+from slimit.visitors import nodevisitor
 
 
 class WebDriver(object):
@@ -60,7 +63,7 @@ class WebScrapers(object):
 
 
 
-    def morning_star_desc_info(self, ls_data):
+    def morning_star_quant_desc(self):
         '''
         this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
         include: '30-Day SEC Yield', 'Category (i.e. large growth or allocation)', 'Credit Quality/Interest Rate Sensitivity', 'Expenses',
@@ -71,6 +74,8 @@ class WebScrapers(object):
         '''
         
         item = da.DataItem.DESCRIPTIVE_INFO
+
+        ls_data = self.get_info_from_account()
 
         all_data = []   
         contenturl = str()
@@ -132,26 +137,24 @@ class WebScrapers(object):
                 data['Ticker'] = ticker
                 all_data.append(data)
 
-                f = open("list_output.txt", "w")
-                f.write(str(all_data))
+                # f = open("list_output.txt", "w")
+                # f.write(str(all_data))
 
             path = str(st_dataPath) + str(account_name) + item
             df = pd.DataFrame(all_data)
             df.to_pickle(path)
 
-    #******************************* Under Construction *******************************************
 
-    def morning_star_desc(self):
+    def morning_star_qual_desc(self):
         '''
-        ***This script is a work in progress: See Desc_Output_test.txt in the main repository to see HTML code.
-        this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
+        this web scraper captures html rendered (i.e. fast) information about each fund in the accounts provided. Fields
         includ: 'Security Name', 'ticker', 'secID', 'starRating', 'category ID', 'exchangeID', 'fundFamilyID',
         'fundCategoryName', 'sectorCode', 'identifier', 'regionId', 'GRAvailableFlag', 'securityType', 'performanceId',
         'ISIN', 'instrumentId', 'EPUsedForOverallRating'   
         '''
-        ls_data = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-        st_dataPath = c_dataobj.datafolder
-        item = da.DataItem.DESCRIPTION
+        ls_data = self.get_info_from_account()
+        st_dataPath = self.datafolder
+        item = da.DataItem.MS_QUAL_DESCRIPTION
         
         all_data = []   
         contenturl = str()
@@ -159,6 +162,7 @@ class WebScrapers(object):
         for acct in ls_data:
             account_name = acct[0]
             path = str(st_dataPath) + str(account_name) + '-' + item + '.pkl'
+            print(path)
             tickers = []
             tickers = acct[2:]
             k = []
@@ -171,50 +175,31 @@ class WebScrapers(object):
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
-
                 response = requests.get(contenturl)
 
-
-                # if response.status_code != requests.codes.ok:
-                #     response.raise_for_status()
-                # print(response.encoding) # allows you to manually set the encoding
-                # print(response.content) # one of the first lines give the encoding guessed by requests based on the script.
-                # print(response.status_code)   # 200 is successful connection
-                # print(response.text[:1000])
-                # print(response.cookies)  # shows any cookies in the response
-                # print(contenturl)
-
-
-                # Describe how long the scrape took to execute
                 print('Scrape took ' + str(dt.now() - startTime))
 
                 soup = BeautifulSoup(response.content, 'html.parser')
 
-                script= soup.find_all('script')
-                # print(len(script))  # 16
-                f = open("output.txt", "w")
-                f.write(str(script[-1]))
+                script = soup.find_all('script')
+                htmlinfo = script[-1]
+                
+                parser = Parser()
+                tree = parser.parse(htmlinfo.text)
+                fields = {getattr(node.left, 'value', ''): getattr(node.right, 'value', '') for node in nodevisitor.visit(tree) if isinstance(node, ast.Assign)}
 
+                all_data.append(fields)
 
-                sys.exit(0)
 
                 # Write html to text file for testing
                 # f = open("output.txt", "w")
                 # f.write(table_body.text)
-                # sys.exit(0)
 
-               
-                data = dict(zip(k,v))
-                data['Ticker'] = ticker
-                all_data.append(data)
-
-                f = open("list_output.txt", "w")
-                f.write(str(all_data))
-
-            path = str(st_dataPath) + str(account_name) + item
             df = pd.DataFrame(all_data)
             df.to_pickle(path)
 
+
+   #******************************* Under Construction *******************************************
     def morning_star_fund_contents(self):
         '''
         ***This script is a work in progress: See Desc_Output_test.txt in the main repository to see HTML code.
@@ -225,7 +210,7 @@ class WebScrapers(object):
         '''
         ls_data = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
         st_dataPath = c_dataobj.datafolder
-        item = da.DataItem.DESCRIPTION
+        item = da.DataItem.MS_QUAL_DESCRIPTION
         
         all_data = []   
         contenturl = str()
@@ -265,7 +250,9 @@ class WebScrapers(object):
                 soup = BeautifulSoup(response.content, 'html.parser')
 
                 script= soup.find_all('script')
-                # print(len(script))  # 16
+                
+
+
                 f = open("output.txt", "w")
                 f.write(str(script[-1]))
 
@@ -293,5 +280,6 @@ if __name__ == '__main__':
 
     c_dataobj = da.DataAccess(sourcein=da.DataSource.YAHOO)
 
-    WebScrapers.wiki_sp500_sectors(c_dataobj)
-    WebScrapers.morning_star_desc_info(c_dataobj, da.DataAccess.get_info_from_account(c_dataobj))
+    # WebScrapers.wiki_sp500_sectors(c_dataobj)
+    # WebScrapers.morning_star_quant_desc(c_dataobj)
+    WebScrapers.morning_star_qual_desc(c_dataobj)
