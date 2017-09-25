@@ -32,6 +32,7 @@ market neutral portfolios is supported."""
 
 import unittest
 import sys
+import os
 
 import numpy as np
 import pandas as pd
@@ -73,6 +74,11 @@ def create_test_data(my_seed=42, num_days=100):
     avg_rets = returns.mean()
     cov_mat = returns.cov()
 
+    path = os.path.realpath(__file__)
+    filename = ['returns.csv', 'avg_rets.csv', 'cov_mat']
+    returns.to_csv(os.path.join(path, filename[0]))
+    avg_rets.to_csv(os.path.join(path, filename[1]))
+    cov_mat.to_csv(os.path.join(path, filename[2]))
     return returns, cov_mat, avg_rets
 
 

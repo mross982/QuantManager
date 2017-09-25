@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 from datetime import datetime as dt
 import json
+import re
 from slimit import ast 
 from slimit.parser import Parser
 from slimit.visitors import nodevisitor
@@ -76,11 +77,10 @@ class WebScrapers(object):
         item = da.DataItem.DESCRIPTIVE_INFO
 
         ls_data = self.get_info_from_account()
+        st_dataPath = self.datafolder
 
         all_data = []   
         contenturl = str()
-        exceptions = []
-        sys.exit(0)
 
         for acct in ls_data:
             account_name = acct[0]
@@ -199,19 +199,16 @@ class WebScrapers(object):
             df.to_pickle(path)
 
 
-   #******************************* Under Construction *******************************************
-    def morning_star_fund_contents(self):
+    def morning_star_fund_sectors(self):
         '''
-        ***This script is a work in progress: See Desc_Output_test.txt in the main repository to see HTML code.
         this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
-        includ: 'Security Name', 'ticker', 'secID', 'starRating', 'category ID', 'exchangeID', 'fundFamilyID',
-        'fundCategoryName', 'sectorCode', 'identifier', 'regionId', 'GRAvailableFlag', 'securityType', 'performanceId',
-        'ISIN', 'instrumentId', 'EPUsedForOverallRating'   
+        includ: 'ticker', 'sector', 'holding' (i.e. 1 - 5 based on percentage), 'fund percentage' & 'benchmark percentage'  
         '''
-        ls_data = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-        st_dataPath = c_dataobj.datafolder
-        item = da.DataItem.MS_QUAL_DESCRIPTION
+        ls_data = self.get_info_from_account()
+        st_dataPath = self.datafolder
+        item = da.DataItem.MS_FUND_SECTORS
         
+        divs = []
         all_data = []   
         contenturl = str()
 
@@ -220,59 +217,57 @@ class WebScrapers(object):
             path = str(st_dataPath) + str(account_name) + '-' + item + '.pkl'
             tickers = []
             tickers = acct[2:]
-            k = []
-            v = []
-            key = str()
-            val = str()
             for ticker in tickers:
+                tick_data = []
                 ticker = ticker.upper()
                 print('Scraping data for %s from MorningStar' % ticker)
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
+                driver = webdriver.PhantomJS(WebDriver.DRIVERDIR) 
+                driver.get(contenturl)
 
-                response = requests.get(contenturl)
+                try:
+                    WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "//iframe[starts-with(@id,'QT_IFRAME')]")))
+                except:
+                    pass
 
+                driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
 
-                # if response.status_code != requests.codes.ok:
-                #     response.raise_for_status()
-                # print(response.encoding) # allows you to manually set the encoding
-                # print(response.content) # one of the first lines give the encoding guessed by requests based on the script.
-                # print(response.status_code)   # 200 is successful connection
-                # print(response.text[:1000])
-                # print(response.cookies)  # shows any cookies in the response
-                # print(contenturl)
-
-
-                # Describe how long the scrape took to execute
                 print('Scrape took ' + str(dt.now() - startTime))
 
-                soup = BeautifulSoup(response.content, 'html.parser')
+                soup = BeautifulSoup(driver.page_source, "html.parser")
 
-                script= soup.find_all('script')
-                
+                divs = soup.find_all("div", {"class": "gr_section_b1"})
 
-
-                f = open("output.txt", "w")
-                f.write(str(script[-1]))
-
-
-                sys.exit(0)
+                # divs[6] = top sectors and fund % as well as benchmark %.
+                # divs[5] = top holdings
 
                 # Write html to text file for testing
-                # f = open("output.txt", "w")
-                # f.write(table_body.text)
-                # sys.exit(0)
+                # f = open("sectors_output.txt", "w")
+                # f.write(divs[6])
+                
+                y = 1
+                data = {}
+                for row in divs[6].find_all('tr', attrs={'class': 'gr_table_row4'}):
+                    data['ticker'] = ticker
+                    data['holding'] = str(y)
+                    y += 1
+                    i = 0
+                    for column in row.find_all('td'):
+                        if i == 0:
+                            data['sector'] = str(column.text).strip()
+                        if i == 1:
+                            data['fund percentage'] = str(column.text).strip()
+                        if i == 5:
+                            data['benchmark percentage'] = str(column.text).strip()
+                        i += 1
+                    all_data.append(data)
+                    data = {}
+                
+                # f = open("list_output.txt", "w")
+                # f.write(str(all_data))
 
-               
-                data = dict(zip(k,v))
-                data['Ticker'] = ticker
-                all_data.append(data)
-
-                f = open("list_output.txt", "w")
-                f.write(str(all_data))
-
-            path = str(st_dataPath) + str(account_name) + item
             df = pd.DataFrame(all_data)
             df.to_pickle(path)
 
@@ -282,4 +277,4 @@ if __name__ == '__main__':
 
     # WebScrapers.wiki_sp500_sectors(c_dataobj)
     # WebScrapers.morning_star_quant_desc(c_dataobj)
-    WebScrapers.morning_star_qual_desc(c_dataobj)
+    WebScrapers.morning_star_fund_sectors(c_dataobj)

@@ -29,10 +29,12 @@ class DataItem (object):
     VOLUME = "Volume"
     ACTUAL_CLOSE = "ActualClose"
     ADJUSTED_CLOSE = "Adj Close"
-    DESCRIPTION = "Description"
-    DESCRIPTIVE_INFO = "DescriptiveInfo"
-    INDEX_SP500_SECTORS = "SP500 sectors"
-    FUND_CONTENT = "FundContent"
+    MS_QUANT_DESCRIPTION = "MSQuantDescription"
+    MS_QUAL_DESCRIPTION = "MSQualDescription"
+    MS_TOP_SECTORS = "MSTopSectors"
+    MS_FUND_SECTORS = "MSFundSectors"
+    INDEX_SP500_SECTORS = "SP500sectors"
+    
 
 
 class DataSource(object):
@@ -58,7 +60,6 @@ class DataAccess(object):
 
         @******* You need to set the QSREPO and QSDATA environmental variables before this will run **********
         '''
-        # self.accountdir = list()
         self.folderList = list()
         self.folderSubList = list()
         self.cachestalltime = cachestalltime
@@ -245,14 +246,14 @@ if __name__ == '__main__':
     index = c_dataobj.get_index_json()
 
     # Default call is for Adjusted Close data frame (which only works with Yahoo data)
-    # df_data = c_dataobj.get_dataframe(DataItem.DESCRIPTIVE_INFO)
-    df_data = c_dataobj.get_dataframe()
+    # df_data = c_dataobj.get_dataframe(DataItem.MS_QUANT_DESCRIPTION)
+    df_data = c_dataobj.get_dataframe(DataItem.MS_FUND_SECTORS)
 
-    cleandata = DataAccess.clean_data(df_data)
+    # cleandata = DataAccess.clean_data(df_data)
 
     # Note the difference between running the function on the object or passing the object as an argument.
     # DataAccess.dataframe_to_csv(c_dataobj, df_data, abbr=True)
     
     # the data frame to csv function is used exclusively to view and verify the data.
-    # c_dataobj.dataframe_to_csv(cleandata, abbr=False)
+    c_dataobj.dataframe_to_csv(df_data, abbr=False)
 
