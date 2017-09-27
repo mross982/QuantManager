@@ -93,7 +93,7 @@ class WebScrapers(object):
             val = str()
             for ticker in tickers:
                 ticker = ticker.upper()
-                print('Scraping data for %s from MorningStar' % ticker)
+                print('Scraping quantitative data for %s from MorningStar' % ticker)
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
@@ -171,7 +171,7 @@ class WebScrapers(object):
             val = str()
             for ticker in tickers:
                 ticker = ticker.upper()
-                print('Scraping data for %s from MorningStar' % ticker)
+                print('Scraping qualitative data for %s from MorningStar' % ticker)
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
@@ -220,7 +220,7 @@ class WebScrapers(object):
             for ticker in tickers:
                 tick_data = []
                 ticker = ticker.upper()
-                print('Scraping data for %s from MorningStar' % ticker)
+                print('Scraping fund sector data for %s from MorningStar' % ticker)
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()

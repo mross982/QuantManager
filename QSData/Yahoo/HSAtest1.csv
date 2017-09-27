@@ -1,0 +1,642 @@
+,benchmark percentage,fund percentage,holding,sector,ticker
+0,"440.73 
+						Mil",MFS® Total Return Bond R6,1,,MACFX
+1,"293.99 
+						Mil",MFS® Inflation-Adjusted Bond R6,2,,MACFX
+2,"293.73 
+						Mil",MFS® Government Securities R6,3,,MACFX
+3,"293.18 
+						Mil",MFS® Limited Maturity R6,4,,MACFX
+4,"177.94 
+						Mil",MFS® Growth R6,5,,MACFX
+5,,% Assets in Top 5 Holdings,6,,MACFX
+6,"580.87 
+						Mil",MFS® Government Securities R6,1,,MAMAX
+7,"468.75 
+						Mil",MFS® Growth R6,2,,MAMAX
+8,"466.86 
+						Mil",MFS® Research R6,3,,MAMAX
+9,"464.95 
+						Mil",MFS® Total Return Bond R6,4,,MAMAX
+10,"462.07 
+						Mil",MFS® Value R6,5,,MAMAX
+11,,% Assets in Top 5 Holdings,6,,MAMAX
+12,"554.65 
+						Mil",MFS® Growth R6,1,,MAGWX
+13,"546.43 
+						Mil",MFS® Value R6,2,,MAGWX
+14,"453.82 
+						Mil",MFS® Mid Cap Growth R6,3,,MAGWX
+15,"446.32 
+						Mil",MFS® Mid Cap Value R6,4,,MAGWX
+16,"401.41 
+						Mil",MFS® Research R6,5,,MAGWX
+17,,% Assets in Top 5 Holdings,6,,MAGWX
+18,"223.04 
+						Mil",MFS® Growth R6,1,,MAAGX
+19,"219.42 
+						Mil",MFS® Value R6,2,,MAAGX
+20,"171.55 
+						Mil",MFS® Mid Cap Growth R6,3,,MAAGX
+21,"168.59 
+						Mil",MFS® Mid Cap Value R6,4,,MAAGX
+22,"153.45 
+						Mil",MFS® Research R6,5,,MAAGX
+23,,% Assets in Top 5 Holdings,6,,MAAGX
+24,,17.77,1,Financial Services,VEIPX
+25,,13.97,2,Healthcare,VEIPX
+26,,13.85,3,Technology,VEIPX
+27,,13.10,4,Consumer Defensive,VEIPX
+28,,11.83,5,Industrials,VEIPX
+29,,19.88,1,Technology,SWPPX
+30,,16.33,2,Financial Services,SWPPX
+31,,14.79,3,Healthcare,SWPPX
+32,,11.03,4,Consumer Cyclical,SWPPX
+33,,10.55,5,Industrials,SWPPX
+34,,29.16,1,Technology,VIGRX
+35,,17.54,2,Consumer Cyclical,VIGRX
+36,,14.68,3,Healthcare,VIGRX
+37,,8.62,4,Industrials,VIGRX
+38,,8.55,5,Consumer Defensive,VIGRX
+39,,26.03,1,Financial Services,MSAVX
+40,,14.49,2,Industrials,MSAVX
+41,,13.34,3,Technology,MSAVX
+42,,10.09,4,Consumer Cyclical,MSAVX
+43,,8.09,5,Basic Materials,MSAVX
+44,,16.58,1,Technology,VEXMX
+45,,15.52,2,Financial Services,VEXMX
+46,,14.34,3,Consumer Cyclical,VEXMX
+47,,13.48,4,Industrials,VEXMX
+48,,10.86,5,Healthcare,VEXMX
+49,,19.61,1,Industrials,PEEAX
+50,,19.04,2,Technology,PEEAX
+51,,15.31,3,Healthcare,PEEAX
+52,,15.27,4,Consumer Cyclical,PEEAX
+53,,8.68,5,Consumer Defensive,PEEAX
+54,,28.82,1,Financial Services,DEVLX
+55,,14.89,2,Technology,DEVLX
+56,,14.40,3,Consumer Cyclical,DEVLX
+57,,12.79,4,Industrials,DEVLX
+58,,8.32,5,Real Estate,DEVLX
+59,,17.55,1,Financial Services,SWSSX
+60,,16.88,2,Technology,SWSSX
+61,,14.17,3,Industrials,SWSSX
+62,,13.92,4,Healthcare,SWSSX
+63,,12.02,5,Consumer Cyclical,SWSSX
+64,,25.60,1,Technology,JGMAX
+65,,24.05,2,Industrials,JGMAX
+66,,16.92,3,Healthcare,JGMAX
+67,,13.95,4,Consumer Cyclical,JGMAX
+68,,8.63,5,Financial Services,JGMAX
+69,,31.88,1,Consumer Defensive,MGIAX
+70,,18.00,2,Technology,MGIAX
+71,,16.49,3,Industrials,MGIAX
+72,,10.44,4,Financial Services,MGIAX
+73,,5.75,5,Healthcare,MGIAX
+74,,—,1,Basic Materials,PIPAX
+75,,—,2,Consumer Cyclical,PIPAX
+76,,—,3,Financial Services,PIPAX
+77,,—,4,Real Estate,PIPAX
+78,,—,5,Communication Services,PIPAX
+79,,26.29,1,Consumer Cyclical,ODMAX
+80,,21.86,2,Financial Services,ODMAX
+81,,18.92,3,Technology,ODMAX
+82,,12.50,4,Consumer Defensive,ODMAX
+83,,5.78,5,Basic Materials,ODMAX
+84,4.74,34.52,1,Agency MBS CMO,NEFLX
+85,57.28,21.53,2,U.S. Treasury,NEFLX
+86,2.87,15.35,3,Agency MBS ARM,NEFLX
+87,8.55,13.60,4,Agency MBS Pass-Through,NEFLX
+88,7.30,4.76,5,Commercial MBS,NEFLX
+89,14.70,34.30,1,Commercial MBS,PTTAX
+90,31.79,21.40,2,Corporate Bond,PTTAX
+91,12.18,16.03,3,Agency MBS Pass-Through,PTTAX
+92,22.13,14.58,4,U.S. Treasury,PTTAX
+93,5.93,8.13,5,Asset-Backed,PTTAX
+94,,40.89,1,Technology,SWLBX
+95,,18.58,2,Consumer Cyclical,SWLBX
+96,,17.53,3,Financial Services,SWLBX
+97,,8.70,4,Healthcare,SWLBX
+98,,5.62,5,Industrials,SWLBX
+99,86.50,75.63,1,Corporate Bond,WHIYX
+100,0.63,10.50,2,Bank Loan,WHIYX
+101,0.62,0.69,3,Convertible,WHIYX
+102,0.47,0.31,4,Commercial MBS,WHIYX
+103,0.64,0.07,5,Asset-Backed,WHIYX
+104,"13.83 
+						Mil",Schwab US Aggregate Bond Index,1,,SWBRX
+105,"7.17 
+						Mil",Schwab® S&P 500 Index,2,,SWBRX
+106,"5.66 
+						Mil",Schwab Short-Term Bond Index,3,,SWBRX
+107,"5.52 
+						Mil",Metropolitan West Total Return Bd I,4,,SWBRX
+108,"3.68 
+						Mil",Schwab® Treasury Infl Protected Secs Idx,5,,SWBRX
+109,,% Assets in Top 5 Holdings,6,,SWBRX
+110,"104.99 
+						Mil",Schwab US Aggregate Bond Index,1,,SWCRX
+111,"82.57 
+						Mil",Schwab® S&P 500 Index,2,,SWCRX
+112,"50.05 
+						Mil",Metropolitan West Total Return Bd I,3,,SWCRX
+113,"45.49 
+						Mil",Schwab Core Equity,4,,SWCRX
+114,"41.12 
+						Mil",Laudus International MarketMasters Sel,5,,SWCRX
+115,,% Assets in Top 5 Holdings,6,,SWCRX
+116,"158.40 
+						Mil",Schwab® S&P 500 Index,1,,SWDRX
+117,"106.63 
+						Mil",Schwab Core Equity,2,,SWDRX
+118,"97.57 
+						Mil",Schwab US Aggregate Bond Index,3,,SWDRX
+119,"95.96 
+						Mil",Laudus International MarketMasters Sel,4,,SWDRX
+120,"62.31 
+						Mil",Schwab® International Core Equity,5,,SWDRX
+121,,% Assets in Top 5 Holdings,6,,SWDRX
+122,"172.67 
+						Mil",Schwab® S&P 500 Index,1,,SWERX
+123,"127.80 
+						Mil",Schwab Core Equity,2,,SWERX
+124,"118.81 
+						Mil",Laudus International MarketMasters Sel,3,,SWERX
+125,"78.78 
+						Mil",Schwab® International Core Equity,4,,SWERX
+126,"55.15 
+						Mil",Laudus US Large Cap Growth,5,,SWERX
+127,,% Assets in Top 5 Holdings,6,,SWERX
+128,,27.26,1,Financial Services,MDDVX
+129,,16.89,2,Healthcare,MDDVX
+130,,11.77,3,Industrials,MDDVX
+131,,11.00,4,Energy,MDDVX
+132,,10.59,5,Technology,MDDVX
+133,,25.56,1,Financial Services,OAEIX
+134,,12.93,2,Energy,OAEIX
+135,,12.70,3,Healthcare,OAEIX
+136,,12.01,4,Technology,OAEIX
+137,,7.71,5,Consumer Cyclical,OAEIX
+138,,35.25,1,Technology,JHUAX
+139,,23.25,2,Healthcare,JHUAX
+140,,17.70,3,Consumer Cyclical,JHUAX
+141,,16.01,4,Financial Services,JHUAX
+142,,3.47,5,Industrials,JHUAX
+143,,—,1,Basic Materials,PTOAX
+144,,—,2,Consumer Cyclical,PTOAX
+145,,—,3,Financial Services,PTOAX
+146,,—,4,Real Estate,PTOAX
+147,,—,5,Communication Services,PTOAX
+148,,29.21,1,Industrials,VDAIX
+149,,16.89,2,Healthcare,VDAIX
+150,,15.81,3,Consumer Defensive,VDAIX
+151,,11.55,4,Technology,VDAIX
+152,,9.96,5,Financial Services,VDAIX
+153,,37.54,1,Technology,DWOAX
+154,,16.90,2,Healthcare,DWOAX
+155,,15.38,3,Consumer Cyclical,DWOAX
+156,,9.25,4,Industrials,DWOAX
+157,,7.45,5,Consumer Defensive,DWOAX
+158,,30.47,1,Financial Services,HWAAX
+159,,26.01,2,Technology,HWAAX
+160,,15.01,3,Industrials,HWAAX
+161,,9.50,4,Consumer Cyclical,HWAAX
+162,,7.46,5,Energy,HWAAX
+163,,24.57,1,Financial Services,JVMAX
+164,,17.62,2,Technology,JVMAX
+165,,15.20,3,Industrials,JVMAX
+166,,10.42,4,Consumer Cyclical,JVMAX
+167,,8.77,5,Energy,JVMAX
+168,,17.12,1,Technology,NTIAX
+169,,16.49,2,Industrials,NTIAX
+170,,16.13,3,Financial Services,NTIAX
+171,,12.64,4,Consumer Cyclical,NTIAX
+172,,9.22,5,Real Estate,NTIAX
+173,,16.24,1,Technology,PEXMX
+174,,15.77,2,Financial Services,PEXMX
+175,,14.46,3,Consumer Cyclical,PEXMX
+176,,13.55,4,Industrials,PEXMX
+177,,11.00,5,Healthcare,PEXMX
+178,,37.36,1,Technology,DBMAX
+179,,21.58,2,Healthcare,DBMAX
+180,,13.37,3,Industrials,DBMAX
+181,,11.20,4,Consumer Cyclical,DBMAX
+182,,5.08,5,Basic Materials,DBMAX
+183,,22.00,1,Financial Services,PEMGX
+184,,18.73,2,Consumer Cyclical,PEMGX
+185,,15.33,3,Industrials,PEMGX
+186,,11.13,4,Technology,PEMGX
+187,,9.77,5,Real Estate,PEMGX
+188,,27.80,1,Financial Services,BPSCX
+189,,16.62,2,Industrials,BPSCX
+190,,14.98,3,Consumer Cyclical,BPSCX
+191,,9.08,4,Technology,BPSCX
+192,,8.05,5,Healthcare,BPSCX
+193,,—,1,Basic Materials,PCKAX
+194,,—,2,Consumer Cyclical,PCKAX
+195,,—,3,Financial Services,PCKAX
+196,,—,4,Real Estate,PCKAX
+197,,—,5,Communication Services,PCKAX
+198,,30.79,1,Financial Services,RYDVX
+199,,28.21,2,Industrials,RYDVX
+200,,11.93,3,Consumer Cyclical,RYDVX
+201,,11.42,4,Basic Materials,RYDVX
+202,,6.04,5,Technology,RYDVX
+203,,21.60,1,Financial Services,IIVAX
+204,,15.82,2,Technology,IIVAX
+205,,14.77,3,Consumer Cyclical,IIVAX
+206,,10.88,4,Industrials,IIVAX
+207,,8.87,5,Utilities,IIVAX
+208,,35.94,1,Technology,SASMX
+209,,16.73,2,Healthcare,SASMX
+210,,15.96,3,Industrials,SASMX
+211,,11.20,4,Consumer Cyclical,SASMX
+212,,8.06,5,Financial Services,SASMX
+213,,34.73,1,Financial Services,AFJAX
+214,,12.39,2,Technology,AFJAX
+215,,10.57,3,Consumer Cyclical,AFJAX
+216,,8.65,4,Industrials,AFJAX
+217,,8.33,5,Consumer Defensive,AFJAX
+218,,17.88,1,Industrials,ICEVX
+219,,15.05,2,Financial Services,ICEVX
+220,,15.05,3,Technology,ICEVX
+221,,11.26,4,Healthcare,ICEVX
+222,,11.18,5,Basic Materials,ICEVX
+223,,30.34,1,Financial Services,MDLTX
+224,,20.43,2,Consumer Defensive,MDLTX
+225,,13.62,3,Basic Materials,MDLTX
+226,,9.86,4,Energy,MDLTX
+227,,9.38,5,Consumer Cyclical,MDLTX
+228,,32.63,1,Financial Services,OAKIX
+229,,27.74,2,Consumer Cyclical,OAKIX
+230,,18.38,3,Industrials,OAKIX
+231,,9.81,4,Basic Materials,OAKIX
+232,,5.53,5,Consumer Defensive,OAKIX
+233,,21.50,1,Financial Services,SWISX
+234,,13.28,2,Industrials,SWISX
+235,,11.61,3,Consumer Defensive,SWISX
+236,,11.51,4,Consumer Cyclical,SWISX
+237,,10.76,5,Healthcare,SWISX
+238,,21.33,1,Financial Services,VGTSX
+239,,12.42,2,Industrials,VGTSX
+240,,10.93,3,Technology,VGTSX
+241,,10.89,4,Consumer Cyclical,VGTSX
+242,,9.84,5,Consumer Defensive,VGTSX
+243,,23.31,1,Consumer Cyclical,OIGAX
+244,,20.16,2,Technology,OIGAX
+245,,15.58,3,Consumer Defensive,OIGAX
+246,,13.40,4,Industrials,OIGAX
+247,,11.39,5,Healthcare,OIGAX
+248,,32.55,1,Consumer Defensive,JVIAX
+249,,17.41,2,Financial Services,JVIAX
+250,,15.28,3,Consumer Cyclical,JVIAX
+251,,12.75,4,Technology,JVIAX
+252,,9.34,5,Industrials,JVIAX
+253,,24.64,1,Industrials,GICAX
+254,,16.72,2,Consumer Cyclical,GICAX
+255,,13.14,3,Technology,GICAX
+256,,12.35,4,Basic Materials,GICAX
+257,,9.39,5,Real Estate,GICAX
+258,,18.93,1,Industrials,SGOVX
+259,,16.16,2,Basic Materials,SGOVX
+260,,14.89,3,Consumer Defensive,SGOVX
+261,,11.05,4,Consumer Cyclical,SGOVX
+262,,10.33,5,Financial Services,SGOVX
+263,,29.03,1,Industrials,FINAX
+264,,17.55,2,Financial Services,FINAX
+265,,15.45,3,Consumer Cyclical,FINAX
+266,,13.07,4,Real Estate,FINAX
+267,,10.04,5,Consumer Defensive,FINAX
+268,,31.88,1,Technology,LAFAX
+269,,21.70,2,Consumer Cyclical,LAFAX
+270,,20.72,3,Industrials,LAFAX
+271,,8.38,4,Financial Services,LAFAX
+272,,6.86,5,Healthcare,LAFAX
+273,,23.46,1,Technology,WAIGX
+274,,16.44,2,Healthcare,WAIGX
+275,,16.37,3,Consumer Cyclical,WAIGX
+276,,13.04,4,Industrials,WAIGX
+277,,10.94,5,Consumer Defensive,WAIGX
+278,,26.91,1,Financial Services,GEGAX
+279,,17.14,2,Consumer Defensive,GEGAX
+280,,13.13,3,Technology,GEGAX
+281,,11.65,4,Consumer Cyclical,GEGAX
+282,,10.02,5,Basic Materials,GEGAX
+283,,34.48,1,Consumer Defensive,HEMZX
+284,,22.44,2,Financial Services,HEMZX
+285,,19.69,3,Technology,HEMZX
+286,,10.15,4,Consumer Cyclical,HEMZX
+287,,3.14,5,Utilities,HEMZX
+288,,100.00,1,Real Estate,PHRAX
+289,,0.00,2,Basic Materials,PHRAX
+290,,0.00,3,Consumer Cyclical,PHRAX
+291,,0.00,4,Financial Services,PHRAX
+292,,0.00,5,Communication Services,PHRAX
+293,,87.53,1,Real Estate,ASRAX
+294,,4.71,2,Communication Services,ASRAX
+295,,2.93,3,Energy,ASRAX
+296,,2.27,4,Utilities,ASRAX
+297,,1.78,5,Industrials,ASRAX
+298,,92.94,1,Real Estate,JERAX
+299,,2.85,2,Technology,JERAX
+300,,2.24,3,Consumer Cyclical,JERAX
+301,,1.97,4,Communication Services,JERAX
+302,,0.00,5,Basic Materials,JERAX
+303,,98.07,1,Real Estate,PURAX
+304,,1.47,2,Consumer Cyclical,PURAX
+305,,0.47,3,Healthcare,PURAX
+306,,0.00,4,Basic Materials,PURAX
+307,,0.00,5,Financial Services,PURAX
+308,,31.57,1,Financial Services,JLTSX
+309,,15.47,2,Consumer Defensive,JLTSX
+310,,13.30,3,Consumer Cyclical,JLTSX
+311,,13.20,4,Industrials,JLTSX
+312,,7.76,5,Utilities,JLTSX
+313,,27.64,1,Consumer Cyclical,MPACX
+314,,17.76,2,Consumer Defensive,MPACX
+315,,16.04,3,Financial Services,MPACX
+316,,13.52,4,Healthcare,MPACX
+317,,9.47,5,Technology,MPACX
+318,,29.84,1,Financial Services,MCHFX
+319,,25.46,2,Technology,MCHFX
+320,,18.13,3,Consumer Cyclical,MCHFX
+321,,8.31,4,Industrials,MCHFX
+322,,5.92,5,Basic Materials,MCHFX
+323,,33.03,1,Financial Services,MINDX
+324,,18.16,2,Consumer Defensive,MINDX
+325,,13.93,3,Consumer Cyclical,MINDX
+326,,11.95,4,Technology,MINDX
+327,,10.90,5,Healthcare,MINDX
+328,,20.62,1,Consumer Defensive,MAPTX
+329,,19.03,2,Financial Services,MAPTX
+330,,16.88,3,Technology,MAPTX
+331,,13.06,4,Consumer Cyclical,MAPTX
+332,,7.71,5,Healthcare,MAPTX
+333,,100.00,1,Basic Materials,SGGDX
+334,,0.00,2,Consumer Cyclical,SGGDX
+335,,0.00,3,Financial Services,SGGDX
+336,,0.00,4,Real Estate,SGGDX
+337,,0.00,5,Communication Services,SGGDX
+338,,99.95,1,Basic Materials,IGDAX
+339,,0.05,2,Energy,IGDAX
+340,,0.00,3,Consumer Cyclical,IGDAX
+341,,0.00,4,Financial Services,IGDAX
+342,,0.00,5,Real Estate,IGDAX
+343,"-3.69 
+						Mil",Westinghouse Air Brake Technologies Corp,1,,GRZZX
+344,"-3.63 
+						Mil",Expeditors International of Washington Inc,2,,GRZZX
+345,"-3.50 
+						Mil",Yum Brands Inc,3,,GRZZX
+346,"-3.44 
+						Mil",Abiomed Inc,4,,GRZZX
+347,"-3.39 
+						Mil",The Estee Lauder Companies Inc Class A,5,,GRZZX
+348,,% Assets in Top 5 Holdings,6,,GRZZX
+349,"-1834.96 
+						Mil",Sptr Trs Equity 3ml+4 *Bullet* Bps,1,,PSSAX
+350,"-494.11 
+						Mil",E-mini S&P 500 Sept17,2,,PSSAX
+351,"443.42 
+						Mil",US 5 Year Note (CBT) Sept17,3,,PSSAX
+352,"-366.30 
+						Mil",US 10 Year Note (CBT) Sept17,4,,PSSAX
+353,"-262.37 
+						Mil",IRS USD 1.25000 06/21/17-2Y CME_Pay,5,,PSSAX
+354,,% Assets in Top 5 Holdings,6,,PSSAX
+355,,51.41,1,Industrials,AWTAX
+356,,28.13,2,Utilities,AWTAX
+357,,13.28,3,Basic Materials,AWTAX
+358,,5.98,4,Healthcare,AWTAX
+359,,1.20,5,Technology,AWTAX
+360,,34.44,1,Consumer Defensive,SRIGX
+361,,16.36,2,Consumer Cyclical,SRIGX
+362,,15.98,3,Industrials,SRIGX
+363,,11.12,4,Communication Services,SRIGX
+364,,7.68,5,Technology,SRIGX
+365,,18.20,1,Technology,NRAAX
+366,,17.96,2,Financial Services,NRAAX
+367,,16.86,3,Healthcare,NRAAX
+368,,11.77,4,Industrials,NRAAX
+369,,10.06,5,Consumer Cyclical,NRAAX
+370,,64.67,1,Communication Services,FWRLX
+371,,35.33,2,Technology,FWRLX
+372,,0.00,3,Basic Materials,FWRLX
+373,,0.00,4,Consumer Cyclical,FWRLX
+374,,0.00,5,Financial Services,FWRLX
+375,,63.17,1,Technology,WSTYX
+376,,12.43,2,Healthcare,WSTYX
+377,,9.02,3,Industrials,WSTYX
+378,,6.73,4,Consumer Cyclical,WSTYX
+379,,4.94,5,Financial Services,WSTYX
+380,,88.25,1,Financial Services,SBFAX
+381,,7.74,2,Industrials,SBFAX
+382,,1.89,3,Communication Services,SBFAX
+383,,1.25,4,Real Estate,SBFAX
+384,,0.87,5,Technology,SBFAX
+385,,97.94,1,Financial Services,PFSAX
+386,,2.06,2,Technology,PFSAX
+387,,0.00,3,Basic Materials,PFSAX
+388,,0.00,4,Consumer Cyclical,PFSAX
+389,,0.00,5,Real Estate,PFSAX
+390,,100.00,1,Healthcare,RYOIX
+391,,0.00,2,Basic Materials,RYOIX
+392,,0.00,3,Consumer Cyclical,RYOIX
+393,,0.00,4,Financial Services,RYOIX
+394,,0.00,5,Real Estate,RYOIX
+395,43.59,69.60,1,U.S. Treasury,GSAPX
+396,48.61,23.31,2,U.S. Treasury Inflation-Protected,GSAPX
+397,2.07,0.00,3,Non U.S. Treasury,GSAPX
+398,0.80,0.00,4,Agency Mortgage-Backed,GSAPX
+399,0.32,0.00,5,Non-Agency Residential MBS,GSAPX
+400,48.61,103.18,1,U.S. Treasury Inflation-Protected,PRTNX
+401,2.07,7.87,2,Non U.S. Treasury,PRTNX
+402,43.59,6.18,3,U.S. Treasury,PRTNX
+403,1.37,3.27,4,Commercial MBS,PRTNX
+404,1.27,1.79,5,Asset-Backed,PRTNX
+405,48.61,99.79,1,U.S. Treasury Inflation-Protected,VIPSX
+406,43.59,0.00,2,U.S. Treasury,VIPSX
+407,2.07,0.00,3,Non U.S. Treasury,VIPSX
+408,-1.17,0.00,4,Non U.S. Inflation-Protected,VIPSX
+409,-0.97,0.00,5,Government-Related,VIPSX
+410,8.55,58.83,1,Agency MBS Pass-Through,EVGOX
+411,4.74,22.34,2,Agency MBS CMO,EVGOX
+412,2.87,16.25,3,Agency MBS ARM,EVGOX
+413,57.28,0.00,4,U.S. Treasury,EVGOX
+414,3.06,0.00,5,U.S. Treasury Inflation-Protected,EVGOX
+415,40.39,43.71,1,Corporate Bond,RFBSX
+416,8.84,7.67,2,Asset-Backed,RFBSX
+417,15.05,6.51,3,U.S. Treasury,RFBSX
+418,3.11,5.65,4,Agency MBS CMO,RFBSX
+419,11.31,5.33,5,Commercial MBS,RFBSX
+420,8.55,75.82,1,Agency MBS Pass-Through,IPFIX
+421,57.28,17.75,2,U.S. Treasury,IPFIX
+422,4.74,4.50,3,Agency MBS CMO,IPFIX
+423,7.30,0.90,4,Commercial MBS,IPFIX
+424,2.87,0.21,5,Agency MBS ARM,IPFIX
+425,12.18,57.62,1,Agency MBS Pass-Through,AUGAX
+426,14.70,14.79,2,Commercial MBS,AUGAX
+427,5.93,9.06,3,Asset-Backed,AUGAX
+428,1.09,7.03,4,Non-Agency Residential MBS,AUGAX
+429,3.32,6.40,5,Agency MBS CMO,AUGAX
+430,31.79,32.12,1,Corporate Bond,NEFRX
+431,22.13,15.34,2,U.S. Treasury,NEFRX
+432,0.74,13.63,3,U.S. Treasury Inflation-Protected,NEFRX
+433,12.18,10.86,4,Agency MBS Pass-Through,NEFRX
+434,1.53,5.46,5,Non-U.S. Government,NEFRX
+435,86.25,92.17,1,Corporate,MFBFX
+436,2.35,5.24,2,Cash & Equivalents,MFBFX
+437,6.20,1.67,3,Government,MFBFX
+438,4.77,0.26,4,Securitized,MFBFX
+439,1.04,0.00,5,Municipal,MFBFX
+440,27.07,109.53,1,Agency MBS Pass-Through,PAGNX
+441,7.65,11.89,2,Agency MBS CMO,PAGNX
+442,1.06,9.12,3,Asset-Backed,PAGNX
+443,0.65,7.25,4,Agency MBS ARM,PAGNX
+444,45.40,7.08,5,U.S. Treasury,PAGNX
+445,86.50,89.39,1,Corporate Bond,FHAIX
+446,0.62,3.35,2,Convertible,FHAIX
+447,0.63,0.00,3,Bank Loan,FHAIX
+448,0.16,0.00,4,Preferred,FHAIX
+449,0.45,0.00,5,Agency Mortgage-Backed,FHAIX
+450,86.50,80.49,1,Corporate Bond,PBHAX
+451,0.64,3.34,2,Asset-Backed,PBHAX
+452,0.62,0.95,3,Convertible,PBHAX
+453,0.16,0.08,4,Preferred,PBHAX
+454,0.63,0.00,5,Bank Loan,PBHAX
+455,49.84,56.94,1,Government,DIBAX
+456,25.04,19.58,2,Corporate Bond,DIBAX
+457,-23.26,16.91,3,Other Government Related,DIBAX
+458,2.25,3.61,4,Asset-Backed,DIBAX
+459,1.22,3.15,5,Supranational,DIBAX
+460,49.84,41.92,1,Government,PFUAX
+461,25.04,25.40,2,Corporate Bond,PFUAX
+462,-23.26,21.64,3,Other Government Related,PFUAX
+463,6.50,20.77,4,Commercial MBS,PFUAX
+464,2.25,5.29,5,Asset-Backed,PFUAX
+465,49.84,66.88,1,Government,TPINX
+466,25.04,1.10,2,Corporate Bond,TPINX
+467,1.58,0.00,3,Agency/Quasi-Agency,TPINX
+468,1.22,0.00,4,Supranational,TPINX
+469,-23.26,0.00,5,Other Government Related,TPINX
+470,"242.74 
+						Mil",Columbia US Government Mortgage Y,1,,RBBAX
+471,"192.91 
+						Mil",Columbia High Yield Bond Y,2,,RBBAX
+472,"116.12 
+						Mil",Columbia Corporate Income Y,3,,RBBAX
+473,"115.99 
+						Mil",Columbia Mortgage Opportunities Y,4,,RBBAX
+474,"110.18 
+						Mil",Columbia Floating Rate Y,5,,RBBAX
+475,,% Assets in Top 5 Holdings,6,,RBBAX
+476,"928.27 
+						Mil",MFS® High Yield Pooled,1,,DIFAX
+477,"72.72 
+						Mil",Simon Property Group Inc,2,,DIFAX
+478,"64.38 
+						Mil",Public Storage,3,,DIFAX
+479,"47.98 
+						Mil",US Treasury Note 2.75%,4,,DIFAX
+480,"47.12 
+						Mil",US Treasury Note 1.75%,5,,DIFAX
+481,,% Assets in Top 5 Holdings,6,,DIFAX
+482,"1007.10 
+						Mil",Microsoft Corp,1,,VWINX
+483,"860.38 
+						Mil",JPMorgan Chase & Co,2,,VWINX
+484,"830.32 
+						Mil",Philip Morris International Inc,3,,VWINX
+485,"808.24 
+						Mil",Wells Fargo & Co,4,,VWINX
+486,"738.46 
+						Mil",Johnson & Johnson,5,,VWINX
+487,,% Assets in Top 5 Holdings,6,,VWINX
+488,"202.75 
+						Mil",Apple Inc,1,,CBLAX
+489,"141.18 
+						Mil",Berkshire Hathaway Inc B,2,,CBLAX
+490,"135.65 
+						Mil",JPMorgan Chase & Co,3,,CBLAX
+491,"135.44 
+						Mil",Microsoft Corp,4,,CBLAX
+492,"134.51 
+						Mil",Citigroup Inc,5,,CBLAX
+493,,% Assets in Top 5 Holdings,6,,CBLAX
+494,"628.18 
+						Mil",Apple Inc,1,,VBINX
+495,"470.58 
+						Mil",Microsoft Corp,2,,VBINX
+496,"331.64 
+						Mil",Facebook Inc A,3,,VBINX
+497,"324.80 
+						Mil",Amazon.com Inc,4,,VBINX
+498,"290.37 
+						Mil",Johnson & Johnson,5,,VBINX
+499,,% Assets in Top 5 Holdings,6,,VBINX
+500,"305.04 
+						Mil",Columbia Short Term Bond Y,1,,CTFAX
+501,"152.52 
+						Mil",Columbia US Government Mortgage Y,2,,CTFAX
+502,"152.52 
+						Mil",Columbia Total Return Bond Y,3,,CTFAX
+503,"76.26 
+						Mil",Columbia US Treasury Index Y,4,,CTFAX
+504,"76.18 
+						Mil",Columbia Income Opportunities Y,5,,CTFAX
+505,,% Assets in Top 5 Holdings,6,,CTFAX
+506,"-143.14 
+						Mil",Us 10yr Note (Cbt)sep17 Xcbt 20170920,1,,SFAAX
+507,"28.36 
+						Mil",Us 5yr Note (Cbt) Sep17 Xcbt 20170929,2,,SFAAX
+508,"28.33 
+						Mil",Apple Inc,3,,SFAAX
+509,"20.51 
+						Mil",Microsoft Corp,4,,SFAAX
+510,"14.59 
+						Mil",Facebook Inc A,5,,SFAAX
+511,,% Assets in Top 5 Holdings,6,,SFAAX
+512,"21.96 
+						Mil",Schwab US Aggregate Bond Index,1,,SWGRX
+513,"12.49 
+						Mil",Schwab® S&P 500 Index,2,,SWGRX
+514,"8.96 
+						Mil",Metropolitan West Total Return Bd I,3,,SWGRX
+515,"8.88 
+						Mil",Schwab Short-Term Bond Index,4,,SWGRX
+516,"5.92 
+						Mil",Schwab® Treasury Infl Protected Secs Idx,5,,SWGRX
+517,,% Assets in Top 5 Holdings,6,,SWGRX
+518,"81.00 
+						Mil",Schwab® S&P 500 Index,1,,SWHRX
+519,"67.97 
+						Mil",Schwab US Aggregate Bond Index,2,,SWHRX
+520,"51.21 
+						Mil",Schwab Core Equity,3,,SWHRX
+521,"44.48 
+						Mil",Laudus International MarketMasters Sel,4,,SWHRX
+522,"39.58 
+						Mil",Metropolitan West Total Return Bd I,5,,SWHRX
+523,,% Assets in Top 5 Holdings,6,,SWHRX
+524,"73.52 
+						Mil",Schwab® S&P 500 Index,1,,SWIRX
+525,"52.33 
+						Mil",Schwab Core Equity,2,,SWIRX
+526,"47.67 
+						Mil",Laudus International MarketMasters Sel,3,,SWIRX
+527,"30.97 
+						Mil",Schwab® International Core Equity,4,,SWIRX
+528,"30.43 
+						Mil",Schwab US Aggregate Bond Index,5,,SWIRX
+529,,% Assets in Top 5 Holdings,6,,SWIRX
+530,"822.49 
+						Mil",T. Rowe Price Ltd Dur Infl Focus Bd,1,,PARIX
+531,"606.93 
+						Mil",T. Rowe Price New Income,2,,PARIX
+532,"526.04 
+						Mil",T. Rowe Price Equity Index 500,3,,PARIX
+533,"101.58 
+						Mil",T. Rowe Price Overseas Stock,4,,PARIX
+534,"96.51 
+						Mil",T. Rowe Price International Value Eq,5,,PARIX
+535,,% Assets in Top 5 Holdings,6,,PARIX

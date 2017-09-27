@@ -111,7 +111,7 @@ def markowitz_portfolio(cov_mat, exp_rets, target_ret,
         b = opt.matrix(0.0)
 
     # Solve
-    optsolvers.options['show_progress'] = True
+    optsolvers.options['show_progress'] = False
     sol = optsolvers.qp(P, q, G, h, A, b)
 
     if sol['status'] != 'optimal':

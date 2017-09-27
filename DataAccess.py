@@ -51,8 +51,7 @@ class DataAccess(object):
     and returns that object. The {main} function currently demonstrates use.
     @note: The earliest time for which this works is platform dependent because the python date functionality is platform dependent.
     '''
-    def __init__(self, sourcein=DataSource.YAHOO, s_datapath=None,
-                 s_scratchpath=None, cachestalltime=12, verbose=False):
+    def __init__(self, sourcein=DataSource.YAHOO, cachestalltime=12, verbose=True):
         '''
         @param sourcestr: Specifies the source of the data. Initializes paths based on source.
         @note: No data is actually read in the constructor. Only paths for the source are initialized
@@ -66,26 +65,19 @@ class DataAccess(object):
         self.fileExtension = '.pkl'
 
         try:
+            self.rootdir = os.path.dirname(os.path.realpath(__file__))
+            print('root is %s' % self.rootdir)
+        except:
             self.rootdir = os.environ['QSREPO']
-        except:
-            self.rootdir = os.path.realpath(__file__)
+            print('env root is %s' % self.rootdir)
         try:
-            self.datadir = os.environ['QSDATA']
-            try:
-                self.scratchdir = os.environ['QSSCRATCH']
-            except:
-                self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
+            self.datadir = os.path.join(self.rootdir, 'QSData')
         except:
-            if s_datapath != None:
-                self.datadir = s_datapath
-                if s_scratchpath != None:
-                    self.scratchdir = s_scratchpath
-                else:
-                    self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
-            else:
-                self.datadir = os.path.join(self.rootdir, 'QSData')
-                self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
-
+            self.datadir = os.environ['QSDATA']
+        try:
+            self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
+        except:
+            self.scratchdir = os.environ['QSSCRATCH']
        
         self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
 
@@ -98,7 +90,7 @@ class DataAccess(object):
             print("Accounts Directory: ", self.accountdir)
 
         if not os.path.isdir(self.rootdir):
-            print("Data path provided is invalid")
+            print("Root path provided is invalid")
             raise
 
         if not os.path.exists(self.scratchdir):
@@ -113,7 +105,7 @@ class DataAccess(object):
         if (sourcein == DataSource.YAHOO):
             self.source = DataSource.YAHOO
             self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
-            self.accountfiles = ['403b.txt'] # add HSA.txt & 403b.txt after testing
+            self.accountfiles = ['403b.txt'] # add HSA.txt & 403b.txt & 401k after testing
             self.fileExtensionToRemove = '.txt'
 
         elif (sourcein == DataSource.CRYPTOCOMPARE):
@@ -186,7 +178,7 @@ class DataAccess(object):
         return list_of_jsons
 
 
-    def get_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE):
+    def get_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data item.
         '''
@@ -204,6 +196,9 @@ class DataAccess(object):
             path = ''
         
         result = pd.concat(frames, axis=1)
+
+        if clean == True:
+            result = result.fillna(method='ffill').fillna(method='bfill')
         return result
 
 
@@ -214,24 +209,13 @@ class DataAccess(object):
         '''
 
         path = self.datafolder
-        filename = 'test9_20.csv'
+        filename = 'HSAtest1.csv'
 
         # if isinstance(df_data, pd.dataframe):
         if abbr == True:
             df_data.head().to_csv(os.path.join(path,filename))
         else:
             df_data.to_csv(os.path.join(path, filename))
-
-
-    def clean_data(df_data):
-        '''
-        takes a data frame then forward fills any missing values by continuing the last given value. Then back
-        fills the data incase there are no preceding values. This ensures the information derived from the data
-        remains consistent when there are gaps.
-        @notes: must clean the data before any analysis.
-        '''
-        cleanData = df_data.fillna(method='ffill').fillna(method='bfill')
-        return cleanData
 
     
 if __name__ == '__main__':
@@ -240,8 +224,6 @@ if __name__ == '__main__':
         c_dataobj = DataAccess(sourcein=sys.argv[1], verbose=False)
     else:
         c_dataobj = DataAccess(sourcein=DataSource.YAHOO, verbose=False)
-
-    # ls_acctdata = c_dataobj.get_info_from_account()
 
     index = c_dataobj.get_index_json()
 
