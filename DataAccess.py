@@ -66,10 +66,8 @@ class DataAccess(object):
 
         try:
             self.rootdir = os.path.dirname(os.path.realpath(__file__))
-            print('root is %s' % self.rootdir)
         except:
             self.rootdir = os.environ['QSREPO']
-            print('env root is %s' % self.rootdir)
         try:
             self.datadir = os.path.join(self.rootdir, 'QSData')
         except:
@@ -107,6 +105,7 @@ class DataAccess(object):
             self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
             self.accountfiles = ['403b.txt'] # add HSA.txt & 403b.txt & 401k after testing
             self.fileExtensionToRemove = '.txt'
+            self.imagefile = os.path.join(self.datadir + "\Images\\")
 
         elif (sourcein == DataSource.CRYPTOCOMPARE):
             self.source = DataSource.CRYPTOCOMPARE
@@ -178,7 +177,7 @@ class DataAccess(object):
         return list_of_jsons
 
 
-    def get_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
+    def get_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=False):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data item.
         '''
@@ -199,6 +198,8 @@ class DataAccess(object):
 
         if clean == True:
             result = result.fillna(method='ffill').fillna(method='bfill')
+            result = result.dropna(axis=1, how='all')
+
         return result
 
 
@@ -209,13 +210,21 @@ class DataAccess(object):
         '''
 
         path = self.datafolder
-        filename = 'HSAtest1.csv'
+        filename = 'calcTest.csv'
 
         # if isinstance(df_data, pd.dataframe):
         if abbr == True:
             df_data.head().to_csv(os.path.join(path,filename))
         else:
             df_data.to_csv(os.path.join(path, filename))
+
+
+    def csv_to_dataframe(self, csv_file):
+        '''
+        This will create a way to make edits to a pickled data frame by first converting it to csv, make any 
+        corrective acctions, then save the csv over the original pickled data frame.
+        '''
+        pass
 
     
 if __name__ == '__main__':
@@ -229,7 +238,7 @@ if __name__ == '__main__':
 
     # Default call is for Adjusted Close data frame (which only works with Yahoo data)
     # df_data = c_dataobj.get_dataframe(DataItem.MS_QUANT_DESCRIPTION)
-    df_data = c_dataobj.get_dataframe(DataItem.MS_FUND_SECTORS)
+    df_data = c_dataobj.get_dataframe()
 
     # cleandata = DataAccess.clean_data(df_data)
 
