@@ -1,5 +1,0 @@
-10.00
-IBM
-AFG
-M
-DGX

@@ -51,7 +51,7 @@ class DataAccess(object):
     and returns that object. The {main} function currently demonstrates use.
     @note: The earliest time for which this works is platform dependent because the python date functionality is platform dependent.
     '''
-    def __init__(self, sourcein=DataSource.YAHOO, cachestalltime=12, verbose=True):
+    def __init__(self, sourcein=DataSource.YAHOO, cachestalltime=12, verbose=False):
         '''
         @param sourcestr: Specifies the source of the data. Initializes paths based on source.
         @note: No data is actually read in the constructor. Only paths for the source are initialized
@@ -80,6 +80,8 @@ class DataAccess(object):
         self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
 
         self.indexdir = os.path.join(self.datadir, 'Indexes\\')
+
+        self.imagefile = os.path.join(self.datadir, 'Images\\')
   
         if verbose:
             print("Scratch Directory: ", self.scratchdir)
@@ -103,9 +105,9 @@ class DataAccess(object):
         if (sourcein == DataSource.YAHOO):
             self.source = DataSource.YAHOO
             self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
-            self.accountfiles = ['403b.txt'] # add HSA.txt & 403b.txt & 401k after testing
+            self.accountfiles = ['403b.txt', 'test.txt'] # add HSA.txt & 403b.txt & 401k after testing
             self.fileExtensionToRemove = '.txt'
-            self.imagefile = os.path.join(self.datadir + "\Images\\")
+            
 
         elif (sourcein == DataSource.CRYPTOCOMPARE):
             self.source = DataSource.CRYPTOCOMPARE
@@ -177,7 +179,7 @@ class DataAccess(object):
         return list_of_jsons
 
 
-    def get_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=False):
+    def get_combined_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data item.
         '''
@@ -202,6 +204,23 @@ class DataAccess(object):
 
         return result
 
+
+    def get_dataframe(self, account, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
+        '''
+        given the data object and item, and returns the dataframe from the object's source associated with the data item.
+        '''
+    
+
+        filename = account + '-' + dataitem.replace(' ','') + '.pkl'
+        filename = filename.replace(' ', '')
+        path = os.path.join(self.datafolder, filename)
+        data = pd.read_pickle(path)
+
+        if clean == True:
+            data = data.fillna(method='ffill').fillna(method='bfill')
+            data = data.dropna(axis=1, how='all')
+
+        return data
 
     def dataframe_to_csv(self, df_data, abbr=False):
         '''
@@ -234,11 +253,11 @@ if __name__ == '__main__':
     else:
         c_dataobj = DataAccess(sourcein=DataSource.YAHOO, verbose=False)
 
-    index = c_dataobj.get_index_json()
+    index = c_dataobj.get_index_json() #Retrieves a the S&P500 index broken into sectors.
 
     # Default call is for Adjusted Close data frame (which only works with Yahoo data)
     # df_data = c_dataobj.get_dataframe(DataItem.MS_QUANT_DESCRIPTION)
-    df_data = c_dataobj.get_dataframe()
+    df_data = c_dataobj.get_dataframe(c_dataobj.get_info_from_account())
 
     # cleandata = DataAccess.clean_data(df_data)
 
