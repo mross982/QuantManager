@@ -29,7 +29,7 @@ class portfolio_optimizer(object):
 
 			df_data = da.DataAccess.get_dataframe(self, acct[0], clean=True)
 
-			f = open(os.path.join(self.datafolder, acct[0] + '_optimize.txt'), 'w+')
+			f = open(os.path.join(self.datafolder, acct[0] + '_optimize.json'), 'w+')
 
 			time_series = scope.TIMESERIES
 			# time_series['5years'] = len(df_data.index)
@@ -42,68 +42,70 @@ class portfolio_optimizer(object):
 				cov_mat = returns.cov()
 				avg_rets = returns.mean()
 				
-				#***************** Minimum variance portfolio ***********************
-				title = 'Minimum_variance_portfolio_%s' % k
-				weights = pfopt.min_var_portfolio(cov_mat)
-				weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights		
-				weights = weights[weights!=0]
-				ret = (weights * avg_rets).sum()
-				std = (weights * returns).sum(1).std()
-				sharpe = ret / std
+				try:
+					#***************** Minimum variance portfolio ***********************
+					title = 'Minimum_variance_portfolio_%s' % k
+					weights = pfopt.min_var_portfolio(cov_mat)
+					weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights		
+					weights = weights[weights!=0]
+					ret = (weights * avg_rets).sum()
+					std = (weights * returns).sum(1).std()
+					sharpe = ret / std
 
-				w = dict(weights)
-				opt = dict()
+					w = dict(weights)
+					opt = dict()
+					
+					opt['portfolio'] = w
+					opt['title'] = title
+					opt['expectedreturn'] = ret
+					opt['std'] = std
+					opt['sharpe'] = sharpe
+					json.dump(opt, f)
+
+					
+					#********* Markowitz Portfolio with target return ************************
+					target_ret = avg_rets.quantile(0.7)
+					title = 'Markowitz_portfolio_target_return:%s_%s' % (round(target_ret, 4), k)
+					weights = pfopt.markowitz_portfolio(cov_mat, avg_rets, target_ret)
+					weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights
+					weights = weights[weights!=0]
+					weights = round(weights, 4)
+					ret = (weights * avg_rets).sum()
+					std = (weights * returns).sum(1).std()
+					sharpe = ret / std
+
+					w = dict(weights)
+					opt = dict()
+					
+					opt['portfolio'] = w
+					opt['title'] = title
+					opt['expectedreturn'] = ret
+					opt['std'] = std
+					opt['sharpe'] = sharpe
+					json.dump(opt, f)
+
 				
-				opt['portfolio'] = w
-				opt['title'] = title
-				opt['expectedreturn'] = ret
-				opt['std'] = std
-				opt['sharpe'] = sharpe
-				json.dump(opt, f)
-
-				
-				#********* Markowitz Portfolio with target return ************************
-				target_ret = avg_rets.quantile(0.7)
-				title = 'Markowitz_portfolio_target_return:%s%s' % (target_ret, k)
-				weights = pfopt.markowitz_portfolio(cov_mat, avg_rets, target_ret)
-				weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights
-				weights = weights[weights!=0]
-				weights = round(weights, 4)
-				ret = (weights * avg_rets).sum()
-				std = (weights * returns).sum(1).std()
-				sharpe = ret / std
-
-				w = dict(weights)
-				opt = dict()
-				
-				opt['portfolio'] = w
-				opt['title'] = title
-				opt['expectedreturn'] = ret
-				opt['std'] = std
-				opt['sharpe'] = sharpe
-				json.dump(opt, f)
-
-
-				#***************** Tangency Portfolio *******************************
-				title = 'Tangency_portfolio_%s' % k
-				weights = pfopt.tangency_portfolio(cov_mat, avg_rets)
-				weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights
-				weights = weights[weights!=0]
-				weights = round(weights, 4)
-				ret = (weights * avg_rets).sum()
-				std = (weights * returns).sum(1).std()
-				sharpe = ret / std
-				
-				w = dict(weights)
-				opt = dict()
-				
-				opt['portfolio'] = w
-				opt['title'] = title
-				opt['expectedreturn'] = ret
-				opt['std'] = std
-				opt['sharpe'] = sharpe
-				json.dump(opt, f)
-
+					#***************** Tangency Portfolio *******************************
+					title = 'Tangency_portfolio_%s' % k
+					weights = pfopt.tangency_portfolio(cov_mat, avg_rets)
+					weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights
+					weights = weights[weights!=0]
+					weights = round(weights, 4)
+					ret = (weights * avg_rets).sum()
+					std = (weights * returns).sum(1).std()
+					sharpe = ret / std
+					
+					w = dict(weights)
+					opt = dict()
+					
+					opt['portfolio'] = w
+					opt['title'] = title
+					opt['expectedreturn'] = ret
+					opt['std'] = std
+					opt['sharpe'] = sharpe
+					json.dump(opt, f)
+				except:
+					pass
 
 				# portfolio_optimizer.section("Markowitz portfolio (long/short, target return: {:.5f})".format(target_ret))
 				# weights = pfopt.markowitz_portfolio(cov_mat, avg_rets, target_ret, allow_short=True)

@@ -47,33 +47,45 @@ class API(object):
 			self.dataTimeStart = DateRange.r1YEAR
 
 
-	def getGoogleData(self):
+	def getGoogleData(self, ls_acctdata, source='acct'):
 		'''
 		API that gets stock and bond information then saves a dataframe pickle file into QSdata/google directory
 		'''
-		data_path = c_dataobj.datafolder
-		ls_acctdata = c_dataobj.get_info_from_account(c_dataobj.accountfiles)
-		items = [da.DataItem.CLOSE, da.DataItem.VOLUME]
+		if source == 'acct':
+			data_path = self.datafolder
+			# ls_acctdata = c_dataobj.get_info_from_account(self.accountfiles)
+			items = [da.DataItem.CLOSE, da.DataItem.VOLUME]
+		elif source == 'index':
+			data_path = self.indexdatadir
+			items = [da.DataItem.CLOSE]
+		
+
 		for acct in ls_acctdata:
 			ls_symbols = acct[2:]
 			account = str(acct[0])
 			d_path = data_path
 
 			for item in items:
-				path = os.path.join(d_path, da.DataSource.GOOGLE, account + '-' + item + '.pkl')
-				df = web.DataReader(ls_symbols, 'google', start=self.dataTimeStart)
+				filename = account + '-' + item + '.pkl'
+				filename = filename.replace(' ', '')
+				path = os.path.join(d_path, filename)
+				df = web.DataReader(ls_symbols, 'google', start=DateRange.r5YEAR)[item]
 				stock_data = df.to_frame()
 				df.to_pickle(path)
 				path = ''
 
 
-	def getYahooData(self, ls_acctdata, items=[da.DataItem.ADJUSTED_CLOSE]):
+	def getYahooData(self, ls_acctdata, items=[da.DataItem.ADJUSTED_CLOSE], source='acct'):
 			'''
 			API that gets fund information then saves a dataframe pickle file into QSdata/yahoo directory.
 			'''
-			data_path = c_dataobj.datafolder
-			symbols = []
+			if source == 'acct':
+				data_path = self.datafolder
+			else:
+				data_path = self.indexdatadir
 
+
+			symbols = []
 			for acct in ls_acctdata:
 				ls_symbols = acct[2:]
 				symbols = ls_symbols

@@ -37,12 +37,12 @@ class WebScrapers(object):
         included in each sector.
         '''
 
-        st_indexdir = c_dataobj.indexdir
+        st_indexdir = self.indexdir
 
         SITE = "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         hdr = {'User-Agent': 'Mozilla/5.0'}
 
-        filename = 'sp500_sectors.txt'
+        filename = 'sp500_sectors.json'
         path = os.path.join(st_indexdir, filename)
 
         req = requests.get(SITE, headers=hdr)

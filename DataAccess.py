@@ -80,8 +80,7 @@ class DataAccess(object):
         self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
 
         self.indexdir = os.path.join(self.datadir, 'Indexes\\')
-
-        self.imagefile = os.path.join(self.datadir, 'Images\\')
+        self.indexdatadir = os.path.join(self.indexdir, 'Index_data\\')
   
         if verbose:
             print("Scratch Directory: ", self.scratchdir)
@@ -105,7 +104,8 @@ class DataAccess(object):
         if (sourcein == DataSource.YAHOO):
             self.source = DataSource.YAHOO
             self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
-            self.accountfiles = ['403b.txt', 'test.txt'] # add HSA.txt & 403b.txt & 401k after testing
+            self.imagefolder = os.path.join(self.datafolder + "\Images\\")
+            self.accountfiles = ['403b.txt', 'HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
             self.fileExtensionToRemove = '.txt'
             
 
@@ -171,12 +171,30 @@ class DataAccess(object):
             filename = str(index_file)
             file = filename.replace('.txt','')
             path = os.path.join(index_path, filename)
+            if os.path.isdir(path):
+                continue
             with open(path) as json_file:
                 data = json.load(json_file)
                 list_of_jsons.append(data)
                 list_of_jsons.insert(0,str(file))
             
         return list_of_jsons
+
+    def json_to_ls_acctdata(self, list_of_jsons):
+        '''
+        takes the index json file and arranges it to an ls_acctdata format for API use.
+        '''
+        ls_acctdata = []
+        json = list_of_jsons[1]
+        for k, v in json.items():
+            innerlist = []
+            innerlist.append(k)
+            innerlist.append('amount N/A')
+            for sym in v:
+                innerlist.append(sym)
+            ls_acctdata.append(innerlist)
+
+        return ls_acctdata
 
 
     def get_combined_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
