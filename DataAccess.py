@@ -122,6 +122,12 @@ class DataAccess(object):
             self.fileExtensionToRemove = '.txt'
 
 
+    def ensure_dir(file_path):
+        directory = os.path.dirname(file_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+
     def get_info_from_account(self):
         ''' 
         Returns account name, balance and list of symbols for one account file. 
@@ -182,7 +188,8 @@ class DataAccess(object):
 
     def json_to_ls_acctdata(self, list_of_jsons):
         '''
-        takes the index json file and arranges it to an ls_acctdata format for API use.
+        takes the index json file and arranges it to an ls_acctdata format for API use. Currently only used for SP500 
+        Sectors index
         '''
         ls_acctdata = []
         json = list_of_jsons[1]
@@ -197,9 +204,10 @@ class DataAccess(object):
         return ls_acctdata
 
 
-    def get_combined_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
+    def get_combined_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=False):
         '''
-        given the data object and item, and returns the dataframe from the object's source associated with the data item.
+        given the data object and item, and returns the dataframe from the object's source associated with the data 
+        item. Will combine data from several accounts. Currently for optimizing multiple accouts at once.
         '''
         ls_acctdata = self.get_info_from_account()
         frames = []
@@ -225,7 +233,8 @@ class DataAccess(object):
 
     def get_dataframe(self, account, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
         '''
-        given the data object and item, and returns the dataframe from the object's source associated with the data item.
+        given the data object and item, and returns the dataframe from the object's source associated with the data 
+        item. Will return a datafram from one account. Currently used for optimizing a single account individually.
         '''
     
 
@@ -242,8 +251,8 @@ class DataAccess(object):
 
     def dataframe_to_csv(self, df_data, abbr=False):
         '''
-        This creates a csv file of a dataframe to test values to make sure they make sense. The abbreviate argument allows
-        you to only print the top five rows of data in a dataframe to csv.
+        This creates a csv file of a single dataframe. The abbreviate argument allows you to only print the top five 
+        rows of data in a dataframe to csv. Currently only used for spot checking downloaded data.
         '''
 
         path = self.datafolder

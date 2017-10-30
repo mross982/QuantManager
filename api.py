@@ -53,7 +53,7 @@ class API(object):
 		'''
 		if source == 'acct':
 			data_path = self.datafolder
-			# ls_acctdata = c_dataobj.get_info_from_account(self.accountfiles)
+			# ls_acctdata = c_dataobj.get_info_from_account(self.accountfiles) # this is now passed to the function
 			items = [da.DataItem.CLOSE, da.DataItem.VOLUME]
 		elif source == 'index':
 			data_path = self.indexdatadir
@@ -70,7 +70,6 @@ class API(object):
 				filename = filename.replace(' ', '')
 				path = os.path.join(d_path, filename)
 				df = web.DataReader(ls_symbols, 'google', start=DateRange.r5YEAR)[item]
-				stock_data = df.to_frame()
 				df.to_pickle(path)
 				path = ''
 
