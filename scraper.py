@@ -61,6 +61,7 @@ class WebScrapers(object):
 
         with open(path, 'w') as outfile:
             json.dump(sector_tickers, outfile)
+            print(sector_tickers)
 
 
 

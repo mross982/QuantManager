@@ -165,31 +165,46 @@ class DataAccess(object):
         return ls_alldata
 
 
-    def get_index_json(self):
+    def get_json(self, path):
         '''
-        Returns a list of all of the json files available in the Index directory. The first item always the name of the
-        index (i.e. the file name)
+        Returns a list of all of the json files available in the Index directory. 
+        * The first item always the name of the index (i.e. the file name)
+        * in the instance where there are multiple json files in the path, all files are returned as a list within
+            a larger list
         '''
-        index_path = self.indexdir
-        list_of_jsons = []
         
-        for index_file in os.listdir(index_path):
-            filename = str(index_file)
-            file = filename.replace('.txt','')
-            path = os.path.join(index_path, filename)
-            if os.path.isdir(path):
-                continue
-            with open(path) as json_file:
+        jsondata = []
+        filenames = []
+        
+        for file in os.listdir(path):
+            filename = str(file)
+            if filename.endswith('.json'):
+                filenames.append(filename)
+                
+        if len(filenames) >1:
+            for f in filenames:
+                acctdata = []
+                drtory = os.path.join(path, f)
+                with open(drtory) as json_file:
+                    data = json.load(json_file)
+                    acctdata.append(data)
+                    name = f.replace('.json', '')
+                    acctdata.insert(0,str(name))
+                    jsondata.append(acctdata)
+        else:
+            drtory = os.path.join(path, filenames[0])
+            with open(drtory) as json_file:
                 data = json.load(json_file)
-                list_of_jsons.append(data)
-                list_of_jsons.insert(0,str(file))
+                jsondata.append(data)
+                name = f.replace('.json', '')
+                jsondata.insert(0,str(name))
             
-        return list_of_jsons
+        return jsondata
 
     def json_to_ls_acctdata(self, list_of_jsons):
         '''
-        takes the index json file and arranges it to an ls_acctdata format for API use. Currently only used for SP500 
-        Sectors index
+        * Takes the index json file and arranges it to an ls_acctdata format for API use. 
+        * Currently only used for SP500 Sectors index
         '''
         ls_acctdata = []
         json = list_of_jsons[1]
