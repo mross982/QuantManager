@@ -20,7 +20,7 @@ from itertools import islice
 import json
 
 
-class DataItem (object):
+class DataItem(object):
     DATE = "Date"
     OPEN = "Open"
     HIGH = "High"
@@ -29,12 +29,17 @@ class DataItem (object):
     VOLUME = "Volume"
     ACTUAL_CLOSE = "ActualClose"
     ADJUSTED_CLOSE = "Adj Close"
-    MS_QUANT_DESCRIPTION = "MSQuantDescription"
-    MS_QUAL_DESCRIPTION = "MSQualDescription"
-    MS_TOP_SECTORS = "MSTopSectors"
-    MS_FUND_SECTORS = "MSFundSectors"
+
+
+class IndexItem(object):
     INDEX_SP500_SECTORS = "SP500sectors"
-    
+
+
+class ScrapeItem(object):
+    MS_QUANT_DESCRIPTION = "MSQuantDescription"
+    MS_FUND_DESCRIPTION = "Fund_Description"
+    MS_FUND_SECTORS = "MSFundSectors"
+    FUND_METADATA = "Fund_MetaData"
 
 
 class DataSource(object):
@@ -180,7 +185,7 @@ class DataAccess(object):
             filename = str(file)
             if filename.endswith('.json'):
                 filenames.append(filename)
-                
+
         if len(filenames) >1:
             for f in filenames:
                 acctdata = []
@@ -196,7 +201,7 @@ class DataAccess(object):
             with open(drtory) as json_file:
                 data = json.load(json_file)
                 jsondata.append(data)
-                name = f.replace('.json', '')
+                name = filenames[0].replace('.json', '')
                 jsondata.insert(0,str(name))
             
         return jsondata
@@ -222,7 +227,8 @@ class DataAccess(object):
     def get_combined_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=False):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data 
-        item. Will combine data from several accounts. Currently for optimizing multiple accouts at once.
+        item. Will combine data from several accounts. 
+        * Currently for optimizing multiple accouts at once.
         '''
         ls_acctdata = self.get_info_from_account()
         frames = []
@@ -246,17 +252,13 @@ class DataAccess(object):
         return result
 
 
-    def get_dataframe(self, account, dataitem=DataItem.ADJUSTED_CLOSE, clean=True):
+    def get_dataframe(self, filepath, clean=False):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data 
         item. Will return a datafram from one account. Currently used for optimizing a single account individually.
         '''
     
-
-        filename = account + '-' + dataitem.replace(' ','') + '.pkl'
-        filename = filename.replace(' ', '')
-        path = os.path.join(self.datafolder, filename)
-        data = pd.read_pickle(path)
+        data = pd.read_pickle(filepath)
 
         if clean == True:
             data = data.fillna(method='ffill').fillna(method='bfill')
@@ -264,20 +266,16 @@ class DataAccess(object):
 
         return data
 
-    def dataframe_to_csv(self, df_data, abbr=False):
+    def dataframe_to_csv(self, df_data, filename='Test.csv'):
         '''
         This creates a csv file of a single dataframe. The abbreviate argument allows you to only print the top five 
-        rows of data in a dataframe to csv. Currently only used for spot checking downloaded data.
+        rows of data in a dataframe to csv. 
+        * Currently only used for spot checking downloaded data.
         '''
 
-        path = self.datafolder
-        filename = 'calcTest.csv'
-
-        # if isinstance(df_data, pd.dataframe):
-        if abbr == True:
-            df_data.head().to_csv(os.path.join(path,filename))
-        else:
-            df_data.to_csv(os.path.join(path, filename))
+        outputfile = os.path.join(self.datafolder, filename + '.csv')
+        print(outputfile)
+        df_data.to_csv(outputfile)
 
 
     def csv_to_dataframe(self, csv_file):
@@ -288,24 +286,3 @@ class DataAccess(object):
         pass
 
     
-if __name__ == '__main__':
-    
-    if len(sys.argv)>1:
-        c_dataobj = DataAccess(sourcein=sys.argv[1], verbose=False)
-    else:
-        c_dataobj = DataAccess(sourcein=DataSource.YAHOO, verbose=False)
-
-    index = c_dataobj.get_index_json() #Retrieves a the S&P500 index broken into sectors.
-
-    # Default call is for Adjusted Close data frame (which only works with Yahoo data)
-    # df_data = c_dataobj.get_dataframe(DataItem.MS_QUANT_DESCRIPTION)
-    df_data = c_dataobj.get_dataframe(c_dataobj.get_info_from_account())
-
-    # cleandata = DataAccess.clean_data(df_data)
-
-    # Note the difference between running the function on the object or passing the object as an argument.
-    # DataAccess.dataframe_to_csv(c_dataobj, df_data, abbr=True)
-    
-    # the data frame to csv function is used exclusively to view and verify the data.
-    c_dataobj.dataframe_to_csv(df_data, abbr=False)
-

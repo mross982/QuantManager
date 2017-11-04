@@ -27,17 +27,27 @@ class portfolio_optimizer(object):
 		ls_acctdata = da.DataAccess.get_info_from_account(self)
 		if len(ls_acctdata) > 1: # If there are multiple accounts being pulled from this data source,
 			for acct in ls_acctdata: # First, optimize each account individually
-				df_data = da.DataAccess.get_dataframe(self, acct[0], clean=True)
-				file = os.path.join(self.datafolder, acct[0] + '_optimize.json')
-				portfolio_optimizer.opt(df_data, file)
+
+				filename = acct[0] + '-' + da.DataItem.ADJUSTED_CLOSE + '.pkl'
+				filename = filename.replace(' ', '')
+				filepath = os.path.join(self.datafolder, filename)				
+
+				df_data = da.DataAccess.get_dataframe(filepath, clean=True)
+				outfile = os.path.join(self.datafolder, acct[0] + '_optimize.json')
+				portfolio_optimizer.opt(df_data, outfile)
 
 			df_data = da.DataAccess.get_combined_dataframe(self, clean=True) # then optimize all accounts together
-			file = os.path.join(self.datafolder, 'Combined_optimize.json')
-			portfolio_optimizer.opt(df_data, file)
+			outfile = os.path.join(self.datafolder, 'Combined_optimize.json')
+			portfolio_optimizer.opt(df_data, outfile)
 		else:
-			df_data = da.DataAccess.get_dataframe(self, acct[0], clean=True)
+
+			filename = ls_acctdata[0] + '-' + da.DataItem.ADJUSTED_CLOSE + '.pkl'
+			filename = filename.replace(' ', '')
+			filepath = os.path.join(self.datafolder, filename)			
+
+			df_data = da.DataAccess.get_dataframe(filepath, clean=True)
 			file = os.path.join(self.datafolder, acct[0] + '_optimize.json')
-			portfolio_optimizer.opt(df_data, file)
+			portfolio_optimizer.opt(df_data, outfile)
 
 
 	def opt(df_data, file):
@@ -126,15 +136,5 @@ class portfolio_optimizer(object):
 			with open(file, 'w') as f:
 				json.dump(jsondata, f)
 				
-
-
-if __name__ == '__main__':
-
-	if len(sys.argv)>1:
-		c_dataobj = da.DataAccess(sourcein=sys.argv[1], verbose=False)
-	else:
-		c_dataobj = da.DataAccess(sourcein=da.DataSource.YAHOO, verbose=False)
-
-	portfolio_optimizer.main(c_dataobj)
 
 	

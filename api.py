@@ -98,27 +98,3 @@ class API(object):
 					df = web.DataReader(symbols, 'yahoo', start=DateRange.r5YEAR)[item]			
 					df.to_pickle(path)
 					path = ''
-		
-
-if __name__ == '__main__':
-
-	if len(sys.argv)>1:
-		c_dataobj = da.DataAccess(sys.argv[1])
-	else:
-		c_dataobj = da.DataAccess(da.DataSource.YAHOO)
-
-	if c_dataobj.source == da.DataSource.GOOGLE:
-		API = API()
-		API.getGoogleData(c_dataobj.datadir, ls_acctdata, c_dataobj.accounttype)
-
-	elif c_dataobj.source == da.DataSource.YAHOO:
-		API.getYahooData(c_dataobj, da.DataAccess.get_info_from_account(c_dataobj))
-
-	
-	elif c_dataobj.source == da.DataSource.CRYPTOCOMPARE:
-		API = API()
-		today = DateRange.TODAY
-		dataTimeStart = DateRange.r1YEAR
-		ls_acctfiles = c_dataobj.accountfiles
-		ls_acctdata = c_dataobj.get_info_from_account(ls_acctfiles) # ls_accotdata contains lists where [0] = account, [1] = balance, [2:] = symbols
-		
