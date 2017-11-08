@@ -40,18 +40,38 @@ class portfolio_visualizer(object):
 		
 	def plot_returns(self):
 
-		accounts = portfolio_visualizer.df_data(self)			
+		accounts = portfolio_visualizer.df_data(self)
+
+		for time_period in range(2): # create two time periods for all graphs 1. Year to date, 2. All data
+			if time_period == 0:
+				for acct in accounts:
+					out_filepath = acct[2] # oddly, when assigning filepath last, i get weird results
+					df_data = acct[0]
+					df_data = df_data[-252:]
+					print(df_data.shape)
+					acct = acct[1]
+					filename_addition = '_YTD'
+					portfolio_visualizer.sub_returns(df_data, acct, out_filepath, filename_addition)
+				
+			else:
+				for acct in accounts:
+					out_filepath = acct[2] # oddly, when assigning filepath last, i get weird results
+					df_data = acct[0]
+					acct = acct[1]
+					filename_addition = '_Total'
+					portfolio_visualizer.sub_returns(df_data, acct, out_filepath, filename_addition)
+
+		sys.exit(0)		
 
 		for acct in accounts:
 			out_filepath = acct[2] # oddly, when assigning filepath last, i get weird results
 			df_data = acct[0]
 			acct = acct[1]
 
+	def sub_returns(df_data, acct, out_filepath, filename_addition):
 			ls_syms = df_data.columns.tolist()
 			ls_index = df_data.index.tolist()
 			ls_index.insert(0, 'tot_return')
-
-			# df = df[-n:]
 			
 			npa = df_data.values # converts dataframe to numpy array
 
@@ -92,7 +112,7 @@ class portfolio_visualizer(object):
 				for array in np.array_split(np_array, 4):
 					array = array.T
 					# print(array.shape)
-					filepath = os.path.join(out_filepath, acct + '_returns' + str(i) + '.png')
+					filepath = os.path.join(out_filepath, acct + '_returns' + str(i) + filename_addition + '.png')
 					sym_slice2 = sym_slice1 + array.shape[1]
 					
 					ls_syms_temp = ls_symscopy[sym_slice1: sym_slice2] # slice the columns to 1/4 of the total
@@ -103,7 +123,7 @@ class portfolio_visualizer(object):
 					sym_slice1 = sym_slice2 # increment slicer
 					filepath = '' # reset filename
 			else:
-				out_filepath = os.path.join(out_filepath, acct + '_returns.png')
+				out_filepath = os.path.join(out_filepath, acct + '_returns' + filename_addition + '.png')
 				portfolio_visualizer.subplot_returns(ls_index, ls_syms, np_array, out_filepath)
 
 			# returns = df_data.pct_change()
