@@ -252,7 +252,7 @@ class DataAccess(object):
         return result
 
 
-    def get_dataframe(self, filepath, clean=False):
+    def get_dataframe(filepath, clean=False):
         '''
         given the data object and item, and returns the dataframe from the object's source associated with the data 
         item. Will return a datafram from one account. Currently used for optimizing a single account individually.

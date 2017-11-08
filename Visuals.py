@@ -8,47 +8,120 @@ import cvxopt as opt
 from cvxopt import blas, solvers
 import itertools
 import os
+import time
+import copy
 
 
 class portfolio_visualizer(object):
 	'''
 
 	'''
-	def returns(self, n=242, plot=False):
+	def df_data(self):
 
-		# for fun I am testing the last three months returns
-		# n = round(n/3)
+		data_path = self.datafolder
+		item = da.DataItem.ADJUSTED_CLOSE
+		accounts = [] # a list container for all accounts
 
-		df_data = da.DataAccess.get_dataframe(self, clean=True)
+		ls_acctdata = da.DataAccess.get_info_from_account(self)
+		for acct in ls_acctdata: 
+			account_info = [] # a list container for the details per account: dataframe, acct name, filepath
+			filename = acct[0] + '-' + da.DataItem.ADJUSTED_CLOSE + '.pkl'
+			filename = filename.replace(' ', '')
+			filepath = os.path.join(self.datafolder, filename)
+			
+			ofilepath = self.imagefolder
+			acct = acct[0]			
 
-		syms = df_data.columns.tolist()
+			df_data = da.DataAccess.get_dataframe(filepath, clean=True)
+			account_info.extend((df_data, acct, ofilepath))
+			accounts.append(account_info) 
 
-		df = df_data.copy(deep=True)
-		df = df[-n:]
-		ls_index = df.index.tolist()
+		return accounts
+		
+	def plot_returns(self):
 
-		df = df.values # converts dataframe to numpy array
+		accounts = portfolio_visualizer.df_data(self)			
 
-		return_vec = df/df[0,:] # Divides each column by the first value in the column (i.e % returns)
+		for acct in accounts:
+			out_filepath = acct[2] # oddly, when assigning filepath last, i get weird results
+			df_data = acct[0]
+			acct = acct[1]
 
-		# returns = df_data.pct_change()
-		# cov_mat = returns.cov()
-		# avg_rets = returns.mean()
+			ls_syms = df_data.columns.tolist()
+			ls_index = df_data.index.tolist()
+			ls_index.insert(0, 'tot_return')
 
-		# %matplotlib inline   # may be necessary to appear correctly in jupyter notebook
+			# df = df[-n:]
+			
+			npa = df_data.values # converts dataframe to numpy array
 
-		if plot == True:
-			filepath = os.path.join(self.imagefile, '3mo_All_Returns.pdf')
-			f = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
-			plt.clf()
-			plt.plot(ls_index, return_vec)
-			plt.legend(syms)
-			plt.ylabel('Adjusted Close')
-			plt.xlabel('Date')
-			plt.show()
-			# f.savefig(filepath)
+			
+			return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
 
-		return return_vec
+			# Here I add total returns to the DF and sort based on total returns to bring more clarity to the plot.
+			# Especially when there are numerous funds and the colors are similiar, the legend will be in order of greatest returns
+			# to lowest returns.
+
+			tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
+			return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns
+				
+			df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe
+			# to retain the return to symbol relationship.
+			
+			df = df.transpose() # Transpose the dataframe so all total return values are in one column
+			
+			df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
+			
+			df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
+			df = df.transpose() # reshape to original
+
+			# End of sorting
+			
+			ls_syms = df.columns.tolist()
+			ls_index = df.index.tolist()
+
+			np_array = df.values
+			
+			if len(ls_syms) > 20: # When there are numerous funds in an account, split the funds into four groups based
+								  # on total returns and plot each of the four groups seperately.
+				ls_symscopy = copy.deepcopy(ls_syms)
+				ls_indexcopy = copy.deepcopy(ls_index)
+				i = 1
+				sym_slice1 = 0
+				np_array = np_array.T
+				for array in np.array_split(np_array, 4):
+					array = array.T
+					# print(array.shape)
+					filepath = os.path.join(out_filepath, acct + '_returns' + str(i) + '.png')
+					sym_slice2 = sym_slice1 + array.shape[1]
+					
+					ls_syms_temp = ls_symscopy[sym_slice1: sym_slice2] # slice the columns to 1/4 of the total
+
+					portfolio_visualizer.subplot_returns(ls_indexcopy, ls_syms_temp, array, filepath) # plot results
+					
+					i += 1 # increment counter
+					sym_slice1 = sym_slice2 # increment slicer
+					filepath = '' # reset filename
+			else:
+				out_filepath = os.path.join(out_filepath, acct + '_returns.png')
+				portfolio_visualizer.subplot_returns(ls_index, ls_syms, np_array, out_filepath)
+
+			# returns = df_data.pct_change()
+			# cov_mat = returns.cov()
+			# avg_rets = returns.mean()
+
+		
+
+	def subplot_returns(ls_index, ls_syms, return_vec, filepath):
+		f = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
+		plt.clf()
+		plt.plot(ls_index, return_vec)
+		plt.legend(ls_syms)
+		plt.ylabel('Adjusted Close')
+		plt.xlabel('Date')
+		# plt.show()
+		f.savefig(filepath)
+		plt.close('all')
 
 
 	def rand_weights(n):
@@ -81,7 +154,7 @@ class portfolio_visualizer(object):
 		# 	return random_portfolio(returns)
 		return mu, sigma
 
-	def main(return_vec, plot=False):
+	def main(return_vec, plot=True):
 		
 
 		n_portfolios = 1000
@@ -98,7 +171,7 @@ class portfolio_visualizer(object):
 			plt.xlabel('std')
 			plt.ylabel('mean')
 			plt.title('Mean and standard deviation of returns of randomly generated portfolio weights')
-			plt.show()
+			# plt.show()
 
 
 	def optimal_portfolio(returns):
@@ -141,16 +214,16 @@ class portfolio_visualizer(object):
 	# plt.plot(risks, returns, 'y-o')
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-	if len(sys.argv)>1:
-		c_dataobj = da.DataAccess(sourcein=sys.argv[1], verbose=False)
-	else:
-		c_dataobj = da.DataAccess(sourcein=da.DataSource.YAHOO, verbose=False)
+# 	if len(sys.argv)>1:
+# 		c_dataobj = da.DataAccess(sourcein=sys.argv[1])
+# 	else:
+# 		c_dataobj = da.DataAccess(sourcein=da.DataSource.YAHOO)
 
-	returns = portfolio_visualizer.returns(c_dataobj, plot=False)
+# 	returns = portfolio_visualizer.returns(c_dataobj, plot=True)
 	# weights, returns, risks = portfolio_visualizer.optimal_portfolio(returns)
 	# print(weights)
 	# print(returns)
 	# print(risks)
-	portfolio_visualizer.main(returns, plot=True)
+	# portfolio_visualizer.main(returns, plot=True)

@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 from bs4 import BeautifulSoup
 from datetime import datetime
 import time
@@ -191,11 +192,12 @@ class mstar_fund_desc(object):
                     table = soup.find('table', attrs={'class': 'r_table2 text2'})
                     table_body = table.find('tbody')
                     rows = table_body.find_all('td')
+                    # rows[8] = best fit index; [9] = R squared; [10] = beta; [11]= alpha; [12] = treynor
                     # This same process can be used to get R-Squared, Alpha, Beta, and Treynor (possibly) the row index is different.
-                    new_data = dict({'ticker': FUND_NAME, 'benchmarkIndex': rows[8].text})
+                    new_data = dict({'ticker': FUND_NAME, 'benchmarkIndex': rows[22].text})
                     df = pd.DataFrame([new_data], columns=fund_benchmark_columns)
                     fund_benchmark = fund_benchmark.append(df, ignore_index=True)
-                except:
+                except AttributeError:
                     print('No luck with ', FUND_NAME)
 
         # Reset the fund_benchmark dataframe.
@@ -203,10 +205,372 @@ class mstar_fund_desc(object):
         # Merge new data to original df_data to maintain all original tickers
         df_data = pd.merge(df_data, fund_benchmark, on='ticker', how='left')
 
-        df_data.to_csv(filepath)
+        df_data.to_csv(filepath, encoding='utf-8')
 
 
-class ms_quant_desc(object):
+class mstar_quant_desc(object):
+
+    def fnc_transpose(fund_history):
+      '''
+      This function "fnc_transpose" create transpose of fund_history data frame
+      and removes unwanted data from the data frame
+      It converts the data into float format.
+
+      Parameter - fund_history dataframe
+
+      Returns - transpose with required columns
+
+      '''
+      fund_history.index=fund_history[fund_history.columns[0]] # Make the parameters as the index
+      fund_history = fund_history.drop(fund_history.columns[0], axis = 1)     
+      fund_history = fund_history.transpose()    
+      fund_history = fund_history.drop('Fund Category',1)    
+      fund_history = fund_history.replace(to_replace=u'\u2014',value=0).astype(float) 
+      fund_history = fund_history.ffill()
+      fund_history = fund_history[(fund_history['Rank in Category']).notnull()] 
+      return fund_history
+
+
+    def performance_data(self):
+
+        st_dataPath = self.datafolder
+        item = da.ScrapeItem.MS_FUND_DESCRIPTION
+        path = str(st_dataPath) + item + '.csv'
+
+        df_desc_data = pd.DataFrame.from_csv(path, encoding='utf-8')
+        # df_desc_data.dropna(how='any') # doesn't work for now
+        # df_desc_data = df_desc_data[np.notnull(df_desc_data['benchmarkIndex'])] # remove any records that did not scrape 
+        # a benchmark index.
+
+        # index_dup = df_desc_data.drop_duplicates('benchmarkIndex')
+       
+        # mstar_benchmark_symbol = pd.DataFrame(index=range(0,len(index_dup)),columns=['Benchmark_Index','Mstar_Symbol'])
+
+        # mstar_benchmark_symbol = pd.DataFrame(columns=['Benchmark_Index','Mstar_Symbol'])
+
+
+        # mstar_benchmark_symbol.loc[0] = ['S&P 500 TR USD','0p00001mk8']
+        # mstar_benchmark_symbol.loc[1] = ['Morningstar Moderate Target Risk','0p0000j533']
+        # mstar_benchmark_symbol.loc[2] = ['Barclays Municipal TR USD','0p00001g5x']
+        # mstar_benchmark_symbol.loc[3] = ['MSCI ACWI Ex USA NR USD','0p00001mjb']
+        # mstar_benchmark_symbol.loc[4] = ['Barclays US Agg Bond TR USD','0p00001g5l']
+        # mstar_benchmark_symbol.loc[5] = ['MSCI ACWI NR USD','0p00001g8p']
+        # mstar_benchmark_symbol.loc[6] = ['Morningstar Long-Only Commodity TR','0p00009frd']
+        # mstar_benchmark_symbol.loc[7] = ['BofAML USD LIBOR 3 Mon CM','0p00001l6o']
+        # mstar_benchmark_symbol.loc[8] = ['Credit Suisse Mgd Futures Liquid TR USD','0p00001mk8']
+        # mstar_benchmark_symbol.loc[9] = ['BBgBarc US Agg Bond TR USD','0p00001g5l']
+        # mstar_benchmark_symbol.loc[10] = ['Morningstar US Mid Growth TR USD','0p00001gk2']
+        # mstar_benchmark_symbol.loc[11] = ['Russell 3000 Value TR USD','0p00001g42']
+        # mstar_benchmark_symbol.loc[12] = ['Morningstar US Large Growth TR USD','0p00001gk1']
+        # mstar_benchmark_symbol.loc[13] = ['Russell 2000 Value TR USD','0p00001g40']
+        # mstar_benchmark_symbol.loc[14] = ['Morningstar Lifetime Mod 2050 TR USD','0p0000j53u']
+        # mstar_benchmark_symbol.loc[15] = ['S&P 1500 Financials TR','0p000099mh']
+        # mstar_benchmark_symbol.loc[16] = ['Russell 1000 TR USD','0p00001g7d']
+        # mstar_benchmark_symbol.loc[17] = ['Russell 1000 Value TR USD','0p00001g3y']
+        # mstar_benchmark_symbol.loc[18] = ['Russell 2000 TR USD','0p00001g7e']
+        # mstar_benchmark_symbol.loc[19] = ['Russell 1000 Growth TR USD','0p00001g3x']
+        # mstar_benchmark_symbol.loc[20] = ['Morningstar US Small Growth TR USD','0p00001gk3']
+        # mstar_benchmark_symbol.loc[21] = ['Morningstar Mod Tgt Risk TR USD','0p0000j533']
+        # # mstar_benchmark_symbol.loc[12] = ['','']
+        # mstar_benchmark_symbol.loc[12] = ['','']
+        # if you do not match a benchmark with it's symbol, just search the benchmark in mstar then capture the 
+        # symbol code in the URL and create another row of data here.
+
+        fund_returns = {}
+
+        # 15 year returns data for each fund.
+        for i in range(0,len(df_desc_data)):
+            # Fetch the Ticker.
+            fund_name = df_desc_data['ticker'][i]
+            # Fetch the Benchmark
+            fund_benchmark_var = df_desc_data['benchmarkIndex'][i]
+            # Key to be stored
+            key = "fund_returns_"+fund_name
+            # Fetching the Fund's benchmark and it s symbol
+            # try: # Unnecessaryly finds the benchmark sysmbol code and puts it into url.
+            #     symbol = (mstar_benchmark_symbol[mstar_benchmark_symbol['Benchmark_Index'] == fund_benchmark_var]['Mstar_Symbol']).values[0]
+            # except IndexError:
+            #     print('no benchmark symbol for ' + fund_name + '. Check the benchmark has a symbol associated.')
+            # Fund Returns URL, passing the Fund Ticker, the bechmark symbol and 15 years of data to the URL
+            #fund_ret_url = "http://performance.morningstar.com/Performance/fund/performance-history-1.action?&t=XNAS:"+fund_name+"&region=usa&culture=en-US&cur=&ops=clear&s="+symbol+"&ndec=2&ep=true&align=m&y=15&comparisonRemove=false&loccat=&taxadj=&benchmarkSecId=&benchmarktype="
+            fund_ret_url = "http://performance.morningstar.com/fund/performance-return.action?t="+fund_name+"&region=USA&culture=en-US&ops=clear"
+            
+            # Calling get_performance_data function to scrape the data using Beautiful soup.
+            print(fund_name)
+
+            # Must be java script rendered
+            response = requests.get(fund_ret_url)
+            bs = BeautifulSoup(response.text, 'lxml')
+
+            # Attempt 1
+            # table = bs.find(lambda tag: tag.name=='table' and tag.has_key('class') and tag['class']=="r_table3")
+
+            # Attempt 2
+            div = bs.find("div", {"id": "total_returns_page"})
+            # .find("div", {"id": "div_growth_10k"})
+            # Write html to text file for testing
+            f = open("output.txt", "w")
+            f.write(str(div))
+            sys.exit(0)
+            print(div)
+            table = bs.find('table', {'class': 'r_table3 print97'})
+
+            # Attempt 3
+            # table = bs.find_all('table')
+
+
+
+            print(table)
+            sys.exit(0)
+
+            # # Attempt 2
+
+            
+            # container = soup.find('div', id='chart_container')
+            # print(container)
+            # sys.exit(0)
+            
+            # print(table)
+            # sys.exit(0)
+            soup = BeautifulSoup(urllib2.urlopen(fund_ret_url).read()) # read data using Beautiful Soup
+            table = soup.find('table') # find the table
+            rows = table.findAll('tr') # Find all tr rows with the table
+            print(rows)
+            sys.exit(0)                       
+            for i in range(len(rows)):                        # read table data for each table row
+                if(i==0):
+                    header = rows[i].findAll('th')            # Assign first row as dataframe header
+                    column_names = [head.text for head in  header] 
+                    data = pd.DataFrame(columns=column_names)
+                else:
+                    row = [0.0]*len(column_names)             # add table data to dataframe
+                    j=1
+                    row[0] = rows[i].find('th').text
+                    for cell in rows[i].findAll('td'):
+                        row[j] = cell.text
+                        j=j+1
+                    data.loc[i-1]=row
+            # For those funds who donot have returns for 15 years contain --. Replacing those dashes with nan values.\
+            data = data.replace(to_replace='&mdash;',value=np.nan)   #replace dash with null
+            data = data.ffill()
+
+
+
+
+
+        fund_history = mstar_quant_desc.get_performance_data(fund_ret_url)
+        # Calling fnc_transpose to Transpose the DataFrame
+        fund_history = mstar_quant_desc.fnc_transpose(fund_history)
+        fund_history = fund_history.reset_index()
+        # Assigning the columns to the DataFrame.
+        fund_history.columns = ['Year',fund_name+'_Returns',fund_benchmark_var,'Category (LB)','+/- S&P 500 TR USD','+/- Category (LB)','Annual_Net_Exp_Ratio','Turnover_Ratio','Rank_In_Category']
+        # except:
+        #     # No returns Information then print and store an empty array in the value for that fund.
+        #     print("No Returns Data available for Fund : ",fund_name)
+        #     # Creating an Empty DataFrame for fund with no returns
+        #     fund_history = pd.DataFrame()
+        #     # Assigning the DataFrame to the value
+        #     fund_returns[key] = fund_history
+
+        print(fund_returns)
+        sys.exit(0)
+
+        for i in range(0, len(fund_returns)):
+            fund_key = fund_returns.keys()[i]
+            # Fund Returns filename
+            fund_filename = fund_returns.keys()[i][-5:]+"_RETURNS.csv"
+            # Storing the Fund Returns values in a csv
+            fund_returns[fund_key].replace(to_replace=u'\u2014',value='').to_csv(fund_filename)
+
+        # Year_Trailing array for years
+        Year_trailing = ['3','5','10','15']
+        # MPT Stats DataFrame columns
+        mpt_stats_columns = ['Fund_Ticker','Benchmark_Index', 'R_Squared','Beta','Alpha','Treynor_Ratio','Currency','Year_Trailing']
+        # Volatility Measures DataFrame columns
+        volatility_measures_columns = ['Fund_Ticker','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio','Bear_MktPercentile_Rank']
+
+        # Fund Statistics object
+        fund_statistics = {}
+
+        # Loop to hover for each fund
+        for yt in range(0,len(fund_df)):
+            fund_name = fund_df['Fund_Ticker'][yt]
+            fund_stats_benchmark = fund_df['Benchmark_Index'][yt]
+            # Key value:
+            key = "fund_statistics_"+fund_name
+            # Fetch the Benchmark for each fund in loop
+            symbol = (mstar_benchmark_symbol[mstar_benchmark_symbol['Benchmark_Index'] == fund_stats_benchmark]['Mstar_Symbol']).values[0]   
+            # Initializing the mpt_statistics DataFrame for each fund. This DataFrame will be used to append statitics and measures information for different years.
+            mpt_statistics = pd.DataFrame()
+            # Another Loop for a fund and for 4 different years
+            for i in Year_trailing:
+                # MPT statistics URL passing fund ticker, year and morningstar benchmark ID
+                mptstatsurl = "http://performance.morningstar.com/RatingRisk/fund/mpt-statistics.action?&t=XNAS:"+fund_name+"&region=usa&culture=en-US&cur=&ops=clear&s="+fund_stats_benchmark+"&y="+i+"&ep=true&comparisonRemove=null&benchmarkSecId=&benchmarktype="
+                # Volatility measures URL passing fund ticker, year and morningstar benchmark ID
+                volmeasuresurl = "http://performance.morningstar.com/RatingRisk/fund/volatility-measurements.action?&t=XNAS:"+fund_name+"&region=usa&culture=en-US&cur=&ops=clear&s="+fund_stats_benchmark+"&y="+i+"&ep=true&comparisonRemove=null&benchmarkSecId=&benchmarktype="
+                try:
+                    # Read the MPT statistics URL information using pandas and store it in a DataFrame. Fetching the 0th value of the array.
+                    mpt_statistics_sub = pd.read_html(mptstatsurl)[0]
+                    # The read URL contains many nulls. Filtering the nan values
+                    mpt_statistics_sub = mpt_statistics_sub[mpt_statistics_sub.Alpha.notnull()]
+                    mpt_statistics_sub['Year_Trailing'] = i
+                    # Assigning columns to mpt_statistics_sub DataFrame
+                    mpt_statistics_sub.columns = mpt_stats_columns
+                    # Fetching the required information from the readed pandas table.
+                    mpt_statistics_sub = mpt_statistics_sub[(mpt_statistics_sub['Fund_Ticker'] == fund_name) & (mpt_statistics_sub['Benchmark_Index'] == fund_stats_benchmark)].reset_index(drop=True).tail(1)
+                    # Reading the volatility measures information using pandas and store it in a DataFrame. Fetching the 0th value of the array.
+                    volatility_measures = pd.read_html(volmeasuresurl)[0]
+                    # The read URL contains many nulls. Filtering the nan values
+                    volatility_measures = volatility_measures[volatility_measures.Return.notnull()].reset_index(drop = True)
+                    # Assigning columns to volatility_measures DataFrame
+                    volatility_measures.columns = volatility_measures_columns
+                    # Merging the mpt_statistics_sub and volatility_measures DataFrames on Fund_Ticker.
+                    mpt_statistics_sub = pd.merge(mpt_statistics_sub,volatility_measures,on='Fund_Ticker',how='inner')
+                    # Appending the merged information in the mpt_statistics information.
+                    mpt_statistics = mpt_statistics.append(mpt_statistics_sub)
+                except:
+                    # Printing the Fund Information for which no data is available.
+                    print("Index : ",yt,", No Statitics available for Fund : ",fund_name," for ",i," years")
+                    # Assigning Empty DataFrame to store as value
+                    mpt_statistics = pd.DataFrame()
+            # Assigning the value to the fund_statistics key for each fund in loop after reseting the index
+            fund_statistics[key] = mpt_statistics.reset_index(drop=True)
+
+            # Fetching the Fund Statistics information for FCNTX fund.
+        fund_statistics["fund_statistics_FCNTX"]
+
+        # Export Data for Statistics in CSV files
+        for i in range(0, len(fund_statistics)):
+            fund_key = fund_statistics.keys()[i]
+            # Assigning file names for each fund
+            fund_filename = fund_statistics.keys()[i][-5:]+"_STATS.csv"
+            # Replacing the Unicode values
+            fund_statistics[fund_key].replace(to_replace=u'\u2014',value='').to_csv(fund_filename)
+
+        fund_statistics.keys()[1]
+        fund_statistics["fund_statistics_VTWNX"]
+
+        # Fund Stats columns
+        fund_stats_cols = fund_statistics["fund_statistics_FCNTX"].columns
+        # DataFrame for 3 years:
+        Fund_param_3 = pd.DataFrame(columns = fund_stats_cols)
+
+        # Looping through the fund_statistics object for each fund and retrieving the 3 year information.
+        for i in range(0,len(fund_statistics)):
+            # Fetching the Key for each fund
+            fund_stat_keys = fund_statistics.keys()[i]
+            # Fetching the 3 year returns data and appending it to the Fund_param_3 dataframe 
+            Fund_param_3 = Fund_param_3.append(fund_statistics[fund_stat_keys][fund_statistics[fund_stat_keys]['Year_Trailing'] == '3'])
+
+        # Dropping the Bear Market Percentile Market Rank as most of the values are not available
+        Fund_param_3 = Fund_param_3.drop('Bear_MktPercentile_Rank',1)
+        # Resetting the Fund_param_3 DataFrame index
+        Fund_param_3 = Fund_param_3.reset_index(drop=True)
+
+        # It is found that ticker JPCIX has Treynor_Ratio as incorrect. Assigning the correct value
+        Fund_param_3['Treynor_Ratio'][102] = 1954.64
+        # Replacing the columns with - with a random number -10001 for later removing the values from the dataframe
+        Fund_param_3[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']] = Fund_param_3[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']].replace(to_replace=u'\u2014',value=-10001).astype(float)
+        # Filtering the funds who donot have information on the parmaters
+        Fund_param_3 = Fund_param_3[Fund_param_3['R_Squared'] != -10001.0]
+        Fund_param_3 = Fund_param_3[Fund_param_3['Std_Dev'] != -10001.0].reset_index(drop=True)
+        # Print the length of the funds
+        print(" Total # of funds with 3 year analysis data : ",len(Fund_param_3))
+
+        # Print the header
+        Fund_param_3.head()
+
+        # Exporting 3 years data to CSV file under ../Fund_Data/Fund_Stats_Annualized_data/Fund_statistics_3years.csv 
+
+        Fund_param_3.to_csv("Fund_statistics_3years.csv")
+
+        # DataFrame for 5 years:
+        Fund_param_5 = pd.DataFrame(columns = fund_stats_cols)
+
+        # Looping through the fund_statistics object for each fund and retrieving the 5 year information.
+        for i in range(0,len(fund_statistics)):
+            # Fetching the Key for each fund
+            fund_stat_keys = fund_statistics.keys()[i]
+            # Fetching the 5 year returns data and appending it to the Fund_param_5 dataframe 
+            Fund_param_5 = Fund_param_5.append(fund_statistics[fund_stat_keys][fund_statistics[fund_stat_keys]['Year_Trailing'] == '5'])
+
+        # Dropping the Bear Market Percentile Market Rank as most of the values are not available
+        Fund_param_5 = Fund_param_5.drop('Bear_MktPercentile_Rank',1)
+        Fund_param_5 = Fund_param_5.reset_index(drop=True)
+
+        # Replacing the columns with - with a random number -10001 for later removing the values from the dataframe
+        Fund_param_5[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']] = Fund_param_5[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']].replace(to_replace=u'\u2014',value=-10001).astype(float)
+        # Filtering the funds who donot have information on the parmaters
+        Fund_param_5 = Fund_param_5[Fund_param_5['R_Squared'] != -10001.0]
+        Fund_param_5 = Fund_param_5[Fund_param_5['Std_Dev'] != -10001.0].reset_index(drop=True)
+        # Print the length of the funds
+        print(" Total # of funds with 5 year analysis data : ",len(Fund_param_5))
+
+        # Print the header
+        Fund_param_5.head()
+
+        # Exporting the 5 years data to csv file
+        Fund_param_5.to_csv("Fund_statistics_5years.csv")
+
+        # DataFrame for 10 years:
+        Fund_param_10 = pd.DataFrame(columns = fund_stats_cols)
+
+        # Looping through the fund_statistics object for each fund and retrieving the 10 year information.
+        for i in range(0,len(fund_statistics)):
+            # Fetching the Key for each fund
+            fund_stat_keys = fund_statistics.keys()[i]
+            # Fetching the 10 year returns data and appending it to the Fund_param_10 dataframe 
+            Fund_param_10 = Fund_param_10.append(fund_statistics[fund_stat_keys][fund_statistics[fund_stat_keys]['Year_Trailing'] == '10'])
+
+        # Dropping the Bear Market Percentile Market Rank as most of the values are not available
+        Fund_param_10 = Fund_param_10.drop('Bear_MktPercentile_Rank',1)
+        Fund_param_10 = Fund_param_10.reset_index(drop=True)
+
+        # Replacing the columns with - with a random number -10001 for later removing the values from the dataframe
+        Fund_param_10[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']] = Fund_param_10[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']].replace(to_replace=u'\u2014',value=-10001).astype(float)
+        # Filtering the funds who donot have information on the parmaters
+        Fund_param_10 = Fund_param_10[Fund_param_10['R_Squared'] != -10001.0]
+        Fund_param_10 = Fund_param_10[Fund_param_10['Std_Dev'] != -10001.0].reset_index(drop=True)
+        # Print the length of the funds
+        print(" Total # of funds with 10 year analysis data : ",len(Fund_param_10))
+
+        # Print the header
+        Fund_param_10.head()
+
+        # Exporting the 10 years data to csv file
+        Fund_param_10.to_csv("Fund_statistics_10years.csv")
+
+        # DataFrame for 15 years:
+        Fund_param_15 = pd.DataFrame(columns = fund_stats_cols)
+
+        # Looping through the fund_statistics object for each fund and retrieving the 15 year information.
+        for i in range(0,len(fund_statistics)):
+            # Fetching the Key for each fund
+            fund_stat_keys = fund_statistics.keys()[i]
+            # Fetching the 15 year returns data and appending it to the Fund_param_15 dataframe 
+            Fund_param_15 = Fund_param_15.append(fund_statistics[fund_stat_keys][fund_statistics[fund_stat_keys]['Year_Trailing'] == '15'])
+
+        # Dropping the Bear Market Percentile Market Rank as most of the values are not available
+        Fund_param_15 = Fund_param_15.drop('Bear_MktPercentile_Rank',1)
+        Fund_param_15 = Fund_param_15.reset_index(drop=True)
+
+        # Replacing the columns with - with a random number -10001 for later removing the values from the dataframe
+        Fund_param_15[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']] = Fund_param_15[['R_Squared','Beta','Alpha','Std_Dev','Return','Sharpe_Ratio','Sortino_Ratio']].replace(to_replace=u'\u2014',value=-10001).astype(float)
+        # Filtering the funds who donot have information on the parmaters
+        Fund_param_15 = Fund_param_15[Fund_param_15['R_Squared'] != -10001.0]
+        Fund_param_15 = Fund_param_15[Fund_param_15['Std_Dev'] != -10001.0].reset_index(drop=True)
+        # Print the length of the funds
+        print(" Total # of funds with 15 year analysis : ",len(Fund_param_15))
+
+        # Print the header
+        Fund_param_15.head()
+
+        # Exporting the 15 years data to csv file
+
+        Fund_param_15.to_csv("Fund_statistics_15years.csv")
+
+
+
     
     def morning_star_quant_desc(self, ls_tickers):
         '''

@@ -1,0 +1,587 @@
+<div id="total_returns_page">
+<div class="col5 colp" id="colp" style="left:0px;top:0px;overflow:hidden">
+<div id="compare_wrap">
+<div class="hspacer0">
+</div>
+<div class="cc_container percentage100" id="perf">
+<ul class="tabs r_time_contain">
+<li>
+<a href="#compare_perf" id="left" onclick="return false;">Compare</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="cc_panel closecontent" id="compare_perf" style="display:none; border-right:1px solid #999; width:953px; height:auto;">
+<div class="contain">
+<div class="text">
+<h4>Enter Tickers</h4>
+</div>
+<div style="postition:relative;">
+<div class="brange">
+<div class="add">
+<a href="javascript:void(0);" onclick="CompareHeaderBox.trySubmit();">Add</a>
+</div>
+<input autocomplete="off" class="h_quote" id="CompareAutoCompleteBox" maxlength="256" name="sSrchTerm" type="text" value=""/>
+</div>
+</div>
+</div>
+<div class="auto-complete" id="CompareAutoCompleteDropDown" name="AutoCompleteDropDown" style="display:none; position: absolute; left: 9px; top: 83px; height:auto; "></div>
+<div class="contain">
+<div class="dmenu dd_multi" id="benchmark-dd">
+<a class="dd2h top_dd" href="javascript:void(0);">Add Benchmark</a>
+<ul style="z-index:100; position:absolute; top:68px; left:245px; *top:79px; *left:205px; _top:81px;">
+<li id="LMorningstar Indices" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">Morningstar Indices</a>
+<ul class="ms-menu-second" id="Morningstar Indices" style="display: none;">
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGP" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Market TR" pid="0P00001GJX" sid="XIUSA0010V" symbol="$MSTART">U.S. Market TR</a>
+</li>
+<li id="LValue" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+					Value
+				</a>
+<ul class="ms-menu-second" id="Value">
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KH4" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Value TR" pid="0P00001GKC" sid="XIUSA0011A" symbol="$MVALT">
+							U.S. Value TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KH1" href="javascript:void(0)" menuitemstyle="trigger" name="Small Value TR" pid="0P00001GK8" sid="XIUSA00116" symbol="$MSVLT">
+							Small Value TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KH0" href="javascript:void(0)" menuitemstyle="trigger" name="Mid Value TR" pid="0P00001GK9" sid="XIUSA00117" symbol="$MMVLT">
+							Mid Value TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGZ" href="javascript:void(0)" menuitemstyle="trigger" name="Large Value TR" pid="0P00001GK7" sid="XIUSA00115" symbol="$MLVLT">
+							Large Value TR
+						</a>
+</li>
+</ul>
+</li>
+<li id="LCore" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+					Core
+				</a>
+<ul class="ms-menu-second" id="Core">
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KH3" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Core TR" pid="0P00001GKB" sid="XIUSA00119" symbol="$MCORT">
+							U.S. Core TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGY" href="javascript:void(0)" menuitemstyle="trigger" name="Small Core TR" pid="0P00001GK6" sid="XIUSA00114" symbol="$MSCRT">
+							Small Core TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGX" href="javascript:void(0)" menuitemstyle="trigger" name="Mid Core TR" pid="0P00001GK5" sid="XIUSA00113" symbol="$MMCRT">
+							Mid Core TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGW" href="javascript:void(0)" menuitemstyle="trigger" name="Large Core TR" pid="0P00001GK4" sid="XIUSA00112" symbol="$MLCRT">
+							Large Core TR
+						</a>
+</li>
+</ul>
+</li>
+<li id="LGrowth" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+					Growth
+				</a>
+<ul class="ms-menu-second" id="Growth">
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KH2" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Growth TR" pid="0P00001GKA" sid="XIUSA00118" symbol="$MGROT">
+							U.S. Growth TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGV" href="javascript:void(0)" menuitemstyle="trigger" name="Small Growth TR" pid="0P00001GK3" sid="XIUSA00111" symbol="$MSGRT">
+							Small Growth TR
+						</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGT" href="javascript:void(0)" menuitemstyle="trigger" name="Mid Growth TR" pid="0P00001GK2" sid="XIUSA00110" symbol="$MMGRT">Mid Growth TR</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGU" href="javascript:void(0)" menuitemstyle="trigger" name="Large Growth TR" pid="0P00001GK1" sid="XIUSA0010Z" symbol="$MLGRT">Large Growth TR</a>
+</li>
+</ul>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGS" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Small Cap TR" pid="0P00001GK0" sid="XIUSA0010Y" symbol="$MSCPT">
+					U.S. Small Cap TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KGQ" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Mid Cap TR" pid="0P00001GJZ" sid="XIUSA0010X" symbol="$MMCPT">
+					U.S. Mid Cap TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00KH5" href="javascript:void(0)" menuitemstyle="trigger" name="U.S. Large Cap TR" pid="0P00001GJY" sid="XIUSA0010W" symbol="$MLCPT">U.S. Large Cap TR</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA06LDV" href="javascript:void(0)" menuitemstyle="trigger" name="Dividend Leaders TR" pid="0P00001N2Y" sid="XIUSA04GS0" symbol="$MDLTR">Dividend Leaders TR</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA07Z10" href="javascript:void(0)" menuitemstyle="trigger" name="Wide Moat Focus 20 TR" pid="0P000083OT" sid="FOUSA06B9O" symbol="$MWMFT">Wide Moat Focus 20 TR</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA067L5" href="javascript:void(0)" menuitemstyle="trigger" name="Information Sup. Sector TR" pid="0P00001MK5" sid="XIUSA04G8Z" symbol="$INFOST">
+					Information Sup. Sector TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA067L7" href="javascript:void(0)" menuitemstyle="trigger" name="Manufacturing Sup. Sector TR" pid="0P00001MK7" sid="XIUSA04G91" symbol="$MFGRST">Manufacturing Sup. Sector TR</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA067L6" href="javascript:void(0)" menuitemstyle="trigger" name="Service Sup. Sector TR" pid="0P00001MK6" sid="XIUSA04G90" symbol="$SRVCST">Service Sup. Sector TR</a>
+</li>
+</ul>
+</li>
+<li id="LUS Indices" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			US Indices
+		</a>
+<ul class="ms-menu-second" id="US Indices" style="display: none;">
+<li>
+<a class="bmk-menu-item" exch="" fid="FSUSA00KB0" href="javascript:void(0)" menuitemstyle="trigger" name="DJ Industrial Avg. TR" pid="0P00001G8I" sid="XIUSA000PF" symbol="">
+					DJ Industrial Avg. TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="IXUS" fid="FSUSA00L2D" href="javascript:void(0)" menuitemstyle="trigger" name="S&amp;P 500 TR" pid="0P00001MK8" sid="XIUSA04G92" symbol="SPYZ">
+					S&amp;P 500 TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSUSA00L2C" href="javascript:void(0)" menuitemstyle="trigger" name="S&amp;P MidCap 400 TR" pid="0P00001N1N" sid="XIUSA04GQL" symbol="">
+					S&amp;P MidCap 400 TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSUSA00L26" href="javascript:void(0)" menuitemstyle="trigger" name="NASDAQ Composite TR" pid="0P00001MLD" sid="XIUSA04GA7" symbol="">
+					NASDAQ Composite TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSUSA00L29" href="javascript:void(0)" menuitemstyle="trigger" name="Russell 2000 TR" pid="0P00001G7E" sid="XIUSA000O5" symbol="">
+					Russell 2000 TR
+				</a>
+</li>
+</ul>
+</li>
+<li id="LCanada" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			Canada
+		</a>
+<ul class="ms-menu-second" id="Canada">
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$CAD" exch="" fid="FSUSA0698P" href="javascript:void(0)" menuitemstyle="trigger" name="S&amp;P/TSX Composite TR" pid="0P00001MLA" sid="XIUSA04GA4" symbol="">
+					S&amp;P/TSX Composite TR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$CAD" exch="" fid="FSCAN07QC8" href="javascript:void(0)" menuitemstyle="trigger" name="S&amp;P/TSX 60 PR" pid="0P00008PAC" sid="FOUSA0631C" symbol="">
+					S&amp;P/TSX 60 PR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$CAD" exch="" fid="FSUSA06OQ7" href="javascript:void(0)" menuitemstyle="trigger" name="S&amp;P/TSX Venture Composite PR" pid="0P00001QO6" sid="XIUSA04GSM" symbol="">
+					S&amp;P/TSX Venture Composite PR
+				</a>
+</li>
+</ul>
+</li>
+<li id="LEurope" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			Europe
+		</a>
+<ul class="ms-menu-second" id="Europe">
+<li>
+<a class="bmk-menu-item" exch="" fid="FSESP07CS1" href="javascript:void(0)" menuitemstyle="trigger" name="DJ Stoxx 50 TR EUR" pid="0P00008ISP" sid="FOUSA06CWI" symbol="">DJ Stoxx 50 TR EUR</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="XBRU" fid="FSBEL079UJ" href="javascript:void(0)" menuitemstyle="trigger" name="Euronext BEL 20 PR (BEL)" pid="0P00006F5U" sid="FOUSA05LSX" symbol="BEL20">
+					Euronext BEL 20 PR (BEL)
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSFRA00KBK" href="javascript:void(0)" menuitemstyle="trigger" name="Euronext Paris CAC 40 TR (FRA)" pid="0P00008ICW" sid="FOUSA06CGQ" symbol="">
+					Euronext Paris CAC 40 TR (FRA)
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSUSA05NU5" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE 100 TR (GBR)" pid="0P00001FKQ" sid="XIUSA0001H" symbol="">
+					FTSE 100 TR (GBR)
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSUSA05NU6" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE 250 TR (GBR)" pid="0P00001IS2" sid="XIUSA04CG5" symbol="">
+					FTSE 250 TR (GBR)
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" exch="" fid="FSDEU00KC9" href="javascript:void(0)" menuitemstyle="trigger" name="FSE DAX TR (DEU)" pid="0P00001FKV" sid="XIUSA0001M" symbol="">
+					FSE DAX TR (DEU)
+				</a>
+</li>
+</ul>
+</li>
+<li id="LAsia" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			Asia
+		</a>
+<ul class="ms-menu-second" id="Asia">
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$JPY" exch="XOSE" fid="FSUSA07WXT" href="javascript:void(0)" menuitemstyle="trigger" name="Nikkei 225 PR (JPN)" pid="0P00006MR4" sid="FOUSA05SFQ" symbol="NI225">
+					Nikkei 225 PR (JPN)
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$CNY" exch="XSHG" fid="FSCHN07HD4" href="javascript:void(0)" menuitemstyle="trigger" name="Shanghai SE Composite PR (CHN)" pid="0P00006NNM" sid="FOUSA05TC8" symbol="$000001">
+					Shanghai SE Composite PR (CHN)
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$CNY" exch="" fid="FSUSA08YK7" href="javascript:void(0)" menuitemstyle="trigger" name="CSI 300 CNY" pid="0P0000GDPO" sid="FOUSA06X7G" symbol="">
+					CSI 300 CNY
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$HKD" exch="" fid="FSHKG00KCN" href="javascript:void(0)" menuitemstyle="trigger" name="Hang Seng HSI PR HKD" pid="0P00001FL8" sid="XIUSA0001Z" symbol="">
+					Hang Seng HSI PR HKD
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$AUD" exch="" fid="FSUSA06I18" href="javascript:void(0)" menuitemstyle="trigger" name="S&amp;P/ASX 200 TR" pid="0P00001MLY" sid="XIUSA04GAS" symbol="">S&amp;P/ASX 200 TR</a>
+</li>
+</ul>
+</li>
+<li id="LSouthAfrica" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			South Africa
+		</a>
+<ul class="ms-menu-second" id="southAfrica">
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSUSA0AQ52" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE All Share Capped TR ZAR" pid="0P0000NOJ6" sid="F00000H42L" symbol="J303T">
+					FTSE/JSE All Share Capped TR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CJ4" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE Top 40 SWIX TR ZAR" pid="0P0000ONGH" sid="F00000IRN6" symbol="J400T">
+					FTSE/JSE Top 40 SWIX TR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CGL" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE All Share SWIX TR ZAR" pid="0P0000ONGI" sid="F00000IRN7" symbol="J403T">
+					FTSE/JSE All Share SWIX TR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CJ2" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE Top 40 NR ZAR" pid="0P0000XAF4" sid="F00000OZT2" symbol="J200N">
+					FTSE/JSE Top 40 NR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSUSA09UC0" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE All Africa Ex South Africa ZAR" pid="0P0000JSG0" sid="FOUSA08RB7" symbol="JA3U">FTSE/JSE All Africa Ex South Africa ZAR</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CGI" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE All Share TR ZAR" pid="0P0000KKEQ" sid="FOUSA08X90" symbol="J203T">
+					FTSE/JSE All Share TR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CHI" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE SA Listed Property TR ZAR" pid="0P0000KKER" sid="FOUSA08X91" symbol="J253T">
+					FTSE/JSE SA Listed Property TR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CIW" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE Small Cap TR ZAR" pid="0P0000KTZG" sid="FOUSA08YZV" symbol="J202T">
+					FTSE/JSE Small Cap TR ZAR
+				</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CH9" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE Financials&amp;Indl TR ZAR" pid="0P0000KTZP" sid="FOUSA08Z04" symbol="J250T">FTSE/JSE Financials&amp;Indl TR ZAR</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CGJ" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE SA Industrials TR ZAR" pid="0P0000KTZT" sid="FOUSA08Z08" symbol="J257T">FTSE/JSE SA Industrials TR ZAR</a>
+</li>
+<li>
+<a class="bmk-menu-item" cur="CU$$$$$ZAR" exch="XJSE" fid="FSZAF07CHJ" href="javascript:void(0)" menuitemstyle="trigger" name="FTSE/JSE SA Resources TR ZAR" pid="0P0000KTZU" sid="FOUSA08Z09" symbol="J258T">
+					FTSE/JSE SA Resources TR ZAR
+				</a>
+</li>
+</ul>
+</li>
+<li id="LPrimary Prospectus Benchmark" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			Primary Prospectus Benchmark
+		</a>
+<ul class="ms-menu-second" id="Primary Prospectus Benchmark">
+<li>
+<a class="bmk-menu-item" cur="" exch="" fid="FSUSA07VQA" href="javascript:void(0)" menuitemstyle="trigger" name="Bloomberg Barclays US Aggregate Bond TR USD" pid="0P00001G5L" sid="XIUSA000MC" symbol="XIUSA000MC">
+					Bloomberg Barclays US Aggregate Bond TR USD
+				</a>
+</li>
+</ul>
+</li>
+<li id="LSecondary Prospectus Benchmark" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			Secondary Prospectus Benchmark
+		</a>
+<ul class="ms-menu-second" id="Secondary Prospectus Benchmark">
+<li>
+<a class="bmk-menu-item" cur="" exch="" fid="" href="" menuitemstyle="trigger" name="" pid="" sid="" symbol="">
+					N/A
+				</a>
+</li>
+</ul>
+</li>
+<li id="LAnalyst Assigned Benchmark" menuitemstyle="subMenu">
+<a class="ms-menu-arrow" href="javascript:void(0)">
+			Analyst Assigned Benchmark
+		</a>
+<ul class="ms-menu-second" id="Analyst Assigned Benchmark">
+<li>
+<a class="bmk-menu-item" cur="" exch="" fid="FSUSA07VQA" href="javascript:void(0)" menuitemstyle="trigger" name="Bloomberg Barclays US Aggregate Bond TR USD" pid="0P00001G5L" sid="XIUSA000MC" symbol="XIUSA000MC">
+					Bloomberg Barclays US Aggregate Bond TR USD
+				</a>
+</li>
+</ul>
+</li>
+</ul> </div>
+<div class="dmenu dd_multi" id="morning-category-dd">
+<a class="dd2h bottom_dd" href="javascript:void(0);">Add Morningstar Category</a>
+<ul class="dropdown_scoll" style="z-index: 100; position: absolute; top: 107px; left: 245px; *top: 118px; *left: 205px; _top: 122px;display: none;">
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Allocation--15% to 30% Equity" pid="$FOCA$XY$$" sid="$FOCA$XY$$" type="cat">Allocation--15% to 30% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Allocation--30% to 50% Equity" pid="$FOCA$CA$$" sid="$FOCA$CA$$" type="cat">Allocation--30% to 50% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Allocation--50% to 70% Equity" pid="$FOCA$MA$$" sid="$FOCA$MA$$" type="cat">Allocation--50% to 70% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Allocation--70% to 85% Equity" pid="$FOCA$AL$$" sid="$FOCA$AL$$" type="cat">Allocation--70% to 85% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Allocation--85%+ Equity" pid="$FOCA$XM$$" sid="$FOCA$XM$$" type="cat">Allocation--85%+ Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Bank Loan" pid="$FOCA$BL$$" sid="$FOCA$BL$$" type="cat">Bank Loan</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Bear Market" pid="$FOCA$BM$$" sid="$FOCA$BM$$" type="cat">Bear Market</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="China Region" pid="$FOCA$CH$$" sid="$FOCA$CH$$" type="cat">China Region</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Commodities Agriculture" pid="$FOCA$AA$$" sid="$FOCA$AA$$" type="cat">Commodities Agriculture</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Commodities Broad Basket" pid="$FOCA$BB$$" sid="$FOCA$BB$$" type="cat">Commodities Broad Basket</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Commodities Energy" pid="$FOCA$CE$$" sid="$FOCA$CE$$" type="cat">Commodities Energy</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Commodities Industrial Metals" pid="$FOCA$IM$$" sid="$FOCA$IM$$" type="cat">Commodities Industrial Metals</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Commodities Precious Metals" pid="$FOCA$CP$$" sid="$FOCA$CP$$" type="cat">Commodities Precious Metals</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Communications" pid="$FOCA$SC$$" sid="$FOCA$SC$$" type="cat">Communications</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Consumer Cyclical" pid="$FOCA$CD$$" sid="$FOCA$CD$$" type="cat">Consumer Cyclical</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Consumer Defensive" pid="$FOCA$CC$$" sid="$FOCA$CC$$" type="cat">Consumer Defensive</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Convertibles" pid="$FOCA$CV$$" sid="$FOCA$CV$$" type="cat">Convertibles</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Corporate Bond" pid="$FOCA$TW$$" sid="$FOCA$TW$$" type="cat">Corporate Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Diversified Emerging Mkts" pid="$FOCA$EM$$" sid="$FOCA$EM$$" type="cat">Diversified Emerging Mkts</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Diversified Pacific/Asia" pid="$FOCA$DP$$" sid="$FOCA$DP$$" type="cat">Diversified Pacific/Asia</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Emerging Markets Bond" pid="$FOCA$EB$$" sid="$FOCA$EB$$" type="cat">Emerging Markets Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Emerging-Markets Local-Currency Bond" pid="$FOCA$XP$$" sid="$FOCA$XP$$" type="cat">Emerging-Markets Local-Currency Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Energy Limited Partnership" pid="$FOCA$LP$$" sid="$FOCA$LP$$" type="cat">Energy Limited Partnership</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Equity Energy" pid="$FOCA$EE$$" sid="$FOCA$EE$$" type="cat">Equity Energy</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Equity Precious Metals" pid="$FOCA$SP$$" sid="$FOCA$SP$$" type="cat">Equity Precious Metals</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Europe Stock" pid="$FOCA$ES$$" sid="$FOCA$ES$$" type="cat">Europe Stock</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Financial" pid="$FOCA$SF$$" sid="$FOCA$SF$$" type="cat">Financial</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Foreign Large Blend" pid="$FOCA$FB$$" sid="$FOCA$FB$$" type="cat">Foreign Large Blend</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Foreign Large Growth" pid="$FOCA$FG$$" sid="$FOCA$FG$$" type="cat">Foreign Large Growth</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Foreign Large Value" pid="$FOCA$FV$$" sid="$FOCA$FV$$" type="cat">Foreign Large Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Foreign Small/Mid Blend" pid="$FOCA$FQ$$" sid="$FOCA$FQ$$" type="cat">Foreign Small/Mid Blend</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Foreign Small/Mid Growth" pid="$FOCA$FR$$" sid="$FOCA$FR$$" type="cat">Foreign Small/Mid Growth</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Foreign Small/Mid Value" pid="$FOCA$FA$$" sid="$FOCA$FA$$" type="cat">Foreign Small/Mid Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Global Real Estate" pid="$FOCA$GR$$" sid="$FOCA$GR$$" type="cat">Global Real Estate</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Health" pid="$FOCA$SH$$" sid="$FOCA$SH$$" type="cat">Health</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="High Yield Bond" pid="$FOCA$HY$$" sid="$FOCA$HY$$" type="cat">High Yield Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="High Yield Muni" pid="$FOCA$HM$$" sid="$FOCA$HM$$" type="cat">High Yield Muni</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="India Equity" pid="$FOCA$EI$$" sid="$FOCA$EI$$" type="cat">India Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Industrials" pid="$FOCA$ID$$" sid="$FOCA$ID$$" type="cat">Industrials</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Inflation-Protected Bond" pid="$FOCA$IP$$" sid="$FOCA$IP$$" type="cat">Inflation-Protected Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Infrastructure" pid="$FOCA$XO$$" sid="$FOCA$XO$$" type="cat">Infrastructure</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Intermediate Government" pid="$FOCA$GI$$" sid="$FOCA$GI$$" type="cat">Intermediate Government</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Intermediate-Term Bond" pid="$FOCA$CI$$" sid="$FOCA$CI$$" type="cat">Intermediate-Term Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Japan Stock" pid="$FOCA$JS$$" sid="$FOCA$JS$$" type="cat">Japan Stock</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Large Blend" pid="$FOCA$LB$$" sid="$FOCA$LB$$" type="cat">Large Blend</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Large Growth" pid="$FOCA$LG$$" sid="$FOCA$LG$$" type="cat">Large Growth</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Large Value" pid="$FOCA$LV$$" sid="$FOCA$LV$$" type="cat">Large Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Latin America Stock" pid="$FOCA$LS$$" sid="$FOCA$LS$$" type="cat">Latin America Stock</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Leveraged Net Long" pid="$FOCA$LN$$" sid="$FOCA$LN$$" type="cat">Leveraged Net Long</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Long Government" pid="$FOCA$GL$$" sid="$FOCA$GL$$" type="cat">Long Government</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Long-Short Credit" pid="$FOCA$XS$$" sid="$FOCA$XS$$" type="cat">Long-Short Credit</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Long-Short Equity" pid="$FOCA$LO$$" sid="$FOCA$LO$$" type="cat">Long-Short Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Long-Term Bond" pid="$FOCA$CL$$" sid="$FOCA$CL$$" type="cat">Long-Term Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Managed Futures" pid="$FOCA$13$$" sid="$FOCA$13$$" type="cat">Managed Futures</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Market Neutral" pid="$FOCA$NE$$" sid="$FOCA$NE$$" type="cat">Market Neutral</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Mid-Cap Blend" pid="$FOCA$MB$$" sid="$FOCA$MB$$" type="cat">Mid-Cap Blend</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Mid-Cap Growth" pid="$FOCA$MG$$" sid="$FOCA$MG$$" type="cat">Mid-Cap Growth</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Mid-Cap Value" pid="$FOCA$MV$$" sid="$FOCA$MV$$" type="cat">Mid-Cap Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Miscellaneous Region" pid="$FOCA$MQ$$" sid="$FOCA$MQ$$" type="cat">Miscellaneous Region</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Miscellaneous Sector" pid="$FOCA$MR$$" sid="$FOCA$MR$$" type="cat">Miscellaneous Sector</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Money Market - Tax-Free" pid="$FOCA$TF$$" sid="$FOCA$TF$$" type="cat">Money Market - Tax-Free</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Money Market - Taxable" pid="$FOCA$TM$$" sid="$FOCA$TM$$" type="cat">Money Market - Taxable</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Multialternative" pid="$FOCA$GY$$" sid="$FOCA$GY$$" type="cat">Multialternative</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Multicurrency" pid="$FOCA$CR$$" sid="$FOCA$CR$$" type="cat">Multicurrency</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Multisector Bond" pid="$FOCA$MU$$" sid="$FOCA$MU$$" type="cat">Multisector Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni California Intermediate" pid="$FOCA$MF$$" sid="$FOCA$MF$$" type="cat">Muni California Intermediate</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni California Long" pid="$FOCA$MC$$" sid="$FOCA$MC$$" type="cat">Muni California Long</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Florida" pid="$FOCA$FL$$" sid="$FOCA$FL$$" type="cat">Muni Florida</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Massachusetts" pid="$FOCA$MT$$" sid="$FOCA$MT$$" type="cat">Muni Massachusetts</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Minnesota" pid="$FOCA$SM$$" sid="$FOCA$SM$$" type="cat">Muni Minnesota</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni National Interm" pid="$FOCA$MI$$" sid="$FOCA$MI$$" type="cat">Muni National Interm</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni National Long" pid="$FOCA$ML$$" sid="$FOCA$ML$$" type="cat">Muni National Long</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni National Short" pid="$FOCA$MS$$" sid="$FOCA$MS$$" type="cat">Muni National Short</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni New Jersey" pid="$FOCA$MJ$$" sid="$FOCA$MJ$$" type="cat">Muni New Jersey</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni New York Intermediate" pid="$FOCA$MN$$" sid="$FOCA$MN$$" type="cat">Muni New York Intermediate</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni New York Long" pid="$FOCA$MY$$" sid="$FOCA$MY$$" type="cat">Muni New York Long</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Ohio" pid="$FOCA$MO$$" sid="$FOCA$MO$$" type="cat">Muni Ohio</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Pennsylvania" pid="$FOCA$MP$$" sid="$FOCA$MP$$" type="cat">Muni Pennsylvania</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Single State Interm" pid="$FOCA$SI$$" sid="$FOCA$SI$$" type="cat">Muni Single State Interm</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Single State Long" pid="$FOCA$SL$$" sid="$FOCA$SL$$" type="cat">Muni Single State Long</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Muni Single State Short" pid="$FOCA$SS$$" sid="$FOCA$SS$$" type="cat">Muni Single State Short</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Natural Resources" pid="$FOCA$SN$$" sid="$FOCA$SN$$" type="cat">Natural Resources</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Nontraditional Bond" pid="$FOCA$NT$$" sid="$FOCA$NT$$" type="cat">Nontraditional Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Options-based" pid="$FOCA$XR$$" sid="$FOCA$XR$$" type="cat">Options-based</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Pacific/Asia ex-Japan Stk" pid="$FOCA$PJ$$" sid="$FOCA$PJ$$" type="cat">Pacific/Asia ex-Japan Stk</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Preferred Stock" pid="$FOCA$RR$$" sid="$FOCA$RR$$" type="cat">Preferred Stock</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Real Estate" pid="$FOCA$SR$$" sid="$FOCA$SR$$" type="cat">Real Estate</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Short Government" pid="$FOCA$GS$$" sid="$FOCA$GS$$" type="cat">Short Government</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Short-Term Bond" pid="$FOCA$CS$$" sid="$FOCA$CS$$" type="cat">Short-Term Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Single Currency" pid="$FOCA$FX$$" sid="$FOCA$FX$$" type="cat">Single Currency</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Small Blend" pid="$FOCA$SB$$" sid="$FOCA$SB$$" type="cat">Small Blend</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Small Growth" pid="$FOCA$SG$$" sid="$FOCA$SG$$" type="cat">Small Growth</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Small Value" pid="$FOCA$SV$$" sid="$FOCA$SV$$" type="cat">Small Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Stable Value" pid="$FOCA$VL$$" sid="$FOCA$VL$$" type="cat">Stable Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Allocation--15% to 30% Equity" pid="$FOCA$XL$$" sid="$FOCA$XL$$" type="cat">Static Allocation--15% to 30% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Allocation--30% to 50% Equity" pid="$FOCA$5C$$" sid="$FOCA$5C$$" type="cat">Static Allocation--30% to 50% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Allocation--50% to 70% Equity" pid="$FOCA$5O$$" sid="$FOCA$5O$$" type="cat">Static Allocation--50% to 70% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Allocation--70% to 85% Equity" pid="$FOCA$5A$$" sid="$FOCA$5A$$" type="cat">Static Allocation--70% to 85% Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Allocation--85%+ Equity" pid="$FOCA$XN$$" sid="$FOCA$XN$$" type="cat">Static Allocation--85%+ Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Intermediate Bond" pid="$FOCA$5I$$" sid="$FOCA$5I$$" type="cat">Static Intermediate Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Large Blend" pid="$FOCA$5B$$" sid="$FOCA$5B$$" type="cat">Static Large Blend</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Large Growth" pid="$FOCA$5G$$" sid="$FOCA$5G$$" type="cat">Static Large Growth</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Large Value" pid="$FOCA$5V$$" sid="$FOCA$5V$$" type="cat">Static Large Value</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Mid-Cap Equity" pid="$FOCA$5E$$" sid="$FOCA$5E$$" type="cat">Static Mid-Cap Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Non US Equity" pid="$FOCA$5N$$" sid="$FOCA$5N$$" type="cat">Static Non US Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Short-Term Bond" pid="$FOCA$5T$$" sid="$FOCA$5T$$" type="cat">Static Short-Term Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static Small-Cap Equity" pid="$FOCA$5S$$" sid="$FOCA$5S$$" type="cat">Static Small-Cap Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Static US Government" pid="$FOCA$5U$$" sid="$FOCA$5U$$" type="cat">Static US Government</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Tactical Allocation" pid="$FOCA$TV$$" sid="$FOCA$TV$$" type="cat">Tactical Allocation</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2000-2010" pid="$FOCA$TA$$" sid="$FOCA$TA$$" type="cat">Target-Date 2000-2010</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2015" pid="$FOCA$TD$$" sid="$FOCA$TD$$" type="cat">Target-Date 2015</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2020" pid="$FOCA$TE$$" sid="$FOCA$TE$$" type="cat">Target-Date 2020</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2025" pid="$FOCA$TG$$" sid="$FOCA$TG$$" type="cat">Target-Date 2025</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2030" pid="$FOCA$TH$$" sid="$FOCA$TH$$" type="cat">Target-Date 2030</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2035" pid="$FOCA$TI$$" sid="$FOCA$TI$$" type="cat">Target-Date 2035</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2040" pid="$FOCA$TJ$$" sid="$FOCA$TJ$$" type="cat">Target-Date 2040</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2045" pid="$FOCA$TK$$" sid="$FOCA$TK$$" type="cat">Target-Date 2045</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2050" pid="$FOCA$TN$$" sid="$FOCA$TN$$" type="cat">Target-Date 2050</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2055" pid="$FOCA$TL$$" sid="$FOCA$TL$$" type="cat">Target-Date 2055</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date 2060+" pid="$FOCA$XQ$$" sid="$FOCA$XQ$$" type="cat">Target-Date 2060+</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Target-Date Retirement" pid="$FOCA$RI$$" sid="$FOCA$RI$$" type="cat">Target-Date Retirement</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Technology" pid="$FOCA$ST$$" sid="$FOCA$ST$$" type="cat">Technology</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Inverse Commodities" pid="$FOCA$IC$$" sid="$FOCA$IC$$" type="cat">Trading--Inverse Commodities</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Inverse Debt" pid="$FOCA$ND$$" sid="$FOCA$ND$$" type="cat">Trading--Inverse Debt</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Inverse Equity" pid="$FOCA$IE$$" sid="$FOCA$IE$$" type="cat">Trading--Inverse Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Leveraged Commodities" pid="$FOCA$LC$$" sid="$FOCA$LC$$" type="cat">Trading--Leveraged Commodities</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Leveraged Debt" pid="$FOCA$VD$$" sid="$FOCA$VD$$" type="cat">Trading--Leveraged Debt</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Leveraged Equity" pid="$FOCA$LE$$" sid="$FOCA$LE$$" type="cat">Trading--Leveraged Equity</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Trading--Miscellaneous" pid="$FOCA$IS$$" sid="$FOCA$IS$$" type="cat">Trading--Miscellaneous</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Ultrashort Bond" pid="$FOCA$UB$$" sid="$FOCA$UB$$" type="cat">Ultrashort Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Utilities" pid="$FOCA$SU$$" sid="$FOCA$SU$$" type="cat">Utilities</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="Volatility" pid="$FOCA$VO$$" sid="$FOCA$VO$$" type="cat">Volatility</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="World Allocation" pid="$FOCA$IH$$" sid="$FOCA$IH$$" type="cat">World Allocation</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="World Bond" pid="$FOCA$IB$$" sid="$FOCA$IB$$" type="cat">World Bond</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="World Large Stock" pid="$FOCA$WS$$" sid="$FOCA$WS$$" type="cat">World Large Stock</a></li>
+<li><a class="cat-menu-item" href="javascript:void(0);" name="World Small/Mid Stock" pid="$FOCA$SW$$" sid="$FOCA$SW$$" type="cat">World Small/Mid Stock</a></li>
+</ul> </div>
+</div>
+<div class="contain_rec">
+<div class="text">
+<a class="ms-gl-font10" gkey="ClearAll" href="javascript:clearAll();">Clear All</a>
+<h4 class="ms-gl-font10" gkey="RecentSecurities">
+									Recent Securities &amp; Benchmarks (max. active = 5)</h4>
+</div>
+<ul class="recent_ctrl" id="gr_ctrl_recent">
+</ul>
+</div>
+</div>
+<div class="iefix">
+</div>
+<style type="text/css">
+	.hspacer3_sb {	   
+	    height: 33px;
+	    overflow: hidden;
+	    width: 100%;
+	}
+</style>
+<a class="r_tbar1" href="//quotes.morningstar.com/chart/fund/chart.action?&amp;t=XNAS:BAGIX&amp;region=usa&amp;culture=en-US&amp;ops=clear&amp;cur="><span class="link_arrw"></span><span>Customize Interactive Chart</span>
+<h3>Growth of 10,000</h3>
+</a>
+<div id="div_growth_10k">
+</div>
+</div> <!-- end colp col3 div from performance.ftl -->
+<div class="vspacer1" id="spacer"> </div>
+<div class="hspacer3_sb">
+</div>
+<div class="r_tbar1">
+<h3>
+							Trailing Total Returns</h3>
+<h2> BAGIX</h2>
+</div>
+<ul class="in_tabs">
+<li><a class="tabon" onclick="onTrailingReturnsClick('d', '#tab-1day-content','','en-US');" tabname="#tabday">
+							Daily</a></li>
+<li><a onclick="onTrailingReturnsClick('m', '#tab-month-end-content','','en-US');" tabname="#tabmonth">
+							Monthly</a></li>
+<li><a onclick="onTrailingReturnsClick('q', '#tab-quar-end-content','','en-US');" tabname="#tabquarter">
+							Quarterly</a></li>
+</ul>
+<div class="tab_content tab_override" id="tabday" style="display: block;">
+<div id="tab-legends-d"></div>
+<!--div style="width: 700px;">
+							<div style="display: block; width: 958px; height:200px;" id="floatingbarchart_d"></div>
+						</div-->
+<div id="tab-1day-content"></div>
+</div>
+<div class="tab_content tab_override" id="tabmonth" style="display: none;">
+<div id="tab-legends-m"></div>
+<!--div style="width: 700px">
+							<div style="display: block; width: 958px; height:200px;" id="floatingbarchart_m"></div>
+						</div-->
+<div id="tab-month-end-content"></div>
+</div>
+<div class="tab_content tab_override" id="tabquarter" style="display: none;">
+<div id="tab-legends-q"></div>
+<!--div style="width: 700px">
+							<div style="display: block; width: 958px; height:200px;" id="floatingbarchart_q"></div>
+						</div-->
+<div id="tab-quar-end-content"></div>
+</div>
+<div class="hspacer3_sb">
+</div>
+<div class="r_tbar1">
+<h3>Quarterly &amp; Monthly Total Returns</h3>
+<h2> BAGIX</h2>
+</div>
+<ul class="in_tabs" style="margin-bottom: 10px;">
+<li><a class="tabon" onclick="onHistoricalReturnsClick('q', '#div_quarterly_returns','en-US');" tabname="#quarterly_rtns">
+							Quarterly</a></li>
+<li><a onclick="onHistoricalReturnsClick('m', '#div_monthly_returns','en-US');" tabname="#monthly_rtns">
+							Monthly</a></li>
+</ul>
+<div class="tab_content tab_override" id="quarterly_rtns" style="display:block;">
+<div id="div_quarterly_returns">
+</div>
+</div>
+<div class="tab_content tab_override" id="monthly_rtns" style="display:none;">
+<div id="div_monthly_returns">
+</div>
+</div>
+<div class="r_note">
+										S&amp;P 500 index data: S&amp;P 500 Copyright © 2017<br/>Currency is displayed in USD.<br/>
+<em>Italics</em> indicate Extended Performance. <a href="//www.morningstar.com/InvGlossary/extended-performance-rating.aspx">Extended performance</a> is an estimate based on the performance of the fund's oldest share class, adjusted for fees.
+        			</div>
+</div>
