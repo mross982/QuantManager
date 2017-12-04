@@ -1,46 +1,14 @@
 ,ticker,fundCategoryName,securityName,starRating,benchmarkIndex
-0,BAGIX,Intermediate-Term Bond,Baird Aggregate Bond Inst,4,BBgBarc US Agg Bond TR USD
-1,TAHFX,High Yield Bond,Transamerica High Yield Bond R4,3,BBgBarc US Agg Bond TR USD
+0,TAHFX,High Yield Bond,Transamerica High Yield Bond R4,3,BBgBarc US Agg Bond TR USD
+1,BAGIX,Intermediate-Term Bond,Baird Aggregate Bond Inst,4,BBgBarc US Agg Bond TR USD
 2,JDMNX,Mid-Cap Growth,Janus Henderson Enterprise N,5,S&P 500 TR USD
-3,PLGIX,Large Growth,Principal LargeCap Growth I Instl,4,S&P 500 TR USD
-4,DODGX,Large Value,Dodge \u0026 Cox Stock,4,S&P 500 TR USD
-5,RERGX,Foreign Large Growth,American Funds Europacific Growth R6,4,MSCI ACWI Ex USA NR USD
-6,DFISX,Foreign Small/Mid Blend,DFA International Small Company I,4,MSCI ACWI Ex USA NR USD
-7,DFFVX,Small Value,DFA US Targeted Value I,3,S&P 500 TR USD
-8,VIIIX,Large Blend,Vanguard Institutional Index Instl Pl,4,S&P 500 TR USD
-9,SEECX,Large Blend,Steward Large Cap Enhanced Index Inst,4,S&P 500 TR USD
-10,GRZZX,Bear Market,Grizzly Short,null,S&P 500 TR USD
-11,RFBSX,Short-Term Bond,Russell Inv Short Duration Bond S,3,BBgBarc US Agg Bond TR USD
-12,MINDX,India Equity,Matthews India Investor,5,MSCI ACWI Ex USA NR USD
-13,SBFAX,Financial,1919 Financial Services A,5,MSCI ACWI NR USD
-14,WHIYX,High Yield Bond,Ivy High Income Y,4,BBgBarc US Agg Bond TR USD
-15,AUGAX,Intermediate-Term Bond,Columbia US Government Mortgage A,4,BBgBarc US Agg Bond TR USD
-16,TPINX,World Bond,Templeton Global Bond A,4,BBgBarc US Agg Bond TR USD
-17,PSSAX,Bear Market,PIMCO StocksPLUS® Short A,null,S&P 500 TR USD
-18,MDDVX,Large Value,BlackRock Equity Dividend Inv A,4,S&P 500 TR USD
-19,FHAIX,High Yield Bond,Franklin High Income A,2,BBgBarc US Agg Bond TR USD
-20,WSTYX,Technology,Ivy Science And Technology Y,4,MSCI ACWI NR USD
-21,MCHFX,China Region,Matthews China Investor,4,MSCI ACWI Ex USA NR USD
-22,PTOAX,Large Blend,PIMCO StocksPLUS® Absolute Return A,4,S&P 500 TR USD
-23,SWPPX,Large Blend,Schwab® S\u0026P 500 Index,4,S&P 500 TR USD
-24,MPACX,Diversified Pacific/Asia,Matthews Asia Growth Investor,4,MSCI ACWI Ex USA NR USD
-25,PTTAX,Intermediate-Term Bond,PIMCO Total Return A,4,BBgBarc US Agg Bond TR USD
-26,VWINX,Allocation--30% to 50% Equity,Vanguard Wellesley® Income Inv,5,Morningstar Mod Tgt Risk TR USD
-27,PFUAX,World Bond,PIMCO Foreign Bond (Unhedged) A,3,BBgBarc US Agg Bond TR USD
-28,NEFLX,Short Government,Loomis Sayles Ltd Term Govt and Agency A,4,BBgBarc US Agg Bond TR USD
-29,SWLBX,,,,
-30,IPFIX,Short Government,Victory INCORE Fund for Income A,5,BBgBarc US Agg Bond TR USD
-31,MFBFX,Corporate Bond,MFS® Corporate Bond A,4,BBgBarc US Agg Bond TR USD
-32,RYDVX,Mid-Cap Blend,Royce Dividend Value Svc,3,S&P 500 TR USD
-33,MGIAX,Foreign Large Blend,MFS® International Value A,5,MSCI ACWI Ex USA NR USD
-34,VIPSX,Inflation-Protected Bond,Vanguard Inflation-Protected Secs Inv,4,BBgBarc US Agg Bond TR USD
-35,SASMX,Small Growth,ClearBridge Small Cap Growth A,3,S&P 500 TR USD
-36,PIPAX,Foreign Large Blend,PIMCO StocksPLUS® Intl (USD-Hedged) A,5,MSCI ACWI Ex USA NR USD
-37,MAPTX,Pacific/Asia ex-Japan Stk,Matthews Pacific Tiger Investor,4,MSCI ACWI Ex USA NR USD
-38,NEFRX,Intermediate-Term Bond,Loomis Sayles Core Plus Bond A,4,BBgBarc US Agg Bond TR USD
-39,PCKAX,Small Blend,PIMCO StocksPLUS® Small A,4,S&P 500 TR USD
-40,JGMAX,Small Growth,Janus Henderson Triton A,4,S&P 500 TR USD
-41,VIGRX,Large Growth,Vanguard Growth Index Investor,4,S&P 500 TR USD
-42,SFAAX,Allocation--50% to 70% Equity,Wells Fargo Index Asset Allocation A,5,Morningstar Mod Tgt Risk TR USD
-43,EVGOX,Short Government,Eaton Vance Government Obligations A,5,BBgBarc US Agg Bond TR USD
-44,JHUAX,Large Growth,JHancock US Growth A,2,S&P 500 TR USD
+3,SBFAX,Financial,1919 Financial Services A,5,MSCI ACWI NR USD
+4,MINDX,India Equity,Matthews India Investor,5,MSCI ACWI Ex USA NR USD
+5,GRZZX,Bear Market,Grizzly Short,null,S&P 500 TR USD
+6,WHIYX,High Yield Bond,Ivy High Income Y,4,BBgBarc US Agg Bond TR USD
+7,RFBSX,Short-Term Bond,Russell Inv Short Duration Bond S,3,BBgBarc US Agg Bond TR USD
+8,PBHAX,High Yield Bond,Prudential High-Yield A,5,BBgBarc US Agg Bond TR USD
+9,AUGAX,Intermediate-Term Bond,Columbia US Government Mortgage A,4,BBgBarc US Agg Bond TR USD
+10,JGMAX,Small Growth,Janus Henderson Triton A,4,S&P 500 TR USD
+11,VIGRX,Large Growth,Vanguard Growth Index Investor,4,S&P 500 TR USD
+12,VWINX,Allocation--30% to 50% Equity,Vanguard Wellesley® Income Inv,5,Morningstar Mod Tgt Risk TR USD

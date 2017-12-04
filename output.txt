@@ -326,8 +326,8 @@
 		</a>
 <ul class="ms-menu-second" id="Primary Prospectus Benchmark">
 <li>
-<a class="bmk-menu-item" cur="" exch="" fid="FSUSA07VQA" href="javascript:void(0)" menuitemstyle="trigger" name="Bloomberg Barclays US Aggregate Bond TR USD" pid="0P00001G5L" sid="XIUSA000MC" symbol="XIUSA000MC">
-					Bloomberg Barclays US Aggregate Bond TR USD
+<a class="bmk-menu-item" cur="" exch="" fid="FSUSA07VBY" href="javascript:void(0)" menuitemstyle="trigger" name="Bloomberg Barclays US High Yield 2% Issuer Cap TR USD" pid="0P00002ACT" sid="XIUSA04GU0" symbol="XIUSA04GU0">
+					Bloomberg Barclays US High Yield 2% Issuer Cap TR USD
 				</a>
 </li>
 </ul>
@@ -350,8 +350,8 @@
 		</a>
 <ul class="ms-menu-second" id="Analyst Assigned Benchmark">
 <li>
-<a class="bmk-menu-item" cur="" exch="" fid="FSUSA07VQA" href="javascript:void(0)" menuitemstyle="trigger" name="Bloomberg Barclays US Aggregate Bond TR USD" pid="0P00001G5L" sid="XIUSA000MC" symbol="XIUSA000MC">
-					Bloomberg Barclays US Aggregate Bond TR USD
+<a class="bmk-menu-item" cur="" exch="" fid="FSUSA07W1J" href="javascript:void(0)" menuitemstyle="trigger" name="BofAML US High Yield Master II TR USD" pid="0P00001L0O" sid="XIUSA04EPI" symbol="XIUSA04EPI">
+					BofAML US High Yield Master II TR USD
 				</a>
 </li>
 </ul>
@@ -517,7 +517,7 @@
 	    width: 100%;
 	}
 </style>
-<a class="r_tbar1" href="//quotes.morningstar.com/chart/fund/chart.action?&amp;t=XNAS:BAGIX&amp;region=usa&amp;culture=en-US&amp;ops=clear&amp;cur="><span class="link_arrw"></span><span>Customize Interactive Chart</span>
+<a class="r_tbar1" href="//quotes.morningstar.com/chart/fund/chart.action?&amp;t=XNAS:TAHFX&amp;region=usa&amp;culture=en-US&amp;ops=clear&amp;cur="><span class="link_arrw"></span><span>Customize Interactive Chart</span>
 <h3>Growth of 10,000</h3>
 </a>
 <div id="div_growth_10k">
@@ -529,7 +529,7 @@
 <div class="r_tbar1">
 <h3>
 							Trailing Total Returns</h3>
-<h2> BAGIX</h2>
+<h2> TAHFX</h2>
 </div>
 <ul class="in_tabs">
 <li><a class="tabon" onclick="onTrailingReturnsClick('d', '#tab-1day-content','','en-US');" tabname="#tabday">
@@ -564,7 +564,7 @@
 </div>
 <div class="r_tbar1">
 <h3>Quarterly &amp; Monthly Total Returns</h3>
-<h2> BAGIX</h2>
+<h2> TAHFX</h2>
 </div>
 <ul class="in_tabs" style="margin-bottom: 10px;">
 <li><a class="tabon" onclick="onHistoricalReturnsClick('q', '#div_quarterly_returns','en-US');" tabname="#quarterly_rtns">

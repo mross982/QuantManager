@@ -18,10 +18,12 @@ if c_dataobj.source == da.DataSource.YAHOO:
 	# api.API.getYahooData(c_dataobj, da.DataAccess.get_info_from_account(c_dataobj)) # Get financial data
 
 	# Optimize Portfolios
-	# optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
+	optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
 
 	# Create Images
-	visuals.portfolio_visualizer.plot_returns(c_dataobj)
+	# visuals.line_chart.plot_returns(c_dataobj)
+	# visuals.scatter_plot.plot_sharperatio(c_dataobj)
+	# visuals.scatter_plot.efficient_frontier(c_dataobj)
 
 	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # get SP 500 index info
 	# sp500_index_json = da.DataAccess.get_json(c_dataobj, c_dataobj.indexdir) # Get SP 500 financial data.

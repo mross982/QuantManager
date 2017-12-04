@@ -281,8 +281,34 @@ class DataAccess(object):
     def csv_to_dataframe(self, csv_file):
         '''
         This will create a way to make edits to a pickled data frame by first converting it to csv, make any 
-        corrective acctions, then save the csv over the original pickled data frame.
+        corrective actions, then save the csv over the original pickled data frame.
         '''
         pass
 
+    def plotting_data(self):
+        '''
+        Used in the visuals file to retrieve data and info necessary to create charts and graphs
+        * returns a list containing a lists for each account
+        * each account contains adjusted close data frame, account name, and filepath to the image file.
+        '''
+
+        data_path = self.datafolder
+        item = DataItem.ADJUSTED_CLOSE
+        accounts = [] # a list container for all accounts
+
+        ls_acctdata = DataAccess.get_info_from_account(self)
+        for acct in ls_acctdata: 
+            account_info = [] # a list container for the details per account: dataframe, acct name, filepath
+            filename = acct[0] + '-' + DataItem.ADJUSTED_CLOSE + '.pkl'
+            filename = filename.replace(' ', '')
+            filepath = os.path.join(self.datafolder, filename)
+            
+            ofilepath = self.imagefolder
+            acct = acct[0]          
+
+            df_data = DataAccess.get_dataframe(filepath, clean=True)
+            account_info.extend((df_data, acct, ofilepath))
+            accounts.append(account_info) 
+
+        return accounts
     
