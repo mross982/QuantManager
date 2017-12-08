@@ -75,26 +75,28 @@ class API(object):
 
 
 	def getYahooData(self, ls_acctdata, items=[da.DataItem.ADJUSTED_CLOSE], source='acct'):
-			'''
-			API that gets fund information then saves a dataframe pickle file into QSdata/yahoo directory.
-			'''
-			if source == 'acct':
-				data_path = self.datafolder
-			else:
-				data_path = self.indexdatadir
+		'''
+		API that gets fund information then saves a dataframe pickle file into QSdata/yahoo directory.
+		'''
+		print('downloading data')
+		if source == 'acct':
+			data_path = self.datafolder
+		else:
+			data_path = self.indexdatadir
 
 
-			symbols = []
-			for acct in ls_acctdata:
-				ls_symbols = acct[2:]
-				symbols = ls_symbols
-				account = str(acct[0])
-				d_path = data_path
-			
-				for item in items:
-					filename = account + '-' + item + '.pkl'
-					filename = filename.replace(' ', '')
-					path = os.path.join(d_path, filename)
-					df = web.DataReader(symbols, 'yahoo', start=DateRange.r5YEAR)[item]			
-					df.to_pickle(path)
-					path = ''
+		symbols = []
+		for acct in ls_acctdata:
+			ls_symbols = acct[2:]
+			symbols = ls_symbols
+			account = str(acct[0])
+			d_path = data_path
+		
+			for item in items:
+				filename = account + '-' + item + '.pkl'
+				filename = filename.replace(' ', '')
+				path = os.path.join(d_path, filename)
+				df = web.DataReader(symbols, 'yahoo', start=DateRange.r5YEAR)[item]
+				df = df.sort_index()	
+				df.to_pickle(path)
+				path = ''

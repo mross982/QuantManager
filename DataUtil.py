@@ -7,6 +7,207 @@ from copy import deepcopy
 import random as rand
 import DataAccess as da
 import numpy as np
+import optimize
+import sys
+
+
+class normalize(object):
+    
+    ANNUALIZE = 252
+
+
+def returnize0(nds):
+    """
+    @summary Computes stepwise (usually daily) returns relative to 0, where
+    0 implies no change in value.
+    @return the array is revised in place
+    """
+    if type(nds) == type(pd.DataFrame()):
+        nds = (nds / nds.shift(1)) - 1.0
+        nds = nds.fillna(0.0)
+        return nds
+
+    s= np.shape(nds)
+    if len(s)==1:
+        nds=np.expand_dims(nds,1)
+    nds[1:, :] = (nds[1:, :] / nds[0:-1]) - 1
+    nds[0, :] = np.zeros(nds.shape[1])
+    return nds
+
+
+def returnize1(nds):
+    """
+    @summary Computes stepwise (usually daily) returns relative to 1, where
+    1 implies no change in value.
+    @param nds: the array to fill backward
+    @return the array is revised in place
+    """
+    if type(nds) == type(pd.DataFrame()):
+        nds = nds / nds.shift(1)
+        nds = nds.fillna(1.0)
+        return nds
+
+    s= np.shape(nds)
+    if len(s)==1:
+        nds=np.expand_dims(nds,1)
+    nds[1:, :] = (nds[1:, :]/nds[0:-1])
+    nds[0, :] = np.ones(nds.shape[1])
+    return nds
+
+
+def get_risk_ret( d_returns, risk_free=0.00 ):
+    """
+    @summary Used in visuals.sub_efficientfrontier to plot the avg_return & std deviation of every fund
+    @param rets: 1d numpy array or fund list of daily returns (centered on 0)
+    @param risk_free: risk free returns, default is 0%
+    @return Annualized rate of return, not converted to percent
+    """
+
+    rets = returnize0(d_returns)
+
+    f_dev = np.std( rets, axis=0 )
+    f_mean = np.mean( rets, axis=0 )
+
+    if rets.shape[0] >= 252:
+        np_dev = f_dev * np.sqrt(normalize.ANNUALIZE)
+        np_ret = f_mean * normalize.ANNUALIZE
+    else:
+        np_dev = f_dev * sqrt(len(rets))
+        np_ret = f_mean * len(rets)
+
+    df = pd.concat([np_ret, np_dev], axis=1) # convert two arrays to single dataframe
+    df.columns = ['exp_return', 'std_dev']
+
+    return df
+
+
+def get_frontier(df_data):
+    '''
+    *** Under Construction: returns a dataframe of four portfolios (max return, targ return, tangency, min var)
+    and two columns with expected return and standard deviation values to be used to create an efficient frontier.
+    '''
+    df = pd.DataFrame()
+
+    if len(df_data) >= 252:
+        annualize = normalize.ANNUALIZE
+    else:
+        annualize = len(df_data)
+
+    returns = returnize0(df_data) # get daily returns from dataframe
+    avg_rets = returns.mean() # get mean of all daily returns
+
+    # Add Max values
+    target_ret = avg_rets.nlargest(1) # largest possible target return
+    # if target_ret[0] >= 1:
+    #     print('removing ' + str(target_ret.index[0] + ' due to unrealistic mean return value ' + str(target_ret[0])))
+    #     avg_rets = avg_rets.drop([target_ret.index[0]])
+    #     target_ret = avg_rets.nlargest(1)
+    # print(target_ret)
+
+    ret = target_ret[0]
+    exp_return = ret * annualize
+    df_target = returns[target_ret.index[0]]
+    std_dev = df_target.std()
+    std_dev = std_dev * sqrt(annualize)
+    port1 = 'Max_return'
+    df = df.append({'Portfolio': port1, 'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
+
+    # Add Target Values
+    target_ret = avg_rets.quantile(0.7)  # get the target return
+    weights, exp_return, std_dev = optimize.portfolio_optimizer.target_opt( returns, target_ret ) # optimize
+    exp_return = exp_return * annualize
+    std_dev = std_dev * sqrt(annualize)
+    port2 = 'Target_return'
+    df = df.append({'Portfolio': port2, 'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
+
+    # Add tangency values
+    weights, exp_return, std_dev = optimize.portfolio_optimizer.tangency_opt(returns)
+    exp_return = exp_return * annualize
+    std_dev = std_dev * sqrt(annualize)
+    port3 = 'Tangency'
+    df = df.append({'Portfolio': port3, 'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
+
+    # Add min variance values
+    weights, exp_return, std_dev = optimize.portfolio_optimizer.min_variance(returns)
+    exp_return = exp_return * annualize
+    std_dev = std_dev * sqrt(annualize)
+    port4 = 'Min_variance'
+    df = df.append({'Portfolio': port4, 'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
+
+    return df
+
+
+def relative_measures():
+    '''
+    Under constuction: used after optimization and should be included in the same json file to be shown in the same table.
+    @summary: calculates alpha, beta, r squared, momentum and volitility of a fund and it's corresponding benchmark.
+    
+    '''
+    # Grab time series data for 5-year history for the stock (here AAPL)
+    # and for S&P-500 Index
+    sdate = date(2008,12,31)
+    edate = date(2013,12,31)
+    df = DataReader('WFM','yahoo',sdate,edate)
+    dfb = DataReader('^GSPC','yahoo',sdate,edate)
+
+    # create a time-series of monthly data points
+    rts = df.resample('M',how='last')
+    rbts = dfb.resample('M',how='last')
+    dfsm = pd.DataFrame({'s_adjclose' : rts['Adj Close'],
+                            'b_adjclose' : rbts['Adj Close']},
+                            index=rts.index)
+
+    # compute returns
+    dfsm[['s_returns','b_returns']] = dfsm[['s_adjclose','b_adjclose']]/\
+        dfsm[['s_adjclose','b_adjclose']].shift(1) -1
+    dfsm = dfsm.dropna()
+    covmat = np.cov(dfsm["s_returns"],dfsm["b_returns"])
+
+    # calculate measures now
+    beta = covmat[0,1]/covmat[1,1]
+    alpha= np.mean(dfsm["s_returns"])-beta*np.mean(dfsm["b_returns"])
+
+    # r_squared     = 1. - SS_res/SS_tot
+    ypred = alpha + beta * dfsm["b_returns"]
+    SS_res = np.sum(np.power(ypred-dfsm["s_returns"],2))
+    SS_tot = covmat[0,0]*(len(dfsm)-1) # SS_tot is sample_variance*(n-1)
+    r_squared = 1. - SS_res/SS_tot
+    # 5- year volatiity and 1-year momentum
+    volatility = np.sqrt(covmat[0,0])
+    momentum = np.prod(1+dfsm["s_returns"].tail(12).values) -1
+
+    # annualize the numbers
+    prd = 12. # used monthly returns; 12 periods to annualize
+    alpha = alpha*prd
+    volatility = volatility*np.sqrt(prd)
+
+    # print(beta,alpha, r_squared, volatility, momentum)
+
+
+def moving_averages(df_data):
+    '''
+    Under construction: calculates the rolling average of a given fund (i.e. must be a data panel)
+    then returns two panels; short rolling average and long rolling average.
+    '''
+    if isinstance(df_data, 'dataframe'):
+        for fund in df_data.columns:
+            # calculate the 20 day and 100 day moving averages
+            short_rolling = fund.rolling(window=20).mean()
+            long_rolling = fund.rolling(window=100).mean()
+            f_name = fund.column # need the column header
+            fig = plot.figure()
+            ax = fig.add_subplot(1,1,1)
+            ax.plot(fund.index, fund, label=fname)
+            ax.plot(short_rolling.index, short_rolling, label='20 days rolling')
+            ax.plot(long_rolling.index, long_rolling, label='100 days rolling')
+            ax.set_xlabel('Date')
+            ax.set_ylabel('Adjusted closing price ($)')
+            ax.legend()
+            plt.show
+
+
+
+# ******************** UNUSED EXTRA CODE **********************************************************************
 
 def daily(lfFunds):
     """
@@ -107,43 +308,7 @@ def fillbackward(nds):
                 nds[row, col] = nds[row+1, col]
 
 
-def returnize0(nds):
-    """
-    @summary Computes stepwise (usually daily) returns relative to 0, where
-    0 implies no change in value.
-    @return the array is revised in place
-    """
-    if type(nds) == type(pd.DataFrame()):
-        nds = (nds / nds.shift(1)) - 1.0
-        nds = nds.fillna(0.0)
-        return nds
 
-    s= np.shape(nds)
-    if len(s)==1:
-        nds=np.expand_dims(nds,1)
-    nds[1:, :] = (nds[1:, :] / nds[0:-1]) - 1
-    nds[0, :] = np.zeros(nds.shape[1])
-    return nds
-
-
-def returnize1(nds):
-    """
-    @summary Computes stepwise (usually daily) returns relative to 1, where
-    1 implies no change in value.
-    @param nds: the array to fill backward
-    @return the array is revised in place
-    """
-    if type(nds) == type(pd.DataFrame()):
-        nds = nds / nds.shift(1)
-        nds = nds.fillna(1.0)
-        return nds
-
-    s= np.shape(nds)
-    if len(s)==1:
-        nds=np.expand_dims(nds,1)
-    nds[1:, :] = (nds[1:, :]/nds[0:-1])
-    nds[0, :] = np.ones(nds.shape[1])
-    return nds
 
 
 def priceize1(nds):
@@ -213,25 +378,7 @@ def get_sortino_ratio( rets, risk_free=0.00 ):
     f_sortino = (f_mean*252 - risk_free) / (f_dev * np.sqrt(252))
     return f_sortino
 
-def get_sharpe_ratio( d_returns, risk_free=0.00 ):
-    """
-    @summary Returns the daily Sharpe ratio of the returns.
-    @param rets: 1d numpy array or fund list of daily returns (centered on 0)
-    @param risk_free: risk free returns, default is 0%
-    @return Annualized rate of return, not converted to percent
-    """
 
-    rets = returnize0(d_returns)
-
-    f_dev = np.std( rets, axis=0 )
-    f_mean = np.mean( rets, axis=0 )
-
-    np_dev = f_dev * np.sqrt(rets.shape[0])
-    np_ret = f_mean * rets.shape[0]
-
-    f_sharpe = np_ret / np_dev
-
-    return np_ret, np_dev
     
 
 def get_ror_annual( rets ):
@@ -293,83 +440,6 @@ def getReindexedRets( rets, l_period ):
         # Select new returns from end of cumulative array """
     
     return naCumData[-lNewRows:, ]
-
-        
-def getOptPort(rets, f_target, l_period=1, naLower=None, naUpper=None, lNagDebug=0):
-    """
-    @summary Returns the Markowitz optimum portfolio for a specific return.
-    @param rets: Daily returns of the various stocks (using returnize1)
-    @param f_target: Target return, i.e. 0.04 = 4% per period
-    @param l_period: Period to compress the returns to, e.g. 7 = weekly
-    @param naLower: List of floats which corresponds to lower portfolio% for each stock
-    @param naUpper: List of floats which corresponds to upper portfolio% for each stock 
-    @return tuple: (weights of portfolio, min possible return, max possible return)
-    """
-    
-    # Attempt to import library """
-    try:
-        pass
-        import nagint as nag
-    except ImportError:
-        print('Could not import NAG library')
-        print('make sure nagint.so is in your python path')
-        return ([], 0, 0)
-    
-    # Get number of stocks """
-    lStocks = rets.shape[1]
-    
-    # If period != 1 we need to restructure the data """
-    if( l_period != 1 ):
-        rets = getReindexedRets( rets, l_period)
-    
-    # Calculate means and covariance """
-    naAvgRets = np.average( rets, axis=0 )
-    naCov = np.cov( rets, rowvar=False )
-    
-    # Special case for None == f_target"""
-    # simply return average returns and cov """
-    if( f_target is None ):
-        return naAvgRets, np.std(rets, axis=0)
-    
-    # Calculate upper and lower limits of variables as well as constraints """
-    if( naUpper is None ): 
-        naUpper = np.ones( lStocks )  # max portfolio % is 1
-    
-    if( naLower is None ): 
-        naLower = np.zeros( lStocks ) # min is 0, set negative for shorting
-    # Two extra constraints for linear conditions"""
-    # result = desired return, and sum of weights = 1 """
-    naUpper = np.append( naUpper, [f_target, 1.0] )
-    naLower = np.append( naLower, [f_target, 1.0] )
-    
-    # Initial estimate of portfolio """
-    naInitial = np.array([1.0/lStocks]*lStocks)
-    
-    # Set up constraints matrix"""
-    # composed of expected returns in row one, unity row in row two """
-    naConstraints = np.vstack( (naAvgRets, np.ones(lStocks)) )
-
-    # Get portfolio weights, last entry in array is actually variance """
-    try:
-        naReturn = nag.optPort( naConstraints, naLower, naUpper, \
-                                      naCov, naInitial, lNagDebug )
-    except RuntimeError:
-        print('NAG Runtime error with target: %.02lf'%(f_target))
-        return ( naInitial, sqrt( naCov[0][0] ) )  
-    #return semi-junk to not mess up the rest of the plot
-
-    # Calculate stdev of entire portfolio to return"""
-    # what NAG returns is slightly different """
-    fPortDev = np.std( np.dot(rets, naReturn[0,0:-1]) )
-    
-    # Show difference between above stdev and sqrt NAG covariance"""
-    # possibly not taking correlation into account """
-    #print fPortDev / sqrt(naReturn[0, -1]) 
-
-    # Return weights and stdDev of portfolio."""
-    #  note again the last value of naReturn is NAG's reported variance """
-    return (naReturn[0, 0:-1], fPortDev)
-
 
 def getRetRange( rets, naLower, naUpper, naExpected = "False", s_type = "long"):
     """
@@ -438,224 +508,3 @@ def getRetRange( rets, naLower, naUpper, naExpected = "False", s_type = "long"):
     return (fMin, fMax)
 
 
-def _create_dict(df_rets, lnaPortfolios):
-
-    allocations = {}
-    for i, sym in enumerate(df_rets.columns):
-        allocations[sym] = lnaPortfolios[i]
-
-    return allocations
-
-
-def getFrontier( rets, lRes=100, fUpper=0.2, fLower=0.00):
-    """
-    @summary Generates an efficient frontier based on average returns.
-    @param rets: Array of returns to use
-    @param lRes: Resolution of the curve, default=100
-    @param fUpper: Upper bound on portfolio percentage
-    @param fLower: Lower bound on portfolio percentage
-    @return tuple containing (lf_ret, lfStd, lnaPortfolios)
-            lf_ret: List of returns provided by each point
-            lfStd: list of standard deviations provided by each point
-            lnaPortfolios: list of numpy arrays containing weights for each portfolio
-    """    
-    
-    # Limit/enforce percent participation """
-    naUpper = np.ones(rets.shape[1]) * fUpper
-    naLower = np.ones(rets.shape[1]) * fLower
-    
-    (fMin, fMax) = getRetRange( rets, naLower, naUpper )
-    
-    # Try to avoid intractible endpoints due to rounding errors """
-    fMin *= 1.0000001 
-    fMax *= 0.9999999
-
-    # Calculate target returns from min and max """
-    lf_ret = []
-    for i in range(lRes):
-        lf_ret.append( (fMax - fMin) * i / (lRes - 1) + fMin )
-    
-    
-    lfStd = []
-    lnaPortfolios = []
-    
-    # Call the function lRes times for the given range, use 1 for period """
-    for f_target in lf_ret: 
-        (naWeights, fStd) = getOptPort( rets, f_target, 1, \
-                               naUpper=naUpper, naLower=naLower )
-        lfStd.append(fStd)
-        lnaPortfolios.append( naWeights )
-    
-    # plot frontier """
-    plt.plot( lfStd, lf_ret )
-    plt.plot( np.std( rets, axis=0 ), np.average( rets, axis=0 ), \
-                                                  'g+', markersize=10 ) 
-    plt.show()
-    
-    return (lf_ret, lfStd, lnaPortfolios)
-
-        
-def stockFilter( dmPrice, dmVolume, fNonNan=0.95, fPriceVolume=100*1000 ):
-    """
-    @summary Returns the list of stocks filtered based on various criteria.
-    @param dmPrice: DataMatrix of stock prices
-    @param dmVolume: DataMatrix of stock volumes
-    @param fNonNan: Optional non-nan percent, default is .95
-    @param fPriceVolume: Optional price*volume, default is 100,000
-    @return list of stocks which meet the criteria
-    """
-    
-    lsRetStocks = list( dmPrice.columns )
-
-    for sStock in dmPrice.columns:
-        fValid = 0.0
-        print(sStock)
-        # loop through all dates """
-        for dtDate in dmPrice.index:
-            # Count null (nan/inf/etc) values """
-            fPrice = dmPrice[sStock][dtDate]
-            if( not isnull(fPrice) ):
-                fValid = fValid + 1
-                # else test price volume """
-                fVol = dmVolume[sStock][dtDate]
-                if( not isnull(fVol) and fVol * fPrice < fPriceVolume ):
-                    lsRetStocks.remove( sStock )
-                    break
-
-        # Remove if too many nan values """
-        if( fValid / len(dmPrice.index) < fNonNan and sStock in lsRetStocks ):
-            lsRetStocks.remove( sStock )
-
-    return lsRetStocks
-
-
-def getRandPort( lNum, dtStart=None, dtEnd=None, lsStocks=None,\
- dmPrice=None, dmVolume=None, bFilter=True, fNonNan=0.95,\
- fPriceVolume=100*1000, lSeed=None ):
-    """
-    @summary Returns a random portfolio based on certain criteria.
-    @param lNum: Number of stocks to be included
-    @param dtStart: Start date for portfolio
-    @param dtEnd: End date for portfolio
-    @param lsStocks: Optional list of ticker symbols, if not provided all symbols will be used
-    @param bFilter: If False, stocks are not filtered by price or volume data, simply return random Portfolio.
-    @param dmPrice: Optional price data, if not provided, data access will be queried
-    @param dmVolume: Optional volume data, if not provided, data access will be queried
-    @param fNonNan: Optional non-nan percent for filter, default is .95
-    @param fPriceVolume: Optional price*volume for filter, default is 100,000
-    @warning: Does not work for all sets of optional inputs, e.g. if you don't include dtStart, dtEnd, you need 
-              to include dmPrice/dmVolume
-    @return list of stocks which meet the criteria
-    """
-    
-    if( lsStocks is None ):
-        if( dmPrice is None and dmVolume is None ):
-            norObj = da.DataAccess('Norgate') 
-            lsStocks = norObj.get_all_symbols()
-        elif( not dmPrice is None ):
-            lsStocks = list(dmPrice.columns)
-        else:
-            lsStocks = list(dmVolume.columns)
-    
-    if( dmPrice is None and dmVolume is None and bFilter == True ):
-        norObj = da.DataAccess('Norgate')  
-        ldtTimestamps = du.getNYSEdays( dtStart, dtEnd, dt.timedelta(hours=16) )
-
-    # if dmPrice and dmVol are provided then we don't query it every time """
-    bPullPrice = False
-    bPullVol = False
-    if( dmPrice is None ):
-        bPullPrice = True
-    if( dmVolume is None ):
-        bPullVol = True
-            
-    # Default seed (none) uses system clock """    
-    rand.seed(lSeed)     
-    lsRetStocks = []
-
-    # Loop until we have enough randomly selected stocks """
-    llRemainingIndexes = range(0,len(lsStocks))
-    lsValid = None
-    while( len(lsRetStocks) != lNum ):
-
-        lsCheckStocks = []
-        for i in range( lNum - len(lsRetStocks) ):
-            lRemaining = len(llRemainingIndexes)
-            if( lRemaining == 0 ):
-                print('Error in getRandPort: ran out of stocks')
-                return lsRetStocks
-            
-            # Pick a stock and remove it from the list of remaining stocks """
-            lPicked =  rand.randint(0, lRemaining-1)
-            lsCheckStocks.append( lsStocks[ llRemainingIndexes.pop(lPicked) ] )
-
-        # If bFilter is false"""
-        # simply return our first list of stocks, don't check prive/vol """
-        if( not bFilter ):
-            return sorted(lsCheckStocks)
-            
-
-        # Get data if needed """
-        if( bPullPrice ):
-            dmPrice = norObj.get_data( ldtTimestamps, lsCheckStocks, 'close' )
-
-        # Get data if needed """
-        if( bPullVol ):
-            dmVolume = norObj.get_data(ldtTimestamps, lsCheckStocks, 'volume' )
-
-        # Only query this once if data is provided"""
-        # else query every time with new data """
-        if( lsValid is None or bPullVol or bPullPrice ):
-            lsValid = stockFilter(dmPrice, dmVolume, fNonNan, fPriceVolume)
-        
-        for sAdd in lsValid:
-            if sAdd in lsCheckStocks:
-                lsRetStocks.append( sAdd )
-
-    return sorted(lsRetStocks)
-
-def relative_measures():
-    '''
-    Under constuction: used after optimization and should be included in the same json file to be shown in the same table.
-    @summary: calculates alpha, beta, r squared, momentum and volitility of a fund and it's corresponding benchmark.
-    
-    '''
-    # Grab time series data for 5-year history for the stock (here AAPL)
-    # and for S&P-500 Index
-    sdate = date(2008,12,31)
-    edate = date(2013,12,31)
-    df = DataReader('WFM','yahoo',sdate,edate)
-    dfb = DataReader('^GSPC','yahoo',sdate,edate)
-
-    # create a time-series of monthly data points
-    rts = df.resample('M',how='last')
-    rbts = dfb.resample('M',how='last')
-    dfsm = pd.DataFrame({'s_adjclose' : rts['Adj Close'],
-                            'b_adjclose' : rbts['Adj Close']},
-                            index=rts.index)
-
-    # compute returns
-    dfsm[['s_returns','b_returns']] = dfsm[['s_adjclose','b_adjclose']]/\
-        dfsm[['s_adjclose','b_adjclose']].shift(1) -1
-    dfsm = dfsm.dropna()
-    covmat = np.cov(dfsm["s_returns"],dfsm["b_returns"])
-
-    # calculate measures now
-    beta = covmat[0,1]/covmat[1,1]
-    alpha= np.mean(dfsm["s_returns"])-beta*np.mean(dfsm["b_returns"])
-
-    # r_squared     = 1. - SS_res/SS_tot
-    ypred = alpha + beta * dfsm["b_returns"]
-    SS_res = np.sum(np.power(ypred-dfsm["s_returns"],2))
-    SS_tot = covmat[0,0]*(len(dfsm)-1) # SS_tot is sample_variance*(n-1)
-    r_squared = 1. - SS_res/SS_tot
-    # 5- year volatiity and 1-year momentum
-    volatility = np.sqrt(covmat[0,0])
-    momentum = np.prod(1+dfsm["s_returns"].tail(12).values) -1
-
-    # annualize the numbers
-    prd = 12. # used monthly returns; 12 periods to annualize
-    alpha = alpha*prd
-    volatility = volatility*np.sqrt(prd)
-
-    # print(beta,alpha, r_squared, volatility, momentum)

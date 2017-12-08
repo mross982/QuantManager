@@ -11,11 +11,13 @@ import itertools
 import os
 import json
 from pprint import pprint
+import collections
+import math
 
 
 class scope(object):
 
-	TIMESERIES = {'6_months': 126, '1_year': 252, 'all_years': 'nan'}
+	TIMESERIES = [('6_months', 126), ('1_year', 252), ('all_years', 'nan')]
 
 class normalize(object):
 
@@ -56,8 +58,14 @@ class portfolio_optimizer(object):
 	def main_opt(df_data, acct, filepath):
 		df = pd.DataFrame()
 		all_days = len(df_data)
+		if all_days >= 252:
+			annualize = normalize.ANNUALIZE
+		else:
+			annualize = all_days
 
-		for k, v in scope.TIMESERIES.items():
+		timeseries = collections.OrderedDict(scope.TIMESERIES)
+
+		for k, v in timeseries.items():
 			data = df_data.copy()
 			if k != 'all_years': # 'all years' data is passed as is
 				seg_data = data.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
@@ -71,21 +79,24 @@ class portfolio_optimizer(object):
 			target_ret = round(avg_rets.quantile(0.7), 4)  # get the target return
 			weights, exp_return, std_dev = portfolio_optimizer.target_opt( returns, target_ret ) # optimize
 
-			# convert returns & risk into an annual timeframe
-			port_exp_return = exp_return * normalize.ANNUALIZE
-			port_std_dev = std_dev * normalize.ANNUALIZE
-			port_target_ret = target_ret * normalize.ANNUALIZE
+			# convert returns & risk into an annual timeframe if greater than 1 year of data.
+			port_exp_return = exp_return * annualize
+			port_std_dev = std_dev * math.sqrt(annualize)
+			port_target_ret = target_ret * annualize
+				
 			port_sharpe = exp_return / std_dev 
 
 			ls_bool = avg_rets.index.isin(weights.index) # returns a list of boolean values where it matches symbols in weights.index
-			indv_ret = avg_rets[ls_bool] * normalize.ANNUALIZE # filters the average return series by the boolean values,
+			 # filters the average return series by the boolean values,
 			# annualizes the values, then returns a series of just the optimized symbols.		
 			
-			indv_std = returns.std() # retruns a series of the std dev of each fund.
+			indv_std = returns.std() # returns a series of the std dev of each fund.
 			# ls_bool = indv_std.index.isin(Data['Symbols']) # the bool is always in the same order
-			indv_std = indv_std[ls_bool] * normalize.ANNUALIZE # filters the std dev seriese by the bool values, annualizes
+
+			indv_ret = avg_rets[ls_bool] * annualize
+			indv_std = indv_std[ls_bool] * math.sqrt(annualize) # filters the std dev seriese by the bool values, annualizes
 			# these values, then returns a series of just the optimized symbols
-		
+
 			for x in range(len(weights)):
 				df = df.append({'Symbols':weights.index[x], 'Weights':weights.values[x],
 					'Exp_Return': indv_ret.values[x], 'Std_Deviation': indv_std.values[x], 
@@ -108,33 +119,28 @@ class portfolio_optimizer(object):
 		#********* Markowitz Portfolio with target return ************************
 		cov_mat = df_daily_returns.cov()
 		avg_rets = df_daily_returns.mean()
-		
+
 		if target_ret == None:
-			target_ret = avg_rets.nlargest(1) # largest possible target return
-			target_ret = target_ret[0]
+			target_ret = avg_rets.quantile(0.7)
 
 		weights = pfopt.markowitz_portfolio(cov_mat, avg_rets, target_ret) # returns a df series of weights
 		weights = pfopt.truncate_weights(weights)   # Truncate some tiny weights
 		weights = weights[weights!=0] # remove any weights of 0
 		weights = weights.round(decimals=4) # clean up weight values by rounding
 
-		ret = (weights * avg_rets).sum() # float of the portfolio average daily return 
-		ret = ret.round(decimals=4)
+		ret = (weights * avg_rets).sum() # float of the portfolio average daily return
 
 		# p = np.asmatrix(np.mean(df_daily_returns, axis=1)) # this is where the error is occurring
 		# w = np.asmatrix(weights)
 		# C = np.asmatrix(np.cov(df_daily_returns))
 		# sigma = np.sqrt(w * C * w.T)  #standard deviation
-		# std = sigma
+		#***********************************************************************************************
+		# C is covariance matrix of the returns NOTE: if it used the simple std dev std(array(ret_vec).T*w)
+		# the result would be slightly different as it would not take covariances into account.!
 
 		std = (weights * df_daily_returns).sum(1).std() # float of the portfolio standard deviation
-		std = std.round(decimals=4)
 
 		return weights, ret, std
-
-		##### Under construction: possibly more accurate way to calculate the standard deviation *******
-		# Need to determine the returns input, is not the same as df_daily_returns
-		# Found in Visuals.Random_portfolio
 
 
 	def tangency_opt(df_daily_returns):
@@ -148,7 +154,7 @@ class portfolio_optimizer(object):
 		weights = weights.round(decimals=4)
 		ret = (weights * avg_rets).sum()
 		ret = ret.round(decimals=4)
-		std = (weights * returns).sum(1).std()
+		std = (weights * df_daily_returns).sum(1).std()
 		std = std.round(decimals=4)
 
 		return weights, ret, std
@@ -166,7 +172,7 @@ class portfolio_optimizer(object):
 		weights = weights.round(decimals=4)
 		ret = (weights * avg_rets).sum()
 		ret = ret.round(decimals=4)
-		std = (weights * returns).sum(1).std()
+		std = (weights * df_daily_returns).sum(1).std()
 		std = std.round(decimals=4)
 
 		return weights, ret, std

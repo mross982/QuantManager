@@ -18,6 +18,7 @@ import copy
 import sys
 from itertools import islice
 import json
+import DataUtil as du
 
 
 class DataItem(object):
@@ -110,7 +111,7 @@ class DataAccess(object):
             self.source = DataSource.YAHOO
             self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
             self.imagefolder = os.path.join(self.datafolder + "\Images\\")
-            self.accountfiles = ['403b.txt', 'HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
+            self.accountfiles = ['403b.txt','HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
             self.fileExtensionToRemove = '.txt'
             
 
@@ -259,10 +260,8 @@ class DataAccess(object):
         '''
     
         data = pd.read_pickle(filepath)
-
         if clean == True:
-            data = data.fillna(method='ffill').fillna(method='bfill')
-            data = data.dropna(axis=1, how='all')
+            data = modify_data.clean_data(data)
 
         return data
 
@@ -285,30 +284,108 @@ class DataAccess(object):
         '''
         pass
 
-    def plotting_data(self):
+    def get_opt_df(self, acct, summary=None):
         '''
-        Used in the visuals file to retrieve data and info necessary to create charts and graphs
-        * returns a list containing a lists for each account
-        * each account contains adjusted close data frame, account name, and filepath to the image file.
+        retrieves dataframe of optimized assets from an account
         '''
 
         data_path = self.datafolder
-        item = DataItem.ADJUSTED_CLOSE
-        accounts = [] # a list container for all accounts
+        filenames = []
+        frames = []
 
-        ls_acctdata = DataAccess.get_info_from_account(self)
-        for acct in ls_acctdata: 
-            account_info = [] # a list container for the details per account: dataframe, acct name, filepath
-            filename = acct[0] + '-' + DataItem.ADJUSTED_CLOSE + '.pkl'
-            filename = filename.replace(' ', '')
-            filepath = os.path.join(self.datafolder, filename)
-            
-            ofilepath = self.imagefolder
-            acct = acct[0]          
+        for file in os.listdir(data_path):
+            filename = str(file)
+            if filename.endswith('.pkl') and 'opt' in filename and acct in filename:
+                path = os.path.join(data_path, filename)
+                data = pd.read_pickle(path)
+                frames.append(data)
+                path = ''
 
-            df_data = DataAccess.get_dataframe(filepath, clean=True)
-            account_info.extend((df_data, acct, ofilepath))
-            accounts.append(account_info) 
+        result = pd.concat(frames, axis=1)
+        if summary != None:
+            result = result[result['Symbols'].str.contains('opt')]
+        return result
 
-        return accounts
+    def get_opt_syms(self, acct):
+        '''
+        retrieves a list of unique symbols from the optimized data sets.
+        '''
     
+        data_path = self.datafolder
+        filenames = []
+        frames = []
+
+        for file in os.listdir(data_path):
+            filename = str(file)
+            if filename.endswith('.pkl') and 'opt' in filename and acct in filename:
+                path = os.path.join(data_path, filename)
+                data = pd.read_pickle(path)
+                frames.append(data)
+                path = ''
+
+        result = pd.concat(frames, axis=1)
+        symbols = result['Symbols']
+        symbols = symbols.drop_duplicates()
+        symbols = symbols[~symbols.str.contains('opt')] # removes any data with the sub string 'opt'
+        symbols = symbols.tolist()
+        return symbols
+
+class modify_data(object):
+    def clean_data(df_data):
+
+        df_data = modify_data.remove_drops(df_data)
+        df_data = modify_data.remove_rises(df_data)
+        df_data = modify_data.remove_nulls(df_data)
+
+        df_data = df_data.fillna(method='ffill')
+        df_data = df_data.fillna(method='bfill')
+
+        return df_data
+
+
+    def remove_drops(df_data):
+
+        ls_symbols1 = list(df_data.columns.values)
+        ls_excl = []
+
+        df_rets = du.returnize0(df_data)
+        np_rets = df_rets.values
+        ar_excl = np.where(np_rets <= -0.5) # remove any drops of over 50%
+        ls = list(set(ar_excl[1]))
+        for x in ls:
+            ls_excl.append(ls_symbols1[x])
+        df = df_data.drop(ls_excl, axis=1)
+
+        return df
+
+
+    def remove_rises(df_data):
+
+        ls_symbols1 = list(df_data.columns.values)
+        ls_excl = []
+
+        df_rets = du.returnize0(df_data)
+        np_rets = df_rets.values
+        ar_excl = np.where(np_rets >= 0.5) # remove any increases of over 50%
+        ls = list(set(ar_excl[1]))
+        for x in ls:
+            ls_excl.append(ls_symbols1[x])
+        df = df_data.drop(ls_excl, axis=1)
+
+        return df
+
+
+    def remove_nulls(df_data):
+        ls_symbols1 = list(df_data.columns.values)
+        ls_excl = []
+
+        ls_nulls = df_data.columns[df_data.isnull().any()].tolist()
+        for x in ls_nulls:
+            total = df_data[x].isnull().sum()
+            if total >= 20:
+                # Ideally, this would remove 20 consecutive null values as opposed to 20 total.
+                df = df_data.drop(x, axis=1)
+            
+        return df
+        
+        
