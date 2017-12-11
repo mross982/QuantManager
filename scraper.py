@@ -22,20 +22,20 @@ from slimit.visitors import nodevisitor
 from pprint import pprint
 
 
-def optimized_tickers(opt_data):
-    tickers = [] # a list of unique tickers found in optimized data
-    # opt_data is a list with n+1 entries: one for each account (n) and a combined all accounts (+1)
-    for acct in opt_data: # in each of these entries,
-        # print(acct[0]) # index 0 is always the account name
-        # print(acct[1]) # index 1 is all the data associated with the account of which there are 13 objects
-        for info in acct[1]: # in the data for each account
-            # print(info.keys()) # keys include: sharpe, title, portfolio, std, expectedreturn
-            # print(acct[0]) # name of account
-            # print(info['title']) # name of optimization & time period
-            for k in info['portfolio'].keys():
-                if k not in tickers:
-                    tickers.append(k)
-    return tickers
+# def optimized_tickers(opt_data):
+#     tickers = [] # a list of unique tickers found in optimized data
+#     # opt_data is a list with n+1 entries: one for each account (n) and a combined all accounts (+1)
+#     for acct in opt_data: # in each of these entries,
+#         # print(acct[0]) # index 0 is always the account name
+#         # print(acct[1]) # index 1 is all the data associated with the account of which there are 13 objects
+#         for info in acct[1]: # in the data for each account
+#             # print(info.keys()) # keys include: sharpe, title, portfolio, std, expectedreturn
+#             # print(acct[0]) # name of account
+#             # print(info['title']) # name of optimization & time period
+#             for k in info['portfolio'].keys():
+#                 if k not in tickers:
+#                     tickers.append(k)
+#     return tickers
 
 class WebDriver(object):
     '''
@@ -86,9 +86,19 @@ class mstar_fund_desc(object):
     '''
     A collection of web scrapers I built
     '''
+    def remove_duplicates(values):
+        output = []
+        seen = set()
+        for value in values:
+            # If value has not been encountered yet,
+            # ... add it to both list and set.
+            if value not in seen:
+                output.append(value)
+                seen.add(value)
+        return output
 
 
-    def fund_desc(self, ls_tickers):
+    def fund_desc(self):
             '''
             this web scraper captures html rendered (i.e. fast) information about each fund in the accounts provided. Fields
             includ: 'Security Name', 'ticker', 'secID', 'starRating', 'category ID', 'exchangeID', 'fundFamilyID',
@@ -97,7 +107,25 @@ class mstar_fund_desc(object):
             * Captures ticker, securityName, fundCategory, and starRating
             '''
             
+            ticks = list()
+            for x in self.accountfiles:
+                account = x[:-4]
+                tickers = da.DataAccess.get_opt_syms(self, account)
+                ticks.extend(tickers)
+
+            if len(self.accountfiles) > 1:
+                try:
+                    combo_tickers = da.DataAccess.get_opt_syms(self, 'combined')
+                    ticks.extend(combo_tickers)
+                except:
+                    pass
+
+            ls_tickers = mstar_fund_desc.remove_duplicates(ticks)
+            
+            print(ls_tickers)
             df_data = pd.DataFrame({'ticker':ls_tickers})
+            print(df_data)
+            sys.exit(0)
             st_dataPath = self.datafolder
             item = da.ScrapeItem.MS_FUND_DESCRIPTION
             
@@ -111,6 +139,7 @@ class mstar_fund_desc(object):
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
+
                 response = requests.get(contenturl)
 
                 print('Scrape took ' + str(dt.now() - startTime))
@@ -136,6 +165,10 @@ class mstar_fund_desc(object):
             df1.columns = ls_corrected # remove double quotations from col names
             # df1['securityName'] = df1['securityName'].replace('\\u0026','&', regex=True,inplace=True) # fixes an escape character, but doesn't work
             
+            print(df_data.head())
+            print('............')
+            print(df1.head())
+            sys.exit(0)
             df_data = pd.merge(df_data, df1, on='ticker', how='left') # merge with original dataframe in case any values are missing.
 
             path = str(st_dataPath) + item + '.csv'
@@ -149,7 +182,7 @@ class mstar_fund_desc(object):
         '''
 
         # Benchmark columns.
-        fund_benchmark_columns = ['ticker','benchmarkIndex']
+        fund_benchmark_columns = ['ticker','benchmarkIndex', 'Beta', 'Alpha']
         # Fund Benchmark DataFrame
         fund_benchmark = pd.DataFrame(columns=fund_benchmark_columns)
         exceptions = list()
@@ -179,12 +212,11 @@ class mstar_fund_desc(object):
                 # Those Funds which have error in finding benchmark are printed.
                 print("Index : ",i,"No Benchmark Data Found in Morningstar for Fund : ",FUND_NAME)
                 exceptions.append(FUND_NAME)
-                # sys.exit(0)
 
 
         if exceptions:
             for FUND_NAME in exceptions:
-                print('Reruning ',FUND_NAME)
+                print('Re-Scrapping ',FUND_NAME)
                 try:
                     ratingriskurl = "http://performance.morningstar.com/RatingRisk/fund/mpt-statistics.action?&t=XNAS:"+FUND_NAME+"&region=usa&culture=en-US&cur=&ops=clear&s=0P00001MK8&y=3&ep=true&comparisonRemove=null&benchmarkSecId=&benchmarktype="
                     response = requests.get(ratingriskurl)
@@ -194,7 +226,7 @@ class mstar_fund_desc(object):
                     rows = table_body.find_all('td')
                     # rows[8] = best fit index; [9] = R squared; [10] = beta; [11]= alpha; [12] = treynor
                     # This same process can be used to get R-Squared, Alpha, Beta, and Treynor (possibly) the row index is different.
-                    new_data = dict({'ticker': FUND_NAME, 'benchmarkIndex': rows[22].text})
+                    new_data = dict({'ticker': FUND_NAME, 'benchmarkIndex': rows[22].text, 'Beta': rows[10].text, 'Alpha': rows[11].text})
                     df = pd.DataFrame([new_data], columns=fund_benchmark_columns)
                     fund_benchmark = fund_benchmark.append(df, ignore_index=True)
                 except AttributeError:

@@ -105,26 +105,33 @@ def efficient_frontier(df_data, acct, out_filepath, filename_addition):
 	'''
 	df_all = du.get_risk_ret(df_data) # get np arrays of the exp return and st. dev of each fund
 
-	df_eff = du.get_frontier(df_data)
+	df_eff = du.get_frontier(df_data) # get twenty efficient portfolios 
+
+	df_eff_port = du.get_frontier_portfolios(df_data) # get four defined efficient porfolios
 	
+	#HERE WILL NEED TO CALL TO GET THE FRONTIER GRAPH
+
 	y_arr_d = df_all.iloc[:,0:1].values # all funds expected returns
 	x_arr_d = df_all.iloc[:,1:2].values # all funds std deviations
 
-	titles = df_eff.iloc[:,0:1].values # all first column i.e. portfolio names
-	y_arr_e = df_eff.iloc[:,1:2].values # efficient expected return
-	x_arr_e = df_eff.iloc[:,2:3].values # efficient std deviation
+	y_arr_e = df_eff.iloc[:,0:1].values # efficient portfolio graph expected return
+	x_arr_e = df_eff.iloc[:,1:2].values # efficient portfolio graph std deviation
+
+	titles = df_eff_port.iloc[:,0:1].values # all first column i.e. portfolio names
+	y_arr_e_port = df_eff_port.iloc[:,1:2].values # efficient portfolios expected return
+	x_arr_e_port = df_eff_port.iloc[:,2:3].values # efficient portfolios std deviation
 
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
 	ax1.scatter(x_arr_d, y_arr_d, c='b')
-	ax1.scatter(x_arr_e, y_arr_e, c='r')
 	ax1.plot(x_arr_e, y_arr_e, c='r')
+	ax1.scatter(x_arr_e_port, y_arr_e_port, c='r')
 
 	plt.xlabel('Risk')
 	plt.ylabel('Returns')
 
 
-	for label, x, y in zip(titles, x_arr_e, y_arr_e):
+	for label, x, y in zip(titles, x_arr_e_port, y_arr_e_port):
 		plt.annotate(label, xy = (x, y), xytext = (20, -20),
 			textcoords = 'offset points', ha = 'right', va = 'top',
 			bbox = dict(boxstyle = 'round,pad=0.5', fc = 'yellow', alpha = 0.5),

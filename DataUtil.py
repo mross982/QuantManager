@@ -81,9 +81,9 @@ def get_risk_ret( d_returns, risk_free=0.00 ):
     return df
 
 
-def get_frontier(df_data):
+def get_frontier_portfolios(df_data):
     '''
-    *** Under Construction: returns a dataframe of four portfolios (max return, targ return, tangency, min var)
+    @ summary: returns a dataframe of four portfolios (max return, targ return, tangency, min var)
     and two columns with expected return and standard deviation values to be used to create an efficient frontier.
     '''
     df = pd.DataFrame()
@@ -98,11 +98,6 @@ def get_frontier(df_data):
 
     # Add Max values
     target_ret = avg_rets.nlargest(1) # largest possible target return
-    # if target_ret[0] >= 1:
-    #     print('removing ' + str(target_ret.index[0] + ' due to unrealistic mean return value ' + str(target_ret[0])))
-    #     avg_rets = avg_rets.drop([target_ret.index[0]])
-    #     target_ret = avg_rets.nlargest(1)
-    # print(target_ret)
 
     ret = target_ret[0]
     exp_return = ret * annualize
@@ -135,6 +130,36 @@ def get_frontier(df_data):
     df = df.append({'Portfolio': port4, 'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
 
     return df
+
+
+def get_frontier(df_data):
+    '''
+    *** Under Construction: returns a dataframe of 20 progressive expected return efficient porfolios with
+    two columns with expected return and standard deviation values to be used to create an efficient frontier.
+    '''
+    df = pd.DataFrame()
+
+    if len(df_data) >= 252:
+        annualize = normalize.ANNUALIZE
+    else:
+        annualize = len(df_data)
+
+    returns = returnize0(df_data) # get daily returns from dataframe
+    avg_rets = returns.mean() # get mean of all daily returns
+
+    
+    max_ret = avg_rets.nlargest(1) # largest possible target return
+    max_ret = max_ret[0]
+    for x in range(20):
+        target_ret = max_ret - ((x/20) * max_ret)
+        weights, exp_return, std_dev = optimize.portfolio_optimizer.target_opt( returns, target_ret ) # optimize
+        exp_return = exp_return * annualize
+        std_dev = std_dev * sqrt(annualize)
+        df = df.append({'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
+        x += 1
+
+    return df
+
 
 
 def relative_measures():

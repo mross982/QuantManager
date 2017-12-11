@@ -14,6 +14,7 @@ from os.path import isfile, join
 import pandas as pd
 import pandas_datareader as pdr
 import pandas_datareader.data as web
+from pandas_datareader._utils import RemoteDataError
 
 class DateRange(object):
 	'''
@@ -86,6 +87,7 @@ class API(object):
 
 
 		symbols = []
+		exceptions = list()
 		for acct in ls_acctdata:
 			ls_symbols = acct[2:]
 			symbols = ls_symbols
@@ -97,6 +99,7 @@ class API(object):
 				filename = filename.replace(' ', '')
 				path = os.path.join(d_path, filename)
 				df = web.DataReader(symbols, 'yahoo', start=DateRange.r5YEAR)[item]
+				# error handling SymbolWarning: is done through pandas_datareader\yahoo\daily.py package
 				df = df.sort_index()	
 				df.to_pickle(path)
 				path = ''
