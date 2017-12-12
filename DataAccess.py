@@ -33,12 +33,12 @@ class DataItem(object):
 
 
 class IndexItem(object):
-    INDEX_SP500_SECTORS = "SP500sectors"
+    INDEX_SP500_SECTORS = "sp500_sectors"
 
 
 class ScrapeItem(object):
     INDV_DESC = "Individual_Description"
-    COMPARATIVE_STATS = "Opt_Comparative_Stats"
+    RELATIVE_STATS = "Opt_Relative_Stats"
     MS_FUND_SECTORS = "MSFundSectors"
     FUND_METADATA = "Fund_MetaData"
 
@@ -265,16 +265,16 @@ class DataAccess(object):
 
         return data
 
-    def dataframe_to_csv(self, df_data, filename='Test.csv'):
+    def dataframe_to_csv(self, filename):
         '''
-        This creates a csv file of a single dataframe. The abbreviate argument allows you to only print the top five 
-        rows of data in a dataframe to csv. 
+        This creates a csv file of a single dataframe.
         * Currently only used for spot checking downloaded data.
         '''
 
+        inputfile = os.path.join(self.datafolder, filename + '.pkl')
         outputfile = os.path.join(self.datafolder, filename + '.csv')
-        print(outputfile)
-        df_data.to_csv(outputfile)
+        df_data = DataAccess.get_dataframe(inputfile)
+        df_data.to_csv(outputfile, encoding='utf-8')
 
 
     def csv_to_dataframe(self, csv_file):

@@ -61,8 +61,8 @@ class IndexScrapers(object):
         SITE = "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         hdr = {'User-Agent': 'Mozilla/5.0'}
 
-        filename = da.IndexItem.INDEX_SP500_SECTORS + '.json'
-        path = os.path.join(st_indexdir, filename)
+        file = da.IndexItem.INDEX_SP500_SECTORS
+        path = os.path.join(st_indexdir, file)
 
         req = requests.get(SITE, headers=hdr)
         soup = BeautifulSoup(req.content, "html.parser")
@@ -71,7 +71,6 @@ class IndexScrapers(object):
         sector_tickers = dict()
         for row in table.findAll('tr'):
             col = row.findAll('td')
-            sys.exit(0)
             if len(col) > 0:
                 sector = str(col[3].string.strip()).lower().replace(' ', '_')
                 ticker = str(col[0].string.strip())
@@ -79,8 +78,11 @@ class IndexScrapers(object):
                     sector_tickers[sector] = list()
                 sector_tickers[sector].append(ticker)
 
-        with open(path, 'w') as outfile:
-            json.dump(sector_tickers, outfile)
+        for k, v in sector_tickers.items():
+            series = pd.Series(v, name=k)
+            filename = k + '.pkl'
+            filepath = os.path.join(path, filename)
+            series.to_pickle(filepath)
 
 class html_scraper(object):
     '''
@@ -113,7 +115,7 @@ class html_scraper(object):
             ls_tickers = du.remove_duplicates(ticks) # remove duplicate tickers
             df_data = pd.DataFrame({'ticker':ls_tickers})
             st_dataPath = self.datafolder
-            item = da.ScrapeItem.COMPARATIVE_STATS
+            item = da.ScrapeItem.RELATIVE_STATS
             
             all_data = []
             exceptions = [] 
@@ -153,7 +155,7 @@ class html_scraper(object):
             
             df_data = pd.merge(df_data, df1, on='ticker', how='left') # merge with original dataframe in case any values are missing.
 
-            path = str(st_dataPath) + item + '.csv'
+            path = str(st_dataPath) + item + '.pkl'
 
             html_scraper.fund_benchmark(df_data, path)
 
@@ -219,7 +221,7 @@ class html_scraper(object):
         # Merge new data to original df_data to maintain all original tickers
         df_data = pd.merge(df_data, fund_benchmark, on='ticker', how='left')
 
-        df_data.to_csv(filepath, encoding='utf-8')
+        df_data.to_pickle(filepath)
 
 
 class java_scraper(object):
@@ -316,9 +318,6 @@ class java_scraper(object):
         df = pd.DataFrame(all_data)
         df.to_pickle(path)
 
-        path = path[:-4]
-        path = path + '.csv'
-        df.to_csv(filepath, encoding='utf-8')
 
     def fund_holdings(self):
         '''
