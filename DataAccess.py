@@ -37,8 +37,8 @@ class IndexItem(object):
 
 
 class ScrapeItem(object):
-    MS_QUANT_DESCRIPTION = "MSQuantDescription"
-    MS_FUND_DESCRIPTION = "Fund_Description"
+    INDV_DESC = "Individual_Description"
+    COMPARATIVE_STATS = "Opt_Comparative_Stats"
     MS_FUND_SECTORS = "MSFundSectors"
     FUND_METADATA = "Fund_MetaData"
 

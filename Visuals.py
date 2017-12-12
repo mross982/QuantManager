@@ -108,8 +108,6 @@ def efficient_frontier(df_data, acct, out_filepath, filename_addition):
 	df_eff = du.get_frontier(df_data) # get twenty efficient portfolios 
 
 	df_eff_port = du.get_frontier_portfolios(df_data) # get four defined efficient porfolios
-	
-	#HERE WILL NEED TO CALL TO GET THE FRONTIER GRAPH
 
 	y_arr_d = df_all.iloc[:,0:1].values # all funds expected returns
 	x_arr_d = df_all.iloc[:,1:2].values # all funds std deviations

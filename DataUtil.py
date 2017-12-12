@@ -80,6 +80,12 @@ def get_risk_ret( d_returns, risk_free=0.00 ):
 
     return df
 
+def frontier_target(avg_rets):
+    '''
+    @Summary: sets the target portfolio to 70% of the total possible returns
+    '''
+    target_ret = avg_rets.quantile(0.7)
+    return target_ret
 
 def get_frontier_portfolios(df_data):
     '''
@@ -108,7 +114,7 @@ def get_frontier_portfolios(df_data):
     df = df.append({'Portfolio': port1, 'exp_return': exp_return, 'std_dev': std_dev}, ignore_index=True)
 
     # Add Target Values
-    target_ret = avg_rets.quantile(0.7)  # get the target return
+    target_ret = frontier_target(avg_rets)  # get the target return
     weights, exp_return, std_dev = optimize.portfolio_optimizer.target_opt( returns, target_ret ) # optimize
     exp_return = exp_return * annualize
     std_dev = std_dev * sqrt(annualize)
@@ -231,7 +237,19 @@ def moving_averages(df_data):
             plt.show
 
 
-
+def remove_duplicates(ls_values):
+    '''
+    @summary: takes a list with possible duplicate values and returns a list with no duplicate values.
+    '''
+    output = []
+    seen = set()
+    for value in ls_values:
+        # If value has not been encountered yet,
+        # ... add it to both list and set.
+        if value not in seen:
+            output.append(value)
+            seen.add(value)
+    return output
 # ******************** UNUSED EXTRA CODE **********************************************************************
 
 def daily(lfFunds):

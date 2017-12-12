@@ -7,6 +7,7 @@ import time
 from interruptingcow import timeout
 import requests
 import DataAccess as da
+import DataUtil as du
 import sys
 from selenium import webdriver #****** selenium requires a browser driver (PHANTOMJS) be saved to the env directory **********
 from selenium.webdriver.common.by import By
@@ -81,22 +82,11 @@ class IndexScrapers(object):
         with open(path, 'w') as outfile:
             json.dump(sector_tickers, outfile)
 
-
-class mstar_fund_desc(object):
+class html_scraper(object):
     '''
-    A collection of web scrapers I built
+    @Summary: a collection of webscrapers that scrape html text from morningstar.com.
+    - fast scrape and should occur every data update.
     '''
-    def remove_duplicates(values):
-        output = []
-        seen = set()
-        for value in values:
-            # If value has not been encountered yet,
-            # ... add it to both list and set.
-            if value not in seen:
-                output.append(value)
-                seen.add(value)
-        return output
-
 
     def fund_desc(self):
             '''
@@ -110,24 +100,20 @@ class mstar_fund_desc(object):
             ticks = list()
             for x in self.accountfiles:
                 account = x[:-4]
-                tickers = da.DataAccess.get_opt_syms(self, account)
-                ticks.extend(tickers)
+                tickers = da.DataAccess.get_opt_syms(self, account) # get all ticker symbols from optimized portfolios
+                ticks.extend(tickers) 
 
             if len(self.accountfiles) > 1:
                 try:
-                    combo_tickers = da.DataAccess.get_opt_syms(self, 'combined')
+                    combo_tickers = da.DataAccess.get_opt_syms(self, 'combined') # add tickers from the combined portfolio
                     ticks.extend(combo_tickers)
                 except:
                     pass
 
-            ls_tickers = mstar_fund_desc.remove_duplicates(ticks)
-            
-            print(ls_tickers)
+            ls_tickers = du.remove_duplicates(ticks) # remove duplicate tickers
             df_data = pd.DataFrame({'ticker':ls_tickers})
-            print(df_data)
-            sys.exit(0)
             st_dataPath = self.datafolder
-            item = da.ScrapeItem.MS_FUND_DESCRIPTION
+            item = da.ScrapeItem.COMPARATIVE_STATS
             
             all_data = []
             exceptions = [] 
@@ -165,15 +151,11 @@ class mstar_fund_desc(object):
             df1.columns = ls_corrected # remove double quotations from col names
             # df1['securityName'] = df1['securityName'].replace('\\u0026','&', regex=True,inplace=True) # fixes an escape character, but doesn't work
             
-            print(df_data.head())
-            print('............')
-            print(df1.head())
-            sys.exit(0)
             df_data = pd.merge(df_data, df1, on='ticker', how='left') # merge with original dataframe in case any values are missing.
 
             path = str(st_dataPath) + item + '.csv'
 
-            mstar_fund_desc.fund_benchmark(df_data, path)
+            html_scraper.fund_benchmark(df_data, path)
 
 
     def fund_benchmark(df_data, filepath):
@@ -240,6 +222,193 @@ class mstar_fund_desc(object):
         df_data.to_csv(filepath, encoding='utf-8')
 
 
+class java_scraper(object):
+    '''
+    @Summary: a collection of scrapers for java rendered data
+    - slow, consider only updating as necessary
+    '''
+    def fund_individual_desc(self):
+        '''
+        this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
+        include: '30-Day SEC Yield', 'Category (i.e. large growth or allocation)', 'Credit Quality/Interest Rate Sensitivity', 'Expenses',
+        'Fee Level', 'Investment Style (i.e. Large Value)', 'Load Fees', 'Min Investment', Status', 'TTM Yield', 'Ticker',
+        'Total Assets', 'Total Market', and 'Turnover'. Each ticker takes approximately 30 seconds to collect the information
+        and the information is relatively stable therefore, this script should be run less frequently or when new fund options
+        become available in existing or new accounts.
+        '''
+        ticks = list()
+        for x in self.accountfiles:
+            account = x[:-4]
+            tickers = da.DataAccess.get_opt_syms(self, account) # get all ticker symbols from optimized portfolios
+            ticks.extend(tickers) 
+
+        if len(self.accountfiles) > 1:
+            try:
+                combo_tickers = da.DataAccess.get_opt_syms(self, 'combined') # add tickers from the combined portfolio
+                ticks.extend(combo_tickers)
+            except:
+                pass
+
+        ls_tickers = du.remove_duplicates(ticks) # remove duplicate tickers
+        df_data = pd.DataFrame({'ticker':ls_tickers})
+        item = da.ScrapeItem.INDV_DESC
+        st_dataPath = self.datafolder
+
+        all_data = []   
+        contenturl = str()
+
+        k = []
+        v = []
+        key = str()
+        val = str()
+        print('There are ' + str(len(df_data)) + ' symbols to scrape')
+        for index, row in df_data.iterrows():
+            ticker = row['ticker']
+
+            print('Scraping quantitative data for %s from MorningStar' % ticker)
+            contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
+
+            startTime = dt.now()
+            driver = webdriver.PhantomJS(WebDriver.DRIVERDIR) 
+            driver.get(contenturl)
+
+            try:
+                WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "//iframe[starts-with(@id,'QT_IFRAME')]")))
+            except:
+                pass
+
+            driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
+
+            print('Scrape took ' + str(dt.now() - startTime))
+
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+
+            table = soup.find('table', attrs={'class': 'gr_table_b1'})
+            table_body = table.find('tbody')
+
+            # Write html to text file for testing
+            # f = open("output.txt", "w")
+            # f.write(table_body.text)
+            # sys.exit(0)
+
+            rows = table_body.find_all('tr')
+            for row in rows:
+                cols = row.find_all('td')
+                for col in cols:
+                    keys = col.find_all('h3')
+                    values = col.find_all('span')
+                    for key in keys:
+                        k.append(str(key.text).strip())
+                    for value in values:
+                        corrval = str(value.text).strip()
+                        corrval = (corrval.replace('\n','')) and (corrval.replace('\t','') and corrval.replace(' ', ''))
+                        if ('\n' not in corrval) and ('$' not in corrval) and (corrval  != ''):
+                            v.append(corrval)
+
+            data = dict(zip(k,v))
+            data['Ticker'] = ticker
+            all_data.append(data)
+
+            # f = open("list_output.txt", "w")
+            # f.write(str(all_data))
+
+        path = str(st_dataPath) + item + '.pkl'
+        df = pd.DataFrame(all_data)
+        df.to_pickle(path)
+
+        path = path[:-4]
+        path = path + '.csv'
+        df.to_csv(filepath, encoding='utf-8')
+
+    def fund_holdings(self):
+        '''
+        this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
+        includ: 'ticker', 'sector', 'holding' (i.e. 1 - 5 based on percentage), 'fund percentage' & 'benchmark percentage'  
+        '''
+
+        ticks = list()
+        for x in self.accountfiles:
+            account = x[:-4]
+            tickers = da.DataAccess.get_opt_syms(self, account) # get all ticker symbols from optimized portfolios
+            ticks.extend(tickers) 
+
+        if len(self.accountfiles) > 1:
+            try:
+                combo_tickers = da.DataAccess.get_opt_syms(self, 'combined') # add tickers from the combined portfolio
+                ticks.extend(combo_tickers)
+            except:
+                pass
+
+        ls_tickers = du.remove_duplicates(ticks) # remove duplicate tickers
+        df_data = pd.DataFrame({'ticker':ls_tickers})
+        st_dataPath = self.datafolder
+        item = da.ScrapeItem.MS_FUND_SECTORS
+        
+        divs = []
+        all_data = []   
+        contenturl = str()
+  
+        for index, row in df_data.iterrows():
+            ticker = row['ticker']
+            tick_data = []
+
+            print('Scraping fund sector data for %s from MorningStar' % ticker)
+            contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
+
+            startTime = dt.now()
+            driver = webdriver.PhantomJS(WebDriver.DRIVERDIR) 
+            driver.get(contenturl)
+
+            try:
+                WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "//iframe[starts-with(@id,'QT_IFRAME')]")))
+            except:
+                pass
+
+            driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
+
+            print('Scrape took ' + str(dt.now() - startTime))
+
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+
+            divs = soup.find_all("div", {"class": "gr_section_b1"})
+
+            # divs[6] = top sectors and fund % as well as benchmark %.
+            # divs[5] = top holdings
+
+            # Write html to text file for testing
+            # f = open("sectors_output.txt", "w")
+            # f.write(divs[6])
+            
+            y = 1
+            data = {}
+            for row in divs[6].find_all('tr', attrs={'class': 'gr_table_row4'}):
+                data['ticker'] = ticker
+                data['holding'] = str(y)
+                y += 1
+                i = 0
+                for column in row.find_all('td'):
+                    if i == 0:
+                        data['sector'] = str(column.text).strip()
+                    if i == 1:
+                        data['fund percentage'] = str(column.text).strip()
+                    if i == 5:
+                        data['benchmark percentage'] = str(column.text).strip()
+                    i += 1
+                all_data.append(data)
+                data = {}
+                
+            # f = open("list_output.txt", "w")
+            # f.write(str(all_data))
+        path = str(st_dataPath) + item + '.pkl'
+        df = pd.DataFrame(all_data)
+        df.to_pickle(path)
+
+        path = path[:-4]
+        path = path + '.csv'
+        df.to_csv(filepath, encoding='utf-8')
+
+
+#************** UNUSED EXTRA CODE ******************************************************************************
 class mstar_quant_desc(object):
 
     def fnc_transpose(fund_history):
@@ -266,7 +435,7 @@ class mstar_quant_desc(object):
     def performance_data(self):
 
         st_dataPath = self.datafolder
-        item = da.ScrapeItem.MS_FUND_DESCRIPTION
+        item = da.ScrapeItem.COMPARATIVE_STATS
         path = str(st_dataPath) + item + '.csv'
 
         df_desc_data = pd.DataFrame.from_csv(path, encoding='utf-8')
@@ -600,236 +769,3 @@ class mstar_quant_desc(object):
         # Exporting the 15 years data to csv file
 
         Fund_param_15.to_csv("Fund_statistics_15years.csv")
-
-
-
-    
-    def morning_star_quant_desc(self, ls_tickers):
-        '''
-        this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
-        include: '30-Day SEC Yield', 'Category (i.e. large growth or allocation)', 'Credit Quality/Interest Rate Sensitivity', 'Expenses',
-        'Fee Level', 'Investment Style (i.e. Large Value)', 'Load Fees', 'Min Investment', Status', 'TTM Yield', 'Ticker',
-        'Total Assets', 'Total Market', and 'Turnover'. Each ticker takes approximately 30 seconds to collect the information
-        and the information is relatively stable therefore, this script should be run less frequently or when new fund options
-        become available in existing or new accounts.
-        '''
-        
-        item = da.ScrapeItem.MS_QUANT_DESCRIPTION
-        st_dataPath = self.datafolder
-
-        all_data = []   
-        contenturl = str()
-
-        k = []
-        v = []
-        key = str()
-        val = str()
-        print('There are ' + str(len(ls_tickers)) + ' symbols to scrape')
-        for ticker in ls_tickers:
-            ticker = ticker.upper()
-            print('Scraping quantitative data for %s from MorningStar' % ticker)
-            contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
-
-            startTime = dt.now()
-            driver = webdriver.PhantomJS(WebDriver.DRIVERDIR) 
-            driver.get(contenturl)
-
-            try:
-                WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "//iframe[starts-with(@id,'QT_IFRAME')]")))
-            except:
-                pass
-
-            driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
-
-            print('Scrape took ' + str(dt.now() - startTime))
-
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-
-            table = soup.find('table', attrs={'class': 'gr_table_b1'})
-            table_body = table.find('tbody')
-
-            # Write html to text file for testing
-            # f = open("output.txt", "w")
-            # f.write(table_body.text)
-            # sys.exit(0)
-
-            rows = table_body.find_all('tr')
-            for row in rows:
-                cols = row.find_all('td')
-                for col in cols:
-                    keys = col.find_all('h3')
-                    values = col.find_all('span')
-                    for key in keys:
-                        k.append(str(key.text).strip())
-                    for value in values:
-                        corrval = str(value.text).strip()
-                        corrval = (corrval.replace('\n','')) and (corrval.replace('\t','') and corrval.replace(' ', ''))
-                        if ('\n' not in corrval) and ('$' not in corrval) and (corrval  != ''):
-                            v.append(corrval)
-
-            data = dict(zip(k,v))
-            data['Ticker'] = ticker
-            all_data.append(data)
-
-            # f = open("list_output.txt", "w")
-            # f.write(str(all_data))
-
-        path = str(st_dataPath) + item + '.pkl'
-        df = pd.DataFrame(all_data)
-        df.to_pickle(path)
-
-
-    
-
-    def morning_star_fund_sectors(self, ls_tickers):
-        '''
-        this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
-        includ: 'ticker', 'sector', 'holding' (i.e. 1 - 5 based on percentage), 'fund percentage' & 'benchmark percentage'  
-        '''
-
-        st_dataPath = self.datafolder
-        item = da.ScrapeItem.MS_FUND_SECTORS
-        
-        divs = []
-        all_data = []   
-        contenturl = str()
-  
-        for ticker in ls_tickers:
-            tick_data = []
-            ticker = ticker.upper()
-            print('Scraping fund sector data for %s from MorningStar' % ticker)
-            contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
-
-            startTime = dt.now()
-            driver = webdriver.PhantomJS(WebDriver.DRIVERDIR) 
-            driver.get(contenturl)
-
-            try:
-                WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "//iframe[starts-with(@id,'QT_IFRAME')]")))
-            except:
-                pass
-
-            driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
-
-            print('Scrape took ' + str(dt.now() - startTime))
-
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-
-            divs = soup.find_all("div", {"class": "gr_section_b1"})
-
-            # divs[6] = top sectors and fund % as well as benchmark %.
-            # divs[5] = top holdings
-
-            # Write html to text file for testing
-            # f = open("sectors_output.txt", "w")
-            # f.write(divs[6])
-            
-            y = 1
-            data = {}
-            for row in divs[6].find_all('tr', attrs={'class': 'gr_table_row4'}):
-                data['ticker'] = ticker
-                data['holding'] = str(y)
-                y += 1
-                i = 0
-                for column in row.find_all('td'):
-                    if i == 0:
-                        data['sector'] = str(column.text).strip()
-                    if i == 1:
-                        data['fund percentage'] = str(column.text).strip()
-                    if i == 5:
-                        data['benchmark percentage'] = str(column.text).strip()
-                    i += 1
-                all_data.append(data)
-                data = {}
-                
-            # f = open("list_output.txt", "w")
-            # f.write(str(all_data))
-        path = str(st_dataPath) + item + '.pkl'
-        df = pd.DataFrame(all_data)
-        df.to_pickle(path)
-
-class OpenScrapers(object):
-    '''
-    Web scrapers I found but are written for python 2.7
-    '''
-
-    def scrape_benchmarks(df_data):
-
-        # Change list of tickers to single diminsion dataframe
-        df_data = pd.DataFrame({'Fund_Ticker':ls_tickers})
-
-        # Benchmark columns.
-        fund_benchmark_columns = ['Fund_Ticker','Benchmark_Index']
-        # Fund Benchmark DataFrame
-        fund_benchmark = pd.DataFrame(columns=fund_benchmark_columns)
-        # Loop for each fund for getting it's becnhmark
-        for i in range(0,len(df_data)): # loops through the index values of the dataframe
-            FUND_NAME = df_data['Fund_Ticker'][i]
-            
-            try:
-                
-                # Below is the AJAX request URL whose table contains the Benchmark
-                ratingriskurl = "http://performance.morningstar.com/RatingRisk/fund/mpt-statistics.action?&t=XNAS:"+FUND_NAME+"&region=usa&culture=en-US&cur=&ops=clear&s=0P00001MK8&y=3&ep=true&comparisonRemove=null&benchmarkSecId=&benchmarktype="
-                print('scraping meta data for %s' % FUND_NAME)
-                response = requests.get(ratingriskurl)
-                # Read the 0th value of the array
-                mpt_statistics_bench = pd.read_html(response.text)[0]
-                # Filtering all the not null values
-                mpt_statistics_bench = mpt_statistics_bench[mpt_statistics_bench.Alpha.notnull()]
-                # After filtering the row at index at 1 has the bechmark
-                mpt_statistics_bench = mpt_statistics_bench.reset_index(drop=True).iloc[[1]]
-                mpt_statistics_bench = mpt_statistics_bench.ix[:,0:2]
-                mpt_statistics_bench.columns = fund_benchmark_columns
-                # Append fund benchmark dataframe for each fund
-                fund_benchmark = fund_benchmark.append(mpt_statistics_bench)
-
-            except:
-                # Those Funds which have error in finding benchmark are printed.
-                print("Index : ",i,"No Benchmark Data Found in Morningstar for Fund : ",FUND_NAME)
-
-        # Reset the fund_benchmark dataframe.
-        fund_benchmark = fund_benchmark.reset_index(drop=True)
-
-
-        print(fund_benchmark)
-        
-        st_dataPath = self.datafolder
-        item = da.ScrapeItem.FUND_METADATA
-        path = str(st_dataPath) + item + '.pkl'
-        fund_benchmark.to_pickle(path)
-
-
-        # # Fetch all the distinct benchmarks for the above set of ~1277 funds
-        # index_dup = fund_benchmark.drop_duplicates('Benchmark_Index')
-        # # Total Distinct benchmarks for ~ 1277 funds
-        # index_dup
-
-        # mstar_benchmark_symbol = pd.DataFrame(index=range(0,len(index_dup)),columns=['Benchmark_Index','Mstar_Symbol'])
-
-        # mstar_benchmark_symbol.loc[0] = ['S&P 500 TR USD','0P00001MK8']
-        # mstar_benchmark_symbol.loc[1] = ['Morningstar Moderate Target Risk','0P0000J533']
-        # mstar_benchmark_symbol.loc[2] = ['Barclays Municipal TR USD','0P00001G5X']
-        # mstar_benchmark_symbol.loc[3] = ['MSCI ACWI Ex USA NR USD','0P00001MJB']
-        # mstar_benchmark_symbol.loc[4] = ['Barclays US Agg Bond TR USD','0P00001G5L']
-        # mstar_benchmark_symbol.loc[5] = ['MSCI ACWI NR USD','0P00001G8P']
-        # mstar_benchmark_symbol.loc[6] = ['Morningstar Long-Only Commodity TR','0P00009FRD']
-        # mstar_benchmark_symbol.loc[7] = ['BofAML USD LIBOR 3 Mon CM','0P00001L6O']
-        # mstar_benchmark_symbol.loc[8] = ['Credit Suisse Mgd Futures Liquid TR USD','0P00001MK8']
-
-        # mstar_benchmark_symbol
-
-        # # Merging the Funds_family dataframe and fund_benchmark dataframe.
-        # fund_df = pd.merge(Funds_family,fund_benchmark,how='left',on='Fund_Ticker')
-        # fund_df = fund_df[fund_df['Benchmark_Index'].notnull()].reset_index(drop=True)
-
-        # # Printing the head for Fund DataFrame.
-        # fund_df.head()
-
-        # # Example for a fund with ticker = 'JMGIX'
-        # # fund_df[fund_df['Fund_Ticker'] == 'JMGIX']
-        # #fund_df.shape
-
-        # # Exporting the Fund's DataFrame in a csv format. 
-        # fund_df.to_csv("Fund_Metadata.csv")
-
-    

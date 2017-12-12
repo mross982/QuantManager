@@ -1,0 +1,32 @@
+,ticker,fundCategoryName,securityName,starRating,benchmarkIndex,Beta,Alpha
+0,BAGIX,Intermediate-Term Bond,Baird Aggregate Bond Inst,4,BBgBarc US Agg Bond TR USD,1.00,0.49
+1,DFISX,Foreign Small/Mid Blend,DFA International Small Company I,4,MSCI ACWI Ex USA NR USD,0.87,4.81
+2,PLGIX,Large Growth,Principal LargeCap Growth I Instl,4,S&P 500 TR USD,0.96,1.56
+3,RERGX,Foreign Large Growth,American Funds Europacific Growth R6,4,MSCI ACWI Ex USA NR USD,0.90,1.16
+4,SEECX,Large Blend,Steward Large Cap Enhanced Index Inst,4,S&P 500 TR USD,1.02,-1.49
+5,JDMNX,Mid-Cap Growth,Janus Henderson Enterprise N,5,S&P 500 TR USD,0.85,5.28
+6,DIBAX,World Bond,Dreyfus International Bond A,4,BBgBarc US Agg Bond TR USD,0.73,0.53
+7,FINAX,Foreign Small/Mid Blend,Franklin Intl Small Cap Growth A,3,MSCI ACWI Ex USA NR USD,0.81,6.80
+8,GRZZX,Bear Market,Grizzly Short,null,S&P 500 TR USD,-1.42,0.71
+9,MPACX,Diversified Pacific/Asia,Matthews Asia Growth Investor,4,MSCI ACWI Ex USA NR USD,0.86,3.33
+10,OAKIX,Foreign Large Blend,Oakmark International Investor,5,MSCI ACWI Ex USA NR USD,1.12,3.63
+11,PEMGX,Mid-Cap Growth,Principal MidCap A,5,S&P 500 TR USD,0.97,2.13
+12,PFSAX,Financial,Prudential Jennison Financial Svcs A,3,MSCI ACWI NR USD,0.93,-9.81
+13,PTOAX,Large Blend,PIMCO StocksPLUS® Absolute Return A,4,S&P 500 TR USD,1.18,-1.83
+14,PTTAX,Intermediate-Term Bond,PIMCO Total Return A,3,BBgBarc US Agg Bond TR USD,0.74,-0.54
+15,SBFAX,Financial,1919 Financial Services A,5,MSCI ACWI NR USD,0.91,3.08
+16,VEIPX,Large Value,Vanguard Equity-Income Inv,5,S&P 500 TR USD,0.90,0.47
+17,VWINX,Allocation--30% to 50% Equity,Vanguard Wellesley® Income Inv,5,Morningstar Mod Tgt Risk TR USD,0.84,2.20
+18,JHUAX,Large Growth,JHancock US Growth A,2,S&P 500 TR USD,0.96,-2.38
+19,JVIAX,Foreign Large Growth,Virtus Vontobel Foreign Opportunities A,3,MSCI ACWI Ex USA NR USD,0.86,0.73
+20,LAFAX,Foreign Large Growth,Columbia Acorn International Sel A,3,MSCI ACWI Ex USA NR USD,0.86,2.31
+21,MAPTX,Pacific/Asia ex-Japan Stk,Matthews Pacific Tiger Investor,4,MSCI ACWI Ex USA NR USD,0.80,1.14
+22,MFBFX,Corporate Bond,MFS® Corporate Bond A,4,BBgBarc US Agg Bond TR USD,0.92,0.34
+23,PIPAX,Foreign Large Blend,PIMCO StocksPLUS® Intl (USD-Hedged) A,5,MSCI ACWI Ex USA NR USD,0.93,3.59
+24,VDAIX,Large Blend,Vanguard Dividend Appreciation Index Inv,4,S&P 500 TR USD,0.87,0.24
+25,WHIYX,High Yield Bond,Ivy High Income Y,4,BBgBarc US Agg Bond TR USD,1.03,-1.60
+26,MINDX,India Equity,Matthews India Investor,5,MSCI ACWI Ex USA NR USD,0.75,5.05
+27,MPHQX,Intermediate-Term Bond,BlackRock Total Return K,4,BBgBarc US Agg Bond TR USD,0.97,0.61
+28,VIGRX,Large Growth,Vanguard Growth Index Investor,4,S&P 500 TR USD,1.02,-2.02
+29,PCRAX,Commodities Broad Basket,PIMCO Commodity Real Ret Strat A,3,Morningstar Lng-Only Cmdty TR USD,1.09,0.30
+30,PSSAX,Bear Market,PIMCO StocksPLUS® Short A,null,S&P 500 TR USD,-0.77,-1.60
