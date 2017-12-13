@@ -56,13 +56,13 @@ class IndexScrapers(object):
         included in each sector.
         '''
 
-        st_indexdir = self.indexdir
+        print('scraping S&P 500 data')
+        path = self.sp500sectordatadir
 
         SITE = "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         hdr = {'User-Agent': 'Mozilla/5.0'}
 
-        file = da.IndexItem.INDEX_SP500_SECTORS
-        path = os.path.join(st_indexdir, file)
+        # file = da.IndexItem.INDEX_SP500_SECTORS
 
         req = requests.get(SITE, headers=hdr)
         soup = BeautifulSoup(req.content, "html.parser")

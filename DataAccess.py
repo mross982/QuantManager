@@ -86,7 +86,7 @@ class DataAccess(object):
         self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
 
         self.indexdir = os.path.join(self.datadir, 'Indexes\\')
-        self.indexdatadir = os.path.join(self.indexdir, 'Index_data\\')
+        self.sp500sectordatadir = os.path.join(self.indexdir, 'sp500_sectors\\')
   
         if verbose:
             print("Scratch Directory: ", self.scratchdir)
@@ -171,58 +171,26 @@ class DataAccess(object):
         return ls_alldata
 
 
-    def get_json(self, path):
+    def get_sp500_sect_files(self, syms):
         '''
-        Returns a list of all of the json files available in the Index directory. 
-        * The first item always the name of the index (i.e. the file name)
-        * in the instance where there are multiple json files in the path, all files are returned as a list within
-            a larger list
+        Returns a list of all of the pkl files available in the sp500 sectors filder of the Index directory. 
+        * all files are returned as a list
+        * syms is a True/False parameter that determines if it captures the pre-convert_sp500_sect process files 
+        with just symbols or the post convert_sp500_sect process files with financial data for each symbol.
         '''
-        
-        jsondata = []
-        filenames = []
+        path = self.sp500sectordatadir
+        filenames = list()
         
         for file in os.listdir(path):
             filename = str(file)
-            if filename.endswith('.json'):
-                filenames.append(filename)
-
-        if len(filenames) >1:
-            for f in filenames:
-                acctdata = []
-                drtory = os.path.join(path, f)
-                with open(drtory) as json_file:
-                    data = json.load(json_file)
-                    acctdata.append(data)
-                    name = f.replace('.json', '')
-                    acctdata.insert(0,str(name))
-                    jsondata.append(acctdata)
-        else:
-            drtory = os.path.join(path, filenames[0])
-            with open(drtory) as json_file:
-                data = json.load(json_file)
-                jsondata.append(data)
-                name = filenames[0].replace('.json', '')
-                jsondata.insert(0,str(name))
-            
-        return jsondata
-
-    def json_to_ls_acctdata(self, list_of_jsons):
-        '''
-        * Takes the index json file and arranges it to an ls_acctdata format for API use. 
-        * Currently only used for SP500 Sectors index
-        '''
-        ls_acctdata = []
-        json = list_of_jsons[1]
-        for k, v in json.items():
-            innerlist = []
-            innerlist.append(k)
-            innerlist.append('amount N/A')
-            for sym in v:
-                innerlist.append(sym)
-            ls_acctdata.append(innerlist)
-
-        return ls_acctdata
+            if syms = True:
+                if 'close' not in filename:
+                    filenames.append(filename)
+            else:
+                if 'close' in filename:
+                    filenames.append(filename)
+    
+        return filenames
 
 
     def get_combined_dataframe(self, dataitem=DataItem.ADJUSTED_CLOSE, clean=False):
@@ -332,7 +300,9 @@ class DataAccess(object):
 
 class modify_data(object):
     def clean_data(df_data):
-
+        '''
+        Used when get_dataframe(clean=TRUE) to clean up the data
+        '''
         df_data = modify_data.remove_drops(df_data)
         df_data = modify_data.remove_rises(df_data)
         df_data = modify_data.remove_nulls(df_data)
@@ -344,7 +314,9 @@ class modify_data(object):
 
 
     def remove_drops(df_data):
-
+        '''
+        Used when get_dataframe(clean=TRUE) to clean up the data
+        '''
         ls_symbols1 = list(df_data.columns.values)
         ls_excl = []
 
@@ -360,7 +332,9 @@ class modify_data(object):
 
 
     def remove_rises(df_data):
-
+        '''
+        Used when get_dataframe(clean=TRUE) to clean up the data
+        '''
         ls_symbols1 = list(df_data.columns.values)
         ls_excl = []
 
@@ -376,6 +350,9 @@ class modify_data(object):
 
 
     def remove_nulls(df_data):
+        '''
+        Used when get_dataframe(clean=TRUE) to clean up the data
+        '''
         ls_symbols1 = list(df_data.columns.values)
         ls_excl = []
 
@@ -388,4 +365,27 @@ class modify_data(object):
             
         return df
         
+    def convert_sp500_sect(self):
+        '''
+        gets each set of sp500 sector data from the index folder, transposes the first column to headers, then adds 
+        the closing prices
+        '''
+        import api
         
+        print('Downloading index data')
+        data_path = self.sp500sectordatadir
+        ls_files = DataAccess.get_sp500_sect_files(self, syms=True)
+
+        print(ls_files)
+        for file in ls_files:
+            path = os.path.join(data_path, file)
+            series = DataAccess.get_dataframe(path)
+            ls_symbols = series.tolist()
+
+            df_data = api.API.getGoogleData(ls_symbols)
+            df_data = df_data.sort_index()
+
+            outfile = file[:-4] + '_close.pkl'
+            outpath = os.path.join(data_path, outfile)
+            df_data.to_pickle(outpath)
+            os.remove(path)

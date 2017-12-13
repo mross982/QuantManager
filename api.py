@@ -48,58 +48,49 @@ class API(object):
 			self.dataTimeStart = DateRange.r1YEAR
 
 
-	def getGoogleData(self, ls_acctdata, source='acct'):
+	def get_MF_close(self):
 		'''
-		API that gets stock and bond information then saves a dataframe pickle file into QSdata/google directory
+		@Summary: talks a list of MUTUAL FUND symbols, retrieves adjusted close prices, then saves in the datafolder.
 		'''
-		if source == 'acct':
-			data_path = self.datafolder
-			# ls_acctdata = c_dataobj.get_info_from_account(self.accountfiles) # this is now passed to the function
-			items = [da.DataItem.CLOSE, da.DataItem.VOLUME]
-		elif source == 'index':
-			data_path = self.indexdatadir
-			items = [da.DataItem.CLOSE]
-		
 
-		for acct in ls_acctdata:
-			ls_symbols = acct[2:]
-			account = str(acct[0])
-			d_path = data_path
-
-			for item in items:
-				filename = account + '-' + item + '.pkl'
-				filename = filename.replace(' ', '')
-				path = os.path.join(d_path, filename)
-				df = web.DataReader(ls_symbols, 'google', start=DateRange.r5YEAR)[item]
-				df.to_pickle(path)
-				path = ''
-
-
-	def getYahooData(self, ls_acctdata, items=[da.DataItem.ADJUSTED_CLOSE], source='acct'):
-		'''
-		API that gets fund information then saves a dataframe pickle file into QSdata/yahoo directory.
-		'''
 		print('downloading data')
-		if source == 'acct':
-			data_path = self.datafolder
-		else:
-			data_path = self.indexdatadir
 
-
+		ls_acctdata = da.DataAccess.get_info_from_account(self)
+		
+		data_path = self.datafolder
 		symbols = []
-		exceptions = list()
 		for acct in ls_acctdata:
 			ls_symbols = acct[2:]
 			symbols = ls_symbols
 			account = str(acct[0])
 			d_path = data_path
 		
-			for item in items:
-				filename = account + '-' + item + '.pkl'
-				filename = filename.replace(' ', '')
-				path = os.path.join(d_path, filename)
-				df = web.DataReader(symbols, 'yahoo', start=DateRange.r5YEAR)[item]
-				# error handling SymbolWarning: is done through pandas_datareader\yahoo\daily.py package
-				df = df.sort_index()	
-				df.to_pickle(path)
-				path = ''
+			filename = account + '-' + item + '.pkl'
+			filename = filename.replace(' ', '')
+			path = os.path.join(d_path, filename)
+
+			df = API.getYahooData(symbols, item)
+
+			df.to_pickle(path)
+			path = ''
+
+
+	def getGoogleData(ls_symbols, item=da.DataItem.CLOSE):
+		'''
+		API that gets stock and bond information then returns a dataframe
+		'''
+		df = web.DataReader(ls_symbols, 'google', start=DateRange.r5YEAR)[item]
+		# df = web.DataReader(ls_symbols, 'google', start=DateRange.r5YEAR)[item]
+		df = df.sort_index()
+		return df
+
+
+	def getYahooData(ls_symbols, item=da.DataItem.ADJUSTED_CLOSE):
+		'''
+		API that gets fund information from the Yahoo servers.
+		'''
+		
+		df = web.DataReader(ls_symbols, 'yahoo', start=DateRange.r5YEAR)[item]
+		# error handling SymbolWarning: is done through pandas_datareader\yahoo\daily.py package
+		df = df.sort_index()	
+		return df

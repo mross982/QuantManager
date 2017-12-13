@@ -15,7 +15,7 @@ else:
 
 if c_dataobj.source == da.DataSource.YAHOO:
 	# **************************************** API call ********************************************
-	# api.API.getYahooData(c_dataobj, da.DataAccess.get_info_from_account(c_dataobj)) # Get financial data
+	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
 
 	# *********************************** Optimize Portfolios **************************************
 	# optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
@@ -35,10 +35,10 @@ if c_dataobj.source == da.DataSource.YAHOO:
 	# filename = input('Filename: ')
 	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
 
+	# *********************************** SP500 sectors Index **************************************
+	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # get SP 500 index info
+	da.modify_data.convert_sp500_sect(c_dataobj) #API call
 
-	scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # get SP 500 index info
-	# sp500_index_json = da.DataAccess.get_json(c_dataobj, c_dataobj.indexdir) # Get SP 500 financial data.
-	# api.API.getGoogleData(c_dataobj, da.DataAccess.json_to_ls_acctdata(c_dataobj, sp500_index_json), source='index')
 
 					
 
