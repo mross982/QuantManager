@@ -50,7 +50,8 @@ class API(object):
 
 	def get_MF_close(self):
 		'''
-		@Summary: talks a list of MUTUAL FUND symbols, retrieves adjusted close prices, then saves in the datafolder.
+		@Summary: takes a list of MUTUAL FUND symbols, retrieves adjusted close prices, then saves in the datafolder.
+		called from main.py
 		'''
 
 		print('downloading data')

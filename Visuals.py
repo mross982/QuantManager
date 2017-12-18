@@ -148,22 +148,23 @@ def index_averages(self):
 	changes across all sectors which is then plotted. 
 	'''
 	
-	#starting over here by adding the indexes file in the root dir to pull the index tickers from file.
-	index_dir = self.indexdir
-	for file in os.listdir(index_dir):
-		filename = str(file)
-		if 'sp500_sectors' in filename:
-			break
+	#starting over here after fixing Data Access modify get sp500 sect data. Will need someway to retrieve these pickle files.
+	# index_dir = self.indexdir
+	# for file in os.listdir(index_dir):
+	# 	filename = str(file)
+	# 	if 'sp500_sectors' in filename:
+	# 		break
 
-	text_file_path = os.path.join(index_dir, filename)
-	ls_account_info = da.DataAccess.get_info_from_index(text_file_path)
+	# text_file_path = os.path.join(index_dir, filename) # send this to the DataAccess function
+	# da.ModifyData.get_sp500_index(text_file_path)
+
+
+	
 
 	data_path = os.path.join(index_dir, 'sp500_sectors_data')
-	ls_files = da.DataAccess.get_sp500_sect_files(data_path, syms=False)
+	ls_files = da.DataAccess.get_sp500_sect_files(data_path, syms=False) # list of files containing stock closing prices
+	# that constitute each of the sp500 sectors 
 	out_filepath = self.index_images
-
-	print('All done to here')
-	sys.exit(0)
 
 	for file in ls_files:
 		filepath = os.path.join(data_path, file) 

@@ -45,7 +45,7 @@ class ScrapeItem(object):
 
 class DataSource(object):
     GOOGLE = 'Google' # stock/bond data
-    YAHOO = 'Yahoo'  # mutual fund/stock/bond data
+    YAHOO = 'Yahoo'  # mutual fund data
     CRYPTOCOMPARE = 'Cryptocompare' # daily crypto data
     POLONIEX = 'Poloniex' # intra day crypto data
     MARKETCAP = 'Marketcap' # market data crypto
@@ -238,8 +238,7 @@ class DataAccess(object):
         result = pd.concat(frames, axis=1)
 
         if clean == True:
-            result = result.fillna(method='ffill').fillna(method='bfill')
-            result = result.dropna(axis=1, how='all')
+            data = ModifyData.clean_data(data)
 
         return result
 
@@ -252,7 +251,7 @@ class DataAccess(object):
     
         data = pd.read_pickle(filepath)
         if clean == True:
-            data = modify_data.clean_data(data)
+            data = ModifyData.clean_data(data)
 
         return data
 
@@ -321,14 +320,14 @@ class DataAccess(object):
         symbols = symbols.tolist()
         return symbols
 
-class modify_data(object):
+class ModifyData(object):
     def clean_data(df_data):
         '''
         Used when get_dataframe(clean=TRUE) to clean up the data
         '''
-        df_data = modify_data.remove_drops(df_data)
-        df_data = modify_data.remove_rises(df_data)
-        df_data = modify_data.remove_nulls(df_data)
+        df_data = ModifyData.remove_drops(df_data)
+        df_data = ModifyData.remove_rises(df_data)
+        df_data = ModifyData.remove_nulls(df_data)
 
         df_data = df_data.fillna(method='ffill')
         df_data = df_data.fillna(method='bfill')
@@ -392,12 +391,11 @@ class modify_data(object):
         '''
         gets each set of sp500 sector data from the index folder, transposes the first column to headers, then adds 
         the closing prices
+        -called from scaper
         '''
-        import api
-        
-        print('Downloading index data')
+        import api # have to import here otherwise it creates an issue due to recursive import/loading of files.
 
-        ls_files = DataAccess.get_sp500_sect_files(data_path, syms=True)
+        ls_files = DataAccess.get_sp500_sect_files(data_path, syms=True) # gets the 
 
         print('Downloading daily close data for sector stocks')
         for file in ls_files:
@@ -408,7 +406,35 @@ class modify_data(object):
             df_data = api.API.getGoogleData(ls_symbols)
             df_data = df_data.sort_index()
 
-            outfile = file[:-4] + '_close.pkl'
+            outfile = file[:-4] + '_contents.pkl'
             outpath = os.path.join(data_path, outfile)
             df_data.to_pickle(outpath)
             os.remove(path)
+
+
+    def get_sp500_sect_index(self):
+        '''
+        @summary: takes a list of sp500 index symbols (not stock symbols), retrieves average close prices, then saves in the sp500
+        sectors data file within indexs folder.
+        called from scraper.py
+        '''
+        import api
+
+        text_file_path = os.path.join(self.indexdir, 'sp500_sectors.txt')
+
+        ls_sp500_syms_info = DataAccess.get_info_from_index(text_file_path)
+        filename = ls_sp500_syms_info[0] + '_index.pkl'
+        ls_symbols = ls_sp500_syms_info[1:]
+
+        print('Downloading daily close data for sector index\'s')
+        # df_data = api.API.getGoogleData(ls_symbols)
+        df_data = api.API.getYahooData(ls_symbols)
+        df_data = df_data.sort_index()
+        df_data = df_data.fillna(method='ffill')
+        df_data = df_data.fillna(method='bfill')
+
+        outfile = os.path.join(self.indexdir, 'sp500_sectors_data')
+
+        print(df_data)
+        sys.exit(0)
+            

@@ -84,7 +84,8 @@ class IndexScrapers(object):
             filepath = os.path.join(path, filename)
             series.to_pickle(filepath) # saves a file for each sector with all symbols included in the sector 
 
-        da.modify_data.convert_sp500_sect(path) # converts a series of tickers to a dataframe of financial data.
+        da.ModifyData.convert_sp500_sect(path) # converts a series of tickers to a dataframe of financial data.
+        da.ModifyData.get_sp500_sect_index(self)
 
 class html_scraper(object):
     '''
