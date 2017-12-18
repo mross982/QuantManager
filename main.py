@@ -36,8 +36,8 @@ if c_dataobj.source == da.DataSource.YAHOO:
 	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
 
 	# *********************************** SP500 sectors Index **************************************
-	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # get SP 500 index info
-	da.modify_data.convert_sp500_sect(c_dataobj) #API call
+	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
+	visuals.index_averages(c_dataobj)
 
 
 					

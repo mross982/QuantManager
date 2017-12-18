@@ -57,7 +57,7 @@ class IndexScrapers(object):
         '''
 
         print('scraping S&P 500 data')
-        path = self.sp500sectordatadir
+        path = os.path.join(self.indexdir, 'sp500_sectors_data')
 
         SITE = "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         hdr = {'User-Agent': 'Mozilla/5.0'}
@@ -82,7 +82,9 @@ class IndexScrapers(object):
             series = pd.Series(v, name=k)
             filename = k + '.pkl'
             filepath = os.path.join(path, filename)
-            series.to_pickle(filepath)
+            series.to_pickle(filepath) # saves a file for each sector with all symbols included in the sector 
+
+        da.modify_data.convert_sp500_sect(path) # converts a series of tickers to a dataframe of financial data.
 
 class html_scraper(object):
     '''

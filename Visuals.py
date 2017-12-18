@@ -139,3 +139,76 @@ def efficient_frontier(df_data, acct, out_filepath, filename_addition):
 	# plt.show()
 	plt.savefig(filepath)
 	plt.close('all')
+
+
+def index_averages(self):
+	'''
+	@Summary: Takes a dataframe of index close prices, converts to .change(), converts to .mean(), then averages the mean
+	across all stocks into a single series. This is done in a loop across all sectors and the result is a dataframe of price
+	changes across all sectors which is then plotted. 
+	'''
+	
+	#starting over here by adding the indexes file in the root dir to pull the index tickers from file.
+	index_dir = self.indexdir
+	for file in os.listdir(index_dir):
+		filename = str(file)
+		if 'sp500_sectors' in filename:
+			break
+
+	text_file_path = os.path.join(index_dir, filename)
+	ls_account_info = da.DataAccess.get_info_from_index(text_file_path)
+
+	data_path = os.path.join(index_dir, 'sp500_sectors_data')
+	ls_files = da.DataAccess.get_sp500_sect_files(data_path, syms=False)
+	out_filepath = self.index_images
+
+	print('All done to here')
+	sys.exit(0)
+
+	for file in ls_files:
+		filepath = os.path.join(data_path, file) 
+		df_data = da.DataAccess.get_dataframe(filepath, clean=True)
+		sector_name = file[:-10]
+
+		for k, v in scope.TIMESERIES.items():
+			filename_addition = k
+			df = df_data.copy()
+			if k != '_all_years': # 'all years' data is passed as is
+				df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
+				index_returns(df, sector_name, out_filepath, filename_addition)
+			else:
+				index_returns(df, sector_name, out_filepath, filename_addition)
+
+def index_returns(df_data, sector_name, out_filepath, filename_addition):
+	
+	print(sector_name)
+	df_rets = du.returnize0(df_data)
+	print(df_rets.head())
+	sys.exit(0)
+	# ls_syms = df_data.columns.tolist()
+	# ls_index = df_data.index.tolist()
+	# ls_index.insert(0, 'tot_return')
+
+	# npa = df_data.values # converts dataframe to numpy array
+	# return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
+	# return_vec = return_vec - 1 # normalizes returns to be 0 based.
+	# tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
+	# return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns	
+	# df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe to retain the return to symbol relationship.
+	
+	# df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
+	# df = df.transpose()
+	# print(df.head())
+	# sys.exit(0)
+	
+	# df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
+	# df = df.transpose() # reshape to original
+	
+	# ls_syms = df.columns.tolist()
+	# ls_index = df.index.tolist()
+
+	# np_array = df.values
+
+	out_filepath = os.path.join(out_filepath, acct + '_returns' + filename_addition + '.png')
+	
+	plot_returns(ls_index, ls_syms, np_array, out_filepath)
