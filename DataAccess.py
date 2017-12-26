@@ -44,11 +44,10 @@ class ScrapeItem(object):
 
 
 class DataSource(object):
-    GOOGLE = 'Google' # stock/bond data
-    YAHOO = 'Yahoo'  # mutual fund data
-    CRYPTOCOMPARE = 'Cryptocompare' # daily crypto data
-    POLONIEX = 'Poloniex' # intra day crypto data
-    MARKETCAP = 'Marketcap' # market data crypto
+    STOCK = 'Google' # stock/bond data
+    FUND = 'Yahoo'  # mutual fund data
+    CRYPTO = 'Cryptocompare' # daily crypto data
+    # MARKETCAP = 'Marketcap' # market data crypto
 
 
 class DataAccess(object):
@@ -57,7 +56,7 @@ class DataAccess(object):
     and returns that object. The {main} function currently demonstrates use.
     @note: The earliest time for which this works is platform dependent because the python date functionality is platform dependent.
     '''
-    def __init__(self, sourcein=DataSource.YAHOO, cachestalltime=12, verbose=False):
+    def __init__(self, sourcein=DataSource.FUND, cachestalltime=12, verbose=False):
         '''
         @param sourcestr: Specifies the source of the data. Initializes paths based on source.
         @note: No data is actually read in the constructor. Only paths for the source are initialized
@@ -83,15 +82,10 @@ class DataAccess(object):
         except:
             self.scratchdir = os.environ['QSSCRATCH']
        
-        self.accountdir = os.path.join(self.rootdir, 'Accounts\\')
-        self.indexdir = os.path.join(self.datadir, 'Indexes\\')
-        self.index_images = os.path.join(self.indexdir, 'Images\\')
-  
-        if verbose:
-            print("Scratch Directory: ", self.scratchdir)
-            print("Data Directory: ", self.datadir)
-            print("Repository Directory: ", self.rootdir)
-            print("Accounts Directory: ", self.accountdir)
+        self.accountdir = os.path.join(self.rootdir, 'Accounts')
+        self.imagefolder = os.path.join(self.rootdir, 'Images')
+        # self.indexdir = os.path.join(self.datadir, 'Indexes') # big change 12.24.17 send to datafolder
+        # self.index_images = os.path.join(self.indexdir, 'Images\\')
 
         if not os.path.isdir(self.rootdir):
             print("Root path provided is invalid")
@@ -100,31 +94,24 @@ class DataAccess(object):
         if not os.path.exists(self.scratchdir):
             os.mkdir(self.scratchdir)
 
-        if (sourcein == DataSource.GOOGLE):
-            self.source = DataSource.GOOGLE
-            self.datafolder = os.path.join(self.datadir + "\Google\\")
+        if (sourcein == DataSource.STOCK):
+            self.source = DataSource.STOCK
+            self.datafolder = os.path.join(self.datadir + "\Stocks")
             self.accountfiles = ['test.txt', 'test2.txt']
-            self.fileExtensionToRemove = '.txt'
 
-        if (sourcein == DataSource.YAHOO):
-            self.source = DataSource.YAHOO
-            self.datafolder = os.path.join(self.datadir + "\Yahoo\\")
-            self.imagefolder = os.path.join(self.datafolder + "\Images\\")
+        if (sourcein == DataSource.FUND):
+            self.source = DataSource.FUND
+            self.datafolder = os.path.join(self.datadir + "\Fund")
+            self.indexdir = os.path.join(self.datafolder, 'Indexes')
+            self.fundimagefolder = os.path.join(self.imagefolder + "\Fund")
+            # self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder
             self.accountfiles = ['403b.txt','HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
-            self.fileExtensionToRemove = '.txt'
-            
 
-        elif (sourcein == DataSource.CRYPTOCOMPARE):
-            self.source = DataSource.CRYPTOCOMPARE
-            self.datafolder = os.path.join(self.datadir + "\Cryptocompare\\")
+        elif (sourcein == DataSource.CRYPTO):
+            self.source = DataSource.CRYPTO
+            self.datafolder = os.path.join(self.datadir + "\Crypto")
+            self.index_images = os.path.join(self.indexdir, '\Images')
             self.accountfiles = ['test.txt', 'test2.txt']
-            self.fileExtensionToRemove = '.txt'
-
-        elif (sourcein == DataSource.POLONIEX):
-            self.source = DataSource.POLONIEX
-            self.datafolder = os.path.join(self.datadir + "\Poloniex\\")
-            self.accountfiles = ['test.txt']
-            self.fileExtensionToRemove = '.txt'
 
 
     def ensure_dir(file_path):
@@ -162,7 +149,7 @@ class DataAccess(object):
 
             ffile.close()
             
-            accountfile = accountfile.replace(self.fileExtensionToRemove, '')
+            accountfile = accountfile.replace('.txt', '')
             ls_data.insert(0, acctBalance)
             ls_data.insert(0, accountfile)
             ls_alldata.append(ls_data)
@@ -207,11 +194,11 @@ class DataAccess(object):
         for file in os.listdir(data_path):
             filename = str(file)
             if syms == True:
-                if 'close' not in filename:
+                if 'contents' not in filename:
                     filenames.append(filename)
             else:
-                if 'close' in filename:
-                    filenames.append(filename)
+                # if 'close' in filename:
+                filenames.append(filename)
     
         return filenames
 
@@ -348,9 +335,9 @@ class ModifyData(object):
         ls = list(set(ar_excl[1]))
         for x in ls:
             ls_excl.append(ls_symbols1[x])
-        df = df_data.drop(ls_excl, axis=1)
+        df_data = df_data.drop(ls_excl, axis=1)
 
-        return df
+        return df_data
 
 
     def remove_rises(df_data):
@@ -366,9 +353,9 @@ class ModifyData(object):
         ls = list(set(ar_excl[1]))
         for x in ls:
             ls_excl.append(ls_symbols1[x])
-        df = df_data.drop(ls_excl, axis=1)
+        df_data = df_data.drop(ls_excl, axis=1)
 
-        return df
+        return df_data
 
 
     def remove_nulls(df_data):
@@ -383,9 +370,9 @@ class ModifyData(object):
             total = df_data[x].isnull().sum()
             if total >= 20:
                 # Ideally, this would remove 20 consecutive null values as opposed to 20 total.
-                df = df_data.drop(x, axis=1)
+                df_data = df_data.drop(x, axis=1)
             
-        return df
+        return df_data
         
     def convert_sp500_sect(data_path):
         '''
@@ -420,10 +407,13 @@ class ModifyData(object):
         '''
         import api
 
+        column_fix = {'XLY': 'Consumer Discretionary', 'XLP': 'Consumer Staples', 'XLE': 'Energy', 'XLF': 'Financials',
+        'XLV': 'Health Care', 'XLI': 'Industrials', 'XLB': 'Materials', 'XLRE': 'Real Estate', 'XLK': 'Technology', 'XLU': 'Utilities'}
+
         text_file_path = os.path.join(self.indexdir, 'sp500_sectors.txt')
 
         ls_sp500_syms_info = DataAccess.get_info_from_index(text_file_path)
-        filename = ls_sp500_syms_info[0] + '_index.pkl'
+        filename = '$' + ls_sp500_syms_info[0] + '_index.pkl'
         ls_symbols = ls_sp500_syms_info[1:]
 
         print('Downloading daily close data for sector index\'s')
@@ -432,9 +422,13 @@ class ModifyData(object):
         df_data = df_data.sort_index()
         df_data = df_data.fillna(method='ffill')
         df_data = df_data.fillna(method='bfill')
+        df_data = df_data.rename(columns=column_fix)
 
-        outfile = os.path.join(self.indexdir, 'sp500_sectors_data')
+        outpath = self.datafolder
+        outfile = os.path.join(outpath, filename)
 
-        print(df_data)
-        sys.exit(0)
-            
+        df_data.to_pickle(outfile)
+        
+
+        # Need to review how I obtain the data files matches becuase combined_optimized is not being captured. 
+        # - will also need a way to match / unmatch the index names.

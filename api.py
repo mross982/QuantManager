@@ -40,17 +40,17 @@ class API(object):
 	download financial data in both csv and pkl formats.
 	'''
 	def __init__(self):
-		if c_dataobj.source == da.DataSource.GOOGLE:
+		if c_dataobj.source == da.DataSource.STOCK:
 			self.today = DateRange.TODAY
 			self.dataTimeStart = DateRange.r1YEAR
-		elif c_dataobj.source == da.DataSource.YAHOO:
+		elif c_dataobj.source == da.DataSource.FUND:
 			self.today = DateRange.TODAY
 			self.dataTimeStart = DateRange.r1YEAR
 
 
 	def get_MF_close(self):
 		'''
-		@Summary: takes a list of MUTUAL FUND symbols, retrieves adjusted close prices, then saves in the datafolder.
+		@Summary: takes a list of FUND symbols, retrieves adjusted close prices, then saves in the datafolder.
 		called from main.py
 		'''
 
@@ -62,15 +62,15 @@ class API(object):
 		symbols = []
 		for acct in ls_acctdata:
 			ls_symbols = acct[2:]
-			symbols = ls_symbols
+			# symbols = ls_symbols
+			item = da.DataItem.ADJUSTED_CLOSE
 			account = str(acct[0])
 			d_path = data_path
-		
 			filename = account + '-' + item + '.pkl'
 			filename = filename.replace(' ', '')
 			path = os.path.join(d_path, filename)
 
-			df = API.getYahooData(symbols, item)
+			df = API.getYahooData(ls_symbols, item)
 
 			df.to_pickle(path)
 			path = ''

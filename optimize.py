@@ -130,7 +130,7 @@ class portfolio_optimizer(object):
 
 		ret = (weights * avg_rets).sum() # float of the portfolio average daily return
 
-		# p = np.asmatrix(np.mean(df_daily_returns, axis=1)) # this is where the error is occurring
+		# p = np.asmatrix(avg_rets) # this is where the error is occurring
 		# w = np.asmatrix(weights)
 		# C = np.asmatrix(np.cov(df_daily_returns))
 		# sigma = np.sqrt(w * C * w.T)  #standard deviation

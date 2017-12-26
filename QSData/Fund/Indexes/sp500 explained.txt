@@ -1,0 +1,56 @@
+First, why S&P 500? - Yes, the 30-stock Dow gets a lot of media attention, but the S&P 500 is a truer measure of the 
+American business because it contains 500 stocks that represent all major sectors of the U.S. economy. 
+
+*vertical: the sp500_caps captures the different market cap classes of the sp500. Those sections are explained below.
+
+VOO - Vanguard S&P 500 ETF - VOO maintains a unique structure that differentiates it from both IVV and SPY. Vanguard has a 
+	patent that allows it to offer ETFs as share class within larger index funds that also offer retail and institutional 
+	share classes. Some advantages of the share class structure include the lowest expense ratio, offers investors enhanced
+	tax efficiency through the in-kind redemption process and other tax benefits. In response to redemption requests from 
+	other class of shareholders, Vanguard has the option ot sell off high cost-basis securities, generating a capital loss
+	in the process that can be used to offset any taxable gains.
+Sector weights include: Information Technology-24%, Financials-14.8%, Health Care-14.1%, Consumer Discretionary-12.1%,
+Industrials-10.1%, Consumer Staples-8.1%, Energy-5.8%, Utilities-3.1%, Materials-3.0%, Real Estate-2.9%, Telecommunication
+Services-2.0%	
+
+IJH - iShares Core S&P 500 Mid-Cap ETF - seeks to track the investment results of an index complosed of mid-capitalization U.S.
+	equities.
+
+IWM - iShares Russell 2000 ETF - Run by Blackrock, this is an open-ended fund that tracks a market-cap-weighted index of US 
+	small-cap stocks. The index selects stocks ranked 1001 - 3000 by market cap.
+
+*Horizontal: the sp500 companies that fall into either growth or value sectors. Those sections are explained below.
+
+-Growth- more 'expensive' as their stock prices are high relative to their sales or profits. This due to expectations from investors of
+	higher sales or profits in the future, so expect high price-to-sales and price-to-earnings ratios. Also considered riskier 
+	because investors expect big things If growth plans don't materialize, the price could plummet.
+-Value- less 'expensive' as their stock prices are low relative to their sales or profits. Less risky as they have already proven
+	an ability to generate profits based on a proven business model. Stock appreciation isn't guaranteed though. It is possible that
+	investors have properly priced the stok already.
+-Blend- Managers of these blended funds pursue a stratgy known as 'Growth at a Reasonable Price' (GARP), focusing on growth companies, but
+	with a keen awareness of traditional value indicators.
+
+VOOG -  - Holds growth compaines from the S&P 500 Index.
+
+VOOV -  - Holds value companies from the S&P 500 Index.
+
+*Interesting Variations of S&P500
+
+SPLV -  - Selects and holds 100 stocks from the S&P 500 Index which are deemed to have the lowest realized volitility over the
+	trailing 12-month period.
+
+RSP -  - This fund is an alternative to market cap-weighted products, like SPY, IVV and VOO; RSP features an equal allocation to each
+	component of the S&P 500 Index, giving this ETF a unique risk/return profile
+
+VIX(or VXX) - CBOE Volititilty Index - Shows the market's expectation of 30-day volatility. This volatility is meant to be forward-
+	looking and is widely used measure of market risk, often referred to as the "Investor fear guage".
+
+*Other Indexes
+DIA - SPDR Dow Jones Industrial Average EFT Trust - Seeks to provide investment results that, before expenses. correspond generally 
+	to the price and yield perfromance of the Dow Jones Industrial Average (DJIA). The DJIA is composed of 30 'blue-chip' US stocks.
+	The DJIA is a price weighted index of 30 component common stocks.
+
+
+
+
+

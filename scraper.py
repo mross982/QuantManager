@@ -57,7 +57,7 @@ class IndexScrapers(object):
         '''
 
         print('scraping S&P 500 data')
-        path = os.path.join(self.indexdir, 'sp500_sectors_data')
+        path = os.path.join(self.datafolder, 'sp500_sectors_data')
 
         SITE = "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         hdr = {'User-Agent': 'Mozilla/5.0'}
@@ -85,7 +85,8 @@ class IndexScrapers(object):
             series.to_pickle(filepath) # saves a file for each sector with all symbols included in the sector 
 
         da.ModifyData.convert_sp500_sect(path) # converts a series of tickers to a dataframe of financial data.
-        da.ModifyData.get_sp500_sect_index(self)
+        da.ModifyData.get_sp500_sect_index(self) # takes a text file of sector index tickers and creates a single dataframe
+        # of average close prices for each sector
 
 class html_scraper(object):
     '''
@@ -158,7 +159,8 @@ class html_scraper(object):
             
             df_data = pd.merge(df_data, df1, on='ticker', how='left') # merge with original dataframe in case any values are missing.
 
-            path = str(st_dataPath) + item + '.pkl'
+            path = os.path.join(st_dataPath, item + '.pkl')
+            print(path)
 
             html_scraper.fund_benchmark(df_data, path)
 
@@ -317,7 +319,7 @@ class java_scraper(object):
             # f = open("list_output.txt", "w")
             # f.write(str(all_data))
 
-        path = str(st_dataPath) + item + '.pkl'
+        path = os.path.join(st_dataPath, item + '.pkl')
         df = pd.DataFrame(all_data)
         df.to_pickle(path)
 
