@@ -119,9 +119,9 @@ def efficient_frontier(self, df_data, acct, filename_addition):
 
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
-	ax1.scatter(x_arr_d, y_arr_d, c='b')
-	ax1.plot(x_arr_e, y_arr_e, c='r')
-	ax1.scatter(x_arr_e_port, y_arr_e_port, c='r')
+	ax1.scatter(x_arr_d, y_arr_d, c='b') # blue scatter plots for all funds
+	ax1.plot(x_arr_e, y_arr_e, c='r') # red line plot for the efficient frotier
+	ax1.scatter(x_arr_e_port, y_arr_e_port, c='r') # red scatter plots for the four portfolios.
 
 	plt.xlabel('Risk')
 	plt.ylabel('Returns')
@@ -139,30 +139,29 @@ def efficient_frontier(self, df_data, acct, filename_addition):
 	plt.close('all')
 
 
-
 #************************************ SP 500 sectors *******************************************************************
 
 def sector_stock_returns(self): # charts the sectors themselves
 	
 	print('creating S&P 500 sector plot')
 	index_dir = self.indexdir
-	# data_path = os.path.join(index_dir, 'sp500_sectors_data')
-	out_filepath = self.fundimagefolder
+	out_filepath = self.indeximagefolder
 	filepath = os.path.join(self.datafolder, '$sp500_sectors_index.pkl') 
 	df_data = da.DataAccess.get_dataframe(filepath, clean=True)
 	sector_name = 'SP500_All_Sectors'
+	index_name = 'Market'
 
 	for k, v in scope.TIMESERIES.items():
 		filename_addition = k
 		df = df_data.copy()
 		if k != '_all_years': # 'all years' data is passed as is
 			df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
-			ss_returns(df, sector_name, out_filepath, filename_addition)
+			ss_returns(df, sector_name, out_filepath, index_name, filename_addition)
 		else:
-			ss_returns(df, sector_name, out_filepath, filename_addition)
+			ss_returns(df, sector_name, out_filepath, index_name, filename_addition)
 
 
-def ss_returns(df_data, sector_name, out_filepath, filename_addition):
+def ss_returns(df_data, sector_name, out_filepath, index_name, filename_addition):
 	
 	ls_syms = df_data.columns.tolist()
 	ls_index = df_data.index.tolist()
@@ -187,42 +186,88 @@ def ss_returns(df_data, sector_name, out_filepath, filename_addition):
 	np_array = df.values
 
 	out_filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
+
+	x = ls_syms.index(index_name)
+	market_vec = np_array[:,x:(x+1)]
+	component_vec = np_array
 	
-	plot_returns(ls_index, ls_syms, np_array, out_filepath)
+	fig = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
+	ax1 = fig.add_subplot(111)
+	ax1.plot(ls_index, component_vec, linewidth=1) # scatter plots for all funds
+	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # red line plot for the market index
 
-# have data for each of the stocks that make up the sectors, but do not have a clear way of implementing them into an image
-# because the sectors identified differently from the wiki page where I scrape the stock tickers (consumer discretionary,
-# consumer staples, energy, financials, health care, industrials, *information technology*, materials, real estate, 
-# *telecommunication services* and utilities) and the text file of one ticker per sector (*technology*, health care, 
-# industrials, materials, financials, consumer discretionary, utilities, consumer staples, real estate & energy.) 
+	plt.legend(ls_syms, loc='upper left')
+	plt.xlabel('Date')
+	plt.ylabel('Adjusted Close')
+	# plt.show()
+	fig.savefig(out_filepath)
+	plt.close('all')
 
-# Ideally, I would like to see one chart for each sector with the sector total return highlighted and labeled and all 
-# the constituent stock returns shaded in the background to get a sense of variation in the market and to spot trends
-# before they affect the entire sector. 
 
-# def sector_stock_returns(self): # charts the stocks within each sector
-# 	'''
-# 	@Summary: Takes a dataframe of index close prices, converts to .change(), converts to .mean(), then averages the mean
-# 	across all stocks into a single series. This is done in a loop across all sectors and the result is a dataframe of price
-# 	changes across all sectors which is then plotted. 
-# 	'''
+def sector_component_returns(self): # charts the stocks within each sector
+	'''
+	@Summary: Takes a dataframe of index close prices, converts to .change(), converts to .mean(), then averages the mean
+	across all stocks into a single series. This is done in a loop across all sectors and the result is a dataframe of price
+	changes across all sectors which is then plotted. 
+	'''
 	
-# 	index_dir = self.indexdir
+	index_dir = self.indexdir
 
-# 	data_path = os.path.join(index_dir, 'sp500_sectors_data')
-# 	ls_files = da.DataAccess.get_sp500_sect_files(data_path, syms=False) # list of files containing stock closing prices
-# 	out_filepath = self.index_images
+	data_path = os.path.join(index_dir, 'sp500_sectors_data')
+	ls_files = da.DataAccess.get_sp500_sect_files(data_path, syms=False) # list of files containing stock closing prices
+	out_filepath = self.indeximagefolder
 
-# 	for file in ls_files:
-# 		filepath = os.path.join(data_path, file) 
-# 		df_data = da.DataAccess.get_dataframe(filepath, clean=True)
-# 		sector_name = file[:-10]
+	for file in ls_files:
+		filepath = os.path.join(data_path, file) 
+		df_data = da.DataAccess.get_dataframe(filepath, clean=True)
+		sector_name = file[:-10]
 
-# 		for k, v in scope.TIMESERIES.items():
-# 			filename_addition = k
-# 			df = df_data.copy()
-# 			if k != '_all_years': # 'all years' data is passed as is
-# 				df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
-# 				ss_returns(df, sector_name, out_filepath, filename_addition)
-# 			else:
-# 				ss_returns(df, sector_name, out_filepath, filename_addition)
+		# All sectors will have 1 year of data per chart
+		filename_addition = '_1_year'
+		v = scope.TIMESERIES.get('_1_year')
+		df = df_data.copy()
+		df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
+		comp_returns(df, sector_name, out_filepath, filename_addition)
+
+
+def comp_returns(df_data, sector_name, out_filepath, index_name, filename_addition):
+	
+	ls_syms = df_data.columns.tolist()
+	ls_index = df_data.index.tolist()
+	ls_index.insert(0, 'tot_return')
+
+	npa = df_data.values # converts dataframe to numpy array
+	return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
+	return_vec = return_vec - 1 # normalizes returns to be 0 based.
+	tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
+	return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns	
+	df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe to retain the return to symbol relationship.
+	df = df.transpose()
+
+	df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
+	
+	df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
+	df = df.transpose() # reshape to original
+	
+	ls_syms = df.columns.tolist()
+	ls_index = df.index.tolist()
+
+	np_array = df.values
+
+	out_filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
+
+	x = ls_syms.index(index_name)
+	market_vec = np_array[:,x:(x+1)]
+	component_vec = np_array
+	
+	fig = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
+	ax1 = fig.add_subplot(111)
+	ax1.plot(ls_index, component_vec, linewidth=1) # scatter plots for all funds
+	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # red line plot for the market index
+
+	plt.legend(ls_syms, loc='upper left')
+	plt.xlabel('Date')
+	plt.ylabel('Adjusted Close')
+	# plt.show()
+	fig.savefig(out_filepath)
+	plt.close('all')

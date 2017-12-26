@@ -84,7 +84,7 @@ class DataAccess(object):
        
         self.accountdir = os.path.join(self.rootdir, 'Accounts')
         self.imagefolder = os.path.join(self.rootdir, 'Images')
-        # self.indexdir = os.path.join(self.datadir, 'Indexes') # big change 12.24.17 send to datafolder
+        self.indeximagefolder = os.path.join(self.imagefolder, 'Index') # big change 12.24.17 send to datafolder
         # self.index_images = os.path.join(self.indexdir, 'Images\\')
 
         if not os.path.isdir(self.rootdir):
@@ -407,7 +407,7 @@ class ModifyData(object):
         '''
         import api
 
-        column_fix = {'XLY': 'Consumer Discretionary', 'XLP': 'Consumer Staples', 'XLE': 'Energy', 'XLF': 'Financials',
+        column_fix = {'VOO': 'Market','XLY': 'Consumer Discretionary', 'XLP': 'Consumer Staples', 'XLE': 'Energy', 'XLF': 'Financials',
         'XLV': 'Health Care', 'XLI': 'Industrials', 'XLB': 'Materials', 'XLRE': 'Real Estate', 'XLK': 'Technology', 'XLU': 'Utilities'}
 
         text_file_path = os.path.join(self.indexdir, 'sp500_sectors.txt')
@@ -417,8 +417,8 @@ class ModifyData(object):
         ls_symbols = ls_sp500_syms_info[1:]
 
         print('Downloading daily close data for sector index\'s')
-        # df_data = api.API.getGoogleData(ls_symbols)
-        df_data = api.API.getYahooData(ls_symbols)
+        df_data = api.API.getGoogleData(ls_symbols)
+        # df_data = api.API.getYahooData(ls_symbols)
         df_data = df_data.sort_index()
         df_data = df_data.fillna(method='ffill')
         df_data = df_data.fillna(method='bfill')
