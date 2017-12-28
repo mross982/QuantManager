@@ -12,11 +12,33 @@ import itertools
 import os
 import time
 import copy
+import string
 
 
 class scope(object):
 
 	TIMESERIES = {'_6_months': 126, '_1_year': 252, '_all_years': 'nan'}
+
+def get_returns_and_sort(df_data):
+	'''
+	@summary: Takes a dataframe of closing prices, converts to 0 based returns, then reorders the columns where the greatest
+	overall returns are the furthest to the left which subsequently will be listed first in the diagram's legend.
+	'''
+	ls_syms = df_data.columns.tolist()
+	npa = df_data.values
+	ls_index = df_data.index.tolist()
+	ls_index.insert(0, 'tot_return')
+	return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
+	return_vec = return_vec - 1 # normalizes returns to be 0 based.
+	tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
+	return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns	
+	df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe to retain the return to symbol relationship.
+	df = df.transpose() # Transpose the dataframe so all total return values are in one column
+	
+	df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
+	df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
+	df = df.transpose() # reshape to original
+	return df
 
 		
 def create_plots(self):
@@ -55,24 +77,9 @@ def returns(self, df_data, acct, filename_addition):
 	if len(df_data.columns) > 20: # When there are numerous funds in an account, get unique optimized symbols and
 		# chart those.
 		ls_syms = da.DataAccess.get_opt_syms(self, acct)
-		df_data1 = df_data[ls_syms]
-		npa = df_data1.values
-	else:
-		ls_syms = df_data.columns.tolist()
-		npa = df_data.values # converts dataframe to numpy array
+		df_data = df_data[ls_syms]
 	
-	ls_index = df_data.index.tolist()
-	ls_index.insert(0, 'tot_return')
-	return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
-	return_vec = return_vec - 1 # normalizes returns to be 0 based.
-	tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
-	return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns	
-	df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe to retain the return to symbol relationship.
-	df = df.transpose() # Transpose the dataframe so all total return values are in one column
-	
-	df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
-	df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
-	df = df.transpose() # reshape to original
+	df = get_returns_and_sort(df_data)
 	
 	ls_syms = df.columns.tolist()
 	ls_index = df.index.tolist()
@@ -81,18 +88,14 @@ def returns(self, df_data, acct, filename_addition):
 
 	out_filepath = os.path.join(self.fundimagefolder, acct + '_returns' + filename_addition + '.png')
 	
-	plot_returns(ls_index, ls_syms, np_array, out_filepath)
-
-
-def plot_returns(ls_index, ls_syms, return_vec, filepath):
 	f = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
 	plt.clf()
-	plt.plot(ls_index, return_vec)
+	plt.plot(ls_index, np_array)
 	plt.legend(ls_syms, loc='upper left')
 	plt.ylabel('Adjusted Close')
 	plt.xlabel('Date')
 	# plt.show()
-	f.savefig(filepath)
+	f.savefig(out_filepath)
 	plt.close('all')
 
 
@@ -156,104 +159,74 @@ def sector_stock_returns(self): # charts the sectors themselves
 		df = df_data.copy()
 		if k != '_all_years': # 'all years' data is passed as is
 			df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
-			ss_returns(df, sector_name, out_filepath, index_name, filename_addition)
+			ss_returns(self, df, sector_name, out_filepath, index_name, filename_addition)
 		else:
-			ss_returns(df, sector_name, out_filepath, index_name, filename_addition)
+			ss_returns(self, df, sector_name, out_filepath, index_name, filename_addition)
 
 
-def ss_returns(df_data, sector_name, out_filepath, index_name, filename_addition):
-	
-	ls_syms = df_data.columns.tolist()
-	ls_index = df_data.index.tolist()
-	ls_index.insert(0, 'tot_return')
+def ss_returns(self, df_data, sector_name, out_filepath, index_name, filename_addition):
 
-	npa = df_data.values # converts dataframe to numpy array
-	return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
-	return_vec = return_vec - 1 # normalizes returns to be 0 based.
-	tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
-	return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns	
-	df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe to retain the return to symbol relationship.
-	df = df.transpose()
-
-	df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
-	
-	df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
-	df = df.transpose() # reshape to original
+	df = get_returns_and_sort(df_data)
 	
 	ls_syms = df.columns.tolist()
 	ls_index = df.index.tolist()
 
 	np_array = df.values
 
-	out_filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
+	filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
 
-	x = ls_syms.index(index_name)
-	market_vec = np_array[:,x:(x+1)]
-	component_vec = np_array
+	x = ls_syms.index(index_name) # find the index in the dataframe where the market (VOO) lies
+	market_vec = np_array[:,x:(x+1)] # create a numpy array of just the market column
+	component_vec = np_array # all other (including market) columns in a single array
 	
 	fig = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
 	ax1 = fig.add_subplot(111)
 	ax1.plot(ls_index, component_vec, linewidth=1) # scatter plots for all funds
-	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # red line plot for the market index
+	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # blue square plot to highlight the market index
 
 	plt.legend(ls_syms, loc='upper left')
 	plt.xlabel('Date')
 	plt.ylabel('Adjusted Close')
 	# plt.show()
-	fig.savefig(out_filepath)
+	fig.savefig(filepath)
 	plt.close('all')
 
+	sector_component_returns(self, df, out_filepath, filename_addition)
 
-def sector_component_returns(self): # charts the stocks within each sector
+
+def sector_component_returns(self, df, out_filepath, filename_addition): # charts the stocks within each sector
 	'''
 	@Summary: Takes a dataframe of index close prices, converts to .change(), converts to .mean(), then averages the mean
 	across all stocks into a single series. This is done in a loop across all sectors and the result is a dataframe of price
 	changes across all sectors which is then plotted. 
 	'''
-	
-	index_dir = self.indexdir
+	datafolder = self.datafolder
+	datafolder = os.path.join(datafolder, 'sp500_sectors_data')
+	datafiles = list()
+	dfilesmatch = list()
+	for file in os.listdir(datafolder):
+		datafiles.append(file) #create a list of files from the sp500_sectors_data folder
 
-	data_path = os.path.join(index_dir, 'sp500_sectors_data')
-	ls_files = da.DataAccess.get_sp500_sect_files(data_path, syms=False) # list of files containing stock closing prices
-	out_filepath = self.indeximagefolder
+	for file in datafiles: 
+		file = file[:-13] # remove the '_contents.pkl' of each file name
+		file = file.replace('_', ' ')
+		dfilesmatch.append(file) # create a second list of these files that has been edited to match sector names.
 
-	for file in ls_files:
-		filepath = os.path.join(data_path, file) 
-		df_data = da.DataAccess.get_dataframe(filepath, clean=True)
-		sector_name = file[:-10]
-
-		# All sectors will have 1 year of data per chart
-		filename_addition = '_1_year'
-		v = scope.TIMESERIES.get('_1_year')
-		df = df_data.copy()
-		df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
-		comp_returns(df, sector_name, out_filepath, filename_addition)
-
-
-def comp_returns(df_data, sector_name, out_filepath, index_name, filename_addition):
-	
-	ls_syms = df_data.columns.tolist()
-	ls_index = df_data.index.tolist()
-	ls_index.insert(0, 'tot_return')
-
-	npa = df_data.values # converts dataframe to numpy array
-	return_vec = npa/npa[0,:] # Divides each column by the first value in the column (i.e % returns)
-	return_vec = return_vec - 1 # normalizes returns to be 0 based.
-	tot_returns = npa[-1,:] / npa[0, :] # divide the last value by the first in each column to get total returns
-	return_vec = np.insert(return_vec, 0, tot_returns, 0) # insert the total returns at the top of the daily returns	
-	df = pd.DataFrame(return_vec, columns=ls_syms, index=ls_index) # convert back to dataframe to retain the return to symbol relationship.
-	df = df.transpose()
-
-	df = df.sort_values(by=df.columns[0], ascending=False) # sort symbols by largest to smallest total returns
-	
-	df = df.drop(df.columns[0], axis=1) # drop the total return values from the dataframe.
-	df = df.transpose() # reshape to original
-	
-	ls_syms = df.columns.tolist()
+	ls_sectors = df.columns.tolist()
 	ls_index = df.index.tolist()
 
-	np_array = df.values
+	print(dfilesmatch)
+	for sector in ls_sectors:
+		for s in dfilesmatch:
+			if sector.lower() == s:
+				print(sector)
+				print(s)
+				i = dfilesmatch.index(s)
+				print(datafiles[i])
 
+	# print(datafiles)
+	sys.exit(0)
+	
 	out_filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
 
 	x = ls_syms.index(index_name)
@@ -262,7 +235,7 @@ def comp_returns(df_data, sector_name, out_filepath, index_name, filename_additi
 	
 	fig = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
 	ax1 = fig.add_subplot(111)
-	ax1.plot(ls_index, component_vec, linewidth=1) # scatter plots for all funds
+	ax1.plot(ls_index, component_vec, linewidth=1) # line plots for all funds
 	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # red line plot for the market index
 
 	plt.legend(ls_syms, loc='upper left')

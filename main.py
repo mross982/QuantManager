@@ -14,7 +14,7 @@ else:
 
 
 if c_dataobj.source == da.DataSource.FUND:
-	# **************************************** API call **********t*************
+	# **************************************** API call ***********************
 	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
 
 	# *********************************** Optimize Portfolios **************************************
@@ -30,7 +30,7 @@ if c_dataobj.source == da.DataSource.FUND:
 
 	# *************************** Review pkl files by converting to csv *******************************
 	# Converts pkl to csv when given a filename
-	# print('Enter a filename and pathway to be converted to a csv. Don't include the file extension.)
+	# print('Enter a filename and pathway to be converted to a csv. Don\'t include the file extension.')
 	# filename = input('Filename: ')
 	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
 
