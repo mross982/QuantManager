@@ -213,32 +213,41 @@ def sector_component_returns(self, df, out_filepath, filename_addition): # chart
 		dfilesmatch.append(file) # create a second list of these files that has been edited to match sector names.
 
 	ls_sectors = df.columns.tolist()
-	ls_index = df.index.tolist()
+	# ls_index = df.index.tolist()
 
-	print(dfilesmatch)
 	for sector in ls_sectors:
 		for s in dfilesmatch:
 			if sector.lower() == s:
-				print(sector)
-				print(s)
 				i = dfilesmatch.index(s)
-				print(datafiles[i])
+				file = datafiles[i]
+				datafile = os.path.join(datafolder, file)
+				df_data = da.DataAccess.get_dataframe(datafile, clean=True)
+				df_market = df[sector]
+				if filename_addition != '_all_years':
+					x = scope.TIMESERIES[filename_addition]
+					df_data = df_data.iloc[-x:]
+					df_market = df_market.iloc[-x:]
+				
+				df_data = get_returns_and_sort(df_data)
+				
+				sector_component_chart(df_market, df_data, sector, out_filepath, filename_addition)
+			elif sector == 'Technology':
+				pass #combine the telecommunication and information technology
 
-	# print(datafiles)
-	sys.exit(0)
-	
-	out_filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
 
-	x = ls_syms.index(index_name)
-	market_vec = np_array[:,x:(x+1)]
-	component_vec = np_array
+def sector_component_chart(df_market, df_stocks, sector, out_filepath, filename_addition):
+
+	out_filepath = os.path.join(out_filepath, sector + '_comp_returns' + filename_addition + '.png')
+
+	ls_index = df_market.index.tolist()
+	market_vec = df_market.values
+	component_vec = df_stocks.values
 	
 	fig = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
 	ax1 = fig.add_subplot(111)
 	ax1.plot(ls_index, component_vec, linewidth=1) # line plots for all funds
 	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # red line plot for the market index
 
-	plt.legend(ls_syms, loc='upper left')
 	plt.xlabel('Date')
 	plt.ylabel('Adjusted Close')
 	# plt.show()
