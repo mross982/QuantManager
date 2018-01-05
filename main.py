@@ -35,8 +35,8 @@ if c_dataobj.source == da.DataSource.FUND:
 	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
 
 	# *********************************** SP500 sectors Index **************************************
-	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
-	visuals.sector_stock_returns(c_dataobj)
+	scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
+	# visuals.sector_stock_returns(c_dataobj)
 
 
 

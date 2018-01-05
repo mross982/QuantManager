@@ -238,7 +238,7 @@ def sector_component_returns(self, df, out_filepath, filename_addition): # chart
 def sector_component_chart(df_market, df_stocks, sector, out_filepath, filename_addition):
 
 	out_filepath = os.path.join(out_filepath, sector + '_comp_returns' + filename_addition + '.png')
-
+	ls_syms = df_stocks.columns.tolist()
 	ls_index = df_market.index.tolist()
 	market_vec = df_market.values
 	component_vec = df_stocks.values
@@ -248,6 +248,7 @@ def sector_component_chart(df_market, df_stocks, sector, out_filepath, filename_
 	ax1.plot(ls_index, component_vec, linewidth=1) # line plots for all funds
 	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # red line plot for the market index
 
+	plt.legend(ls_syms[:5], loc='upper left')
 	plt.xlabel('Date')
 	plt.ylabel('Adjusted Close')
 	# plt.show()

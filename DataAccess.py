@@ -47,7 +47,32 @@ class DataSource(object):
     STOCK = 'Google' # stock/bond data
     FUND = 'Yahoo'  # mutual fund data
     CRYPTO = 'Cryptocompare' # daily crypto data
-    # MARKETCAP = 'Marketcap' # market data crypto
+    MARKETCAP = 'Marketcap' # market data crypto
+
+
+class sp500(object):
+
+    index = ['VOO','RSP','XLY','XLP','XLE','XLF','XLV','XLI','XLB','XLRE','XLK','XLU','IVV','IJH','IWM','VOOG','VOOV','VXX']
+    index_columns = {'VOO':'Market','RSP':'Equally Weighted Market','XLY':'Consumer Discretionary','XLP':'Consumer Staples',
+    'XLE':'Energy','XLF':'Financials','XLV':'Health Care','XLI':'Industrials','XLB':'Materials','XLRE':'Real Estate',
+    'XLK':'Technology','XLU':'Utilities','IVV':'Large Cap','IJH':'Mid Cap','IWM':'Small Cap','VOOG':'Growth','VOOV': 'Value',
+    'VXX':'Volitility Index'}
+
+    # market = ['VOO', 'RSP'] # total market & equally weighted market
+    # market_columns = {'VOO': 'Market', 'RSP': 'Equally Weighted Market'}
+
+    # sectors = ['VOO','XLY', 'XLP', 'XLE', 'XLF', 'XLV', 'XLI', 'XLB', 'XLRE', 'XLK', 'XLU']
+    # sectors_columns = {'VOO': 'Market','XLY': 'Consumer Discretionary', 'XLP': 'Consumer Staples', 'XLE': 'Energy', 'XLF': 'Financials',
+    #     'XLV': 'Health Care', 'XLI': 'Industrials', 'XLB': 'Materials', 'XLRE': 'Real Estate', 'XLK': 'Technology', 'XLU': 'Utilities'}
+    
+    # caps = ['IVV', 'IJH', 'IWM'] # lg cap, md cap, sm cap
+    # caps_columns = {'IVV': 'Large Cap', 'IJH': 'Mid Cap', 'IWM': 'Small Cap'}
+
+    # style = ['VOOG', 'VOOV'] # Growth companies & Value companies
+    # style_columns = {'VOOG': 'Growth', 'VOOV': 'Value'}
+
+    # volitility = ['VIX']
+    # volitility_columns = {'VIX': 'Volitility Index'}
 
 
 class DataAccess(object):
@@ -102,7 +127,7 @@ class DataAccess(object):
         if (sourcein == DataSource.FUND):
             self.source = DataSource.FUND
             self.datafolder = os.path.join(self.datadir + "\Fund")
-            self.indexdir = os.path.join(self.datafolder, 'Indexes')
+            # self.indexdir = os.path.join(self.datafolder, 'Indexes')
             self.fundimagefolder = os.path.join(self.imagefolder + "\Fund")
             # self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder
             self.accountfiles = ['403b.txt','HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
@@ -399,7 +424,7 @@ class ModifyData(object):
             os.remove(path)
 
 
-    def get_sp500_sect_index(self):
+    def get_sp500_index(self):
         '''
         @summary: takes a list of sp500 index symbols (not stock symbols), retrieves average close prices, then saves in the sp500
         sectors data file within indexs folder.
@@ -407,28 +432,21 @@ class ModifyData(object):
         '''
         import api
 
-        column_fix = {'VOO': 'Market','XLY': 'Consumer Discretionary', 'XLP': 'Consumer Staples', 'XLE': 'Energy', 'XLF': 'Financials',
-        'XLV': 'Health Care', 'XLI': 'Industrials', 'XLB': 'Materials', 'XLRE': 'Real Estate', 'XLK': 'Technology', 'XLU': 'Utilities'}
+        print('Downloading data for various S&P 500 index\'s')
+        outpath = self.datafolder
+        ls_index = sp500.index
+        dic_index = sp500.index_columns
+        outfilepath = os.path.join(outpath, '$sp500_index.pkl')
 
-        text_file_path = os.path.join(self.indexdir, 'sp500_sectors.txt')
-
-        ls_sp500_syms_info = DataAccess.get_info_from_index(text_file_path)
-        filename = '$' + ls_sp500_syms_info[0] + '_index.pkl'
-        ls_symbols = ls_sp500_syms_info[1:]
-
-        print('Downloading daily close data for sector index\'s')
-        df_data = api.API.getGoogleData(ls_symbols)
+        df_data = api.API.getGoogleData(ls_index)
         # df_data = api.API.getYahooData(ls_symbols)
         df_data = df_data.sort_index()
         df_data = df_data.fillna(method='ffill')
         df_data = df_data.fillna(method='bfill')
-        df_data = df_data.rename(columns=column_fix)
+        df_data = df_data.rename(columns=dic_index)
 
-        outpath = self.datafolder
-        outfile = os.path.join(outpath, filename)
+        df_data.to_pickle(outfilepath)
 
-        df_data.to_pickle(outfile)
-        
-
+        #************************************ NOTES *************************************************************
         # Need to review how I obtain the data files matches becuase combined_optimized is not being captured. 
         # - will also need a way to match / unmatch the index names.
