@@ -19,6 +19,14 @@ class scope(object):
 
 	TIMESERIES = {'_6_months': 126, '_1_year': 252, '_all_years': 'nan'}
 
+
+class sp500(object):
+
+	index = {'sp500_market': ['Market', 'Equally Weighted Market'], 'sp500_sectors': ['Market', 'Consumer Discretionary',
+	'Consumer Staples', 'Energy', 'Financials', 'Health Care', 'Industrials', 'Materials', 'Real Estate', 'Technology', 'Utilities'],
+	'sp500_Caps': ['Large Cap', 'Mid Cap', 'Small Cap'], 'sp500_style': ['Growth', 'Value'], 'sp500_volitility': ['Volitility Index']}
+
+
 def get_returns_and_sort(df_data):
 	'''
 	@summary: Takes a dataframe of closing prices, converts to 0 based returns, then reorders the columns where the greatest
@@ -144,27 +152,38 @@ def efficient_frontier(self, df_data, acct, filename_addition):
 
 #************************************ SP 500 sectors *******************************************************************
 
-def sector_stock_returns(self): # charts the sectors themselves
+def index_plots(self): # charts the sectors themselves
 	
 	print('creating S&P 500 sector plot')
-	index_dir = self.indexdir
+	# index_dir = self.indexdir
 	out_filepath = self.indeximagefolder
-	filepath = os.path.join(self.datafolder, '$sp500_sectors_index.pkl') 
-	df_data = da.DataAccess.get_dataframe(filepath, clean=True)
-	sector_name = 'SP500_All_Sectors'
-	index_name = 'Market'
+	filepath = os.path.join(self.datafolder, '$sp500_index.pkl') 
+	df_data = da.DataAccess.get_dataframe(filepath, clean=False)
 
 	for k, v in scope.TIMESERIES.items():
 		filename_addition = k
 		df = df_data.copy()
 		if k != '_all_years': # 'all years' data is passed as is
+			print(k)
+
 			df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
-			ss_returns(self, df, sector_name, out_filepath, index_name, filename_addition)
+			print(df.shape)
+			for filename, columns in sp500.index.items():
+				dfx = df[columns]
+				filepath = self.indeximagefolder
+				file = filename + filename_addition + '.png'
+				savepath = os.path.join(out_filepath, file)
+				index_plot(self, dfx, savepath)
 		else:
-			ss_returns(self, df, sector_name, out_filepath, index_name, filename_addition)
+			for filename, columns in sp500.index.items():
+				filepath = self.indeximagefolder
+				file = filename + filename_addition + '.png'
+				savepath = os.path.join(filepath, file)
+				dfx = df[columns]
+				index_plot(self, dfx, savepath)
 
 
-def ss_returns(self, df_data, sector_name, out_filepath, index_name, filename_addition):
+def index_plot(self, df_data, out_filepath):
 
 	df = get_returns_and_sort(df_data)
 	
@@ -173,25 +192,23 @@ def ss_returns(self, df_data, sector_name, out_filepath, index_name, filename_ad
 
 	np_array = df.values
 
-	filepath = os.path.join(out_filepath, sector_name + '_returns' + filename_addition + '.png')
-
-	x = ls_syms.index(index_name) # find the index in the dataframe where the market (VOO) lies
-	market_vec = np_array[:,x:(x+1)] # create a numpy array of just the market column
-	component_vec = np_array # all other (including market) columns in a single array
+	# x = ls_syms.index(index_name) # find the index in the dataframe where the market (VOO) lies
+	# market_vec = np_array[:,x:(x+1)] # create a numpy array of just the market column
+	# component_vec = np_array # all other (including market) columns in a single array
 	
 	fig = plt.figure(num=None, figsize=(12, 6), dpi=80, facecolor='w', edgecolor='k')
 	ax1 = fig.add_subplot(111)
-	ax1.plot(ls_index, component_vec, linewidth=1) # scatter plots for all funds
-	ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # blue square plot to highlight the market index
+	ax1.plot(ls_index, np_array, linewidth=1) # scatter plots for all funds
+	# ax1.plot(ls_index, market_vec, 'bs', linewidth=1) # blue square plot to highlight the market index
 
 	plt.legend(ls_syms, loc='upper left')
 	plt.xlabel('Date')
 	plt.ylabel('Adjusted Close')
 	# plt.show()
-	fig.savefig(filepath)
+	fig.savefig(out_filepath)
 	plt.close('all')
 
-	sector_component_returns(self, df, out_filepath, filename_addition)
+	# sector_component_returns(self, df, out_filepath, filename_addition)
 
 
 def sector_component_returns(self, df, out_filepath, filename_addition): # charts the stocks within each sector

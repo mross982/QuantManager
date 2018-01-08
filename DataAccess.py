@@ -58,22 +58,6 @@ class sp500(object):
     'XLK':'Technology','XLU':'Utilities','IVV':'Large Cap','IJH':'Mid Cap','IWM':'Small Cap','VOOG':'Growth','VOOV': 'Value',
     'VXX':'Volitility Index'}
 
-    # market = ['VOO', 'RSP'] # total market & equally weighted market
-    # market_columns = {'VOO': 'Market', 'RSP': 'Equally Weighted Market'}
-
-    # sectors = ['VOO','XLY', 'XLP', 'XLE', 'XLF', 'XLV', 'XLI', 'XLB', 'XLRE', 'XLK', 'XLU']
-    # sectors_columns = {'VOO': 'Market','XLY': 'Consumer Discretionary', 'XLP': 'Consumer Staples', 'XLE': 'Energy', 'XLF': 'Financials',
-    #     'XLV': 'Health Care', 'XLI': 'Industrials', 'XLB': 'Materials', 'XLRE': 'Real Estate', 'XLK': 'Technology', 'XLU': 'Utilities'}
-    
-    # caps = ['IVV', 'IJH', 'IWM'] # lg cap, md cap, sm cap
-    # caps_columns = {'IVV': 'Large Cap', 'IJH': 'Mid Cap', 'IWM': 'Small Cap'}
-
-    # style = ['VOOG', 'VOOV'] # Growth companies & Value companies
-    # style_columns = {'VOOG': 'Growth', 'VOOV': 'Value'}
-
-    # volitility = ['VIX']
-    # volitility_columns = {'VIX': 'Volitility Index'}
-
 
 class DataAccess(object):
     '''
@@ -127,9 +111,9 @@ class DataAccess(object):
         if (sourcein == DataSource.FUND):
             self.source = DataSource.FUND
             self.datafolder = os.path.join(self.datadir + "\Fund")
-            # self.indexdir = os.path.join(self.datafolder, 'Indexes')
+            self.indexdir = os.path.join(self.datafolder, 'Indexes')
             self.fundimagefolder = os.path.join(self.imagefolder + "\Fund")
-            # self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder
+            self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder
             self.accountfiles = ['403b.txt','HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
 
         elif (sourcein == DataSource.CRYPTO):
