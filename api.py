@@ -95,3 +95,18 @@ class API(object):
 		# error handling SymbolWarning: is done through pandas_datareader\yahoo\daily.py package
 		df = df.sort_index()	
 		return df
+
+	def get_crypto_close(self):
+		pass
+	# def daily_price_historical(symbol, comparison_symbol, all_data=True, limit=1, aggregate=1, exchange=''):
+	#     url = 'https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit={}&aggregate={}'\
+	#             .format(symbol.upper(), comparison_symbol.upper(), limit, aggregate)
+	#     if exchange:
+	#         url += '&e={}'.format(exchange)
+	#     if all_data:
+	#         url += '&allData=true'
+	#     page = requests.get(url)
+	#     data = page.json()['Data']
+	#     df = pd.DataFrame(data)
+	#     df['timestamp'] = [datetime.datetime.fromtimestamp(d) for d in df.time]
+	#     return df

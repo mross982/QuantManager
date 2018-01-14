@@ -45,6 +45,15 @@ class WebDriver(object):
     '''
     DRIVERDIR = 'C:\\Users\\Michael\\Anaconda3\\envs\\QS\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe'
 
+
+class cryptoCoinList(object):
+
+    def get_coin_list(self):
+        import cryptocompare
+
+        cryptocompare.get_coin_list(format=False)
+
+
 class IndexScrapers(object):
     '''
     
