@@ -21,6 +21,28 @@ import json
 import DataUtil as du
 
 
+class imgScope(object):
+
+    TIMESERIES = {'_6_months': 126, '_1_year': 252, '_all_years': 'nan'}
+
+class apiDateRange(object):
+    '''
+    this sets date time frames for pulling data via API
+    '''
+    NOW = dt.datetime.now()
+    TODAY = dt.date.today()
+    r1DAY = (dt.date.today() + dt.timedelta(days=-1)).strftime('%m/%d/%Y')
+    r1WEEK = (dt.date.today() + dt.timedelta(weeks=-1)).strftime('%m/%d/%Y')
+    r1MONTH = (dt.date.today() + dt.timedelta(weeks=-4.3)).strftime('%m/%d/%Y')
+    r3MONTH = (dt.date.today() + dt.timedelta(weeks=-13)).strftime('%m/%d/%Y')
+    r6MONTH = (dt.date.today() + dt.timedelta(weeks=-26)).strftime('%m/%d/%Y')
+    r1YEAR = dt.date.today() + dt.timedelta(weeks=-52)
+    r2YEAR = (dt.date.today() + dt.timedelta(weeks=-104)).strftime('%m/%d/%Y')
+    r3YEAR = (dt.date.today() + dt.timedelta(weeks=-156)).strftime('%m/%d/%Y')
+    r5YEAR = (dt.date.today() + dt.timedelta(weeks=-260)).strftime('%m/%d/%Y')
+    r10YEAR = (dt.date.today() + dt.timedelta(weeks=-520)).strftime('%m/%d/%Y')
+    
+
 class DataItem(object):
     DATE = "Date"
     OPEN = "Open"

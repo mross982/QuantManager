@@ -48,11 +48,72 @@ class WebDriver(object):
 
 class cryptoCoinList(object):
 
-    def get_coin_list(self):
+    def crypto_list(self):
         import cryptocompare
 
-        cryptocompare.get_coin_list(format=False)
+        dct_coinlist = cryptocompare.get_coin_list(format=False)
+        # print(type(df))
+        df = pd.DataFrame.from_dict(dct_coinlist)
+        print(df.head())
+        # for k, v in dct_coinlist.items():
+        #     print(k)
 
+    def market_list(self):
+
+        print('scraping crypto coin list...')
+        path = os.path.join(self.datafolder, 'sp500_sectors_data')
+
+        SITE = "https://coinmarketcap.com/"
+        hdr = {'User-Agent': 'Mozilla/5.0'}
+
+        # file = da.IndexItem.INDEX_SP500_SECTORS
+        
+        data_cols = ['Ticker', 'Market Cap']
+        df_data = pd.DataFrame(columns=data_cols)
+
+        req = requests.get(SITE, headers=hdr)
+        soup = BeautifulSoup(req.content, "html.parser")
+        
+        table = soup.find('table', {'id': 'currencies'})
+        table_body = table.find('tbody')
+        rows = table_body.findAll('tr')
+        
+        for row in rows:
+            
+            items = row.findAll('td')
+            ticker = str() # create container
+            tick = items[1].text.replace(' ', '') # get raw data
+            # the ticker raw data is composed of a return character, the symbol, a return character
+            # a second return character, the name of the coin, followed by a return character.
+            ls = [] # ls and r are used to capture where the return characters are to seperate symbol from name.
+            r = 0
+            for element in tick:
+                if element.isalpha(): # filter out return character
+                    ticker += element # fill the container
+                else: # capture the index of the non alpha characters
+                    print(type(ls)) # ***********on the second Loop, ls looses its object type from list to None
+                    ls = ls.append(r)
+                r+=1
+            ticker = ticker[:ls[1]]
+                     
+            marketcap = str()
+            mcap = items[2].text.replace(' ', '')
+            for element in mcap:
+                if element.isdigit():
+                    marketcap += str(element)
+           
+            new_data = dict({'Ticker': ticker, 'Market Cap': marketcap})
+            df = pd.DataFrame([new_data])
+            df_data = df_data.append(df, ignore_index=True)
+            # print(items[0].text.replace(' ', '')) # row # /market cap rank
+            # print(items[1].text.replace(' ', '')) # both ticker and coin name
+            # print(items[2].text.replace(' ', '')) # market cap value
+            # print(items[3].text.replace(' ', ''))  # dollar value
+            # print(items[4].text.replace(' ', '')) # volume 24 hours
+            # print(items[5].text.replace(' ', '')) # circulating supply and ticker with spaces
+            # print(items[6].text.replace(' ', '')) # % change in 24 hours
+            # print(items[7].text.replace(' ', '')) # chart
+        
 
 class IndexScrapers(object):
     '''
@@ -103,7 +164,7 @@ class html_scraper(object):
     - fast scrape and should occur every data update.
     '''
 
-    def fund_desc(self):
+    def fund_desc(self, verbose=False):
             '''
             this web scraper captures html rendered (i.e. fast) information about each fund in the accounts provided. Fields
             includ: 'Security Name', 'ticker', 'secID', 'starRating', 'category ID', 'exchangeID', 'fundFamilyID',
@@ -136,14 +197,16 @@ class html_scraper(object):
 
             for ticker in ls_tickers:
                 ticker = ticker.upper()
-                print('Scraping qualitative data for %s from MorningStar' % ticker)
+                if verbose == True:
+                    print('Scraping qualitative data for %s from MorningStar' % ticker)
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
 
                 response = requests.get(contenturl)
 
-                print('Scrape took ' + str(dt.now() - startTime))
+                if verbose == True:
+                    print('Scrape took ' + str(dt.now() - startTime))
 
                 soup = BeautifulSoup(response.content, 'html.parser')
                 script = soup.find_all('script')
@@ -169,12 +232,12 @@ class html_scraper(object):
             df_data = pd.merge(df_data, df1, on='ticker', how='left') # merge with original dataframe in case any values are missing.
 
             path = os.path.join(st_dataPath, item + '.pkl')
-            print(path)
+            # print(path)
 
             html_scraper.fund_benchmark(df_data, path)
 
 
-    def fund_benchmark(df_data, filepath):
+    def fund_benchmark(df_data, filepath, verbose=False):
         '''
         - Adds benchmark information to the qualitative description
         '''
@@ -192,7 +255,8 @@ class html_scraper(object):
                 
                 # Below is the AJAX request URL whose table contains the Benchmark
                 ratingriskurl = "http://performance.morningstar.com/RatingRisk/fund/mpt-statistics.action?&t=XNAS:"+FUND_NAME+"&region=usa&culture=en-US&cur=&ops=clear&s=0P00001MK8&y=3&ep=true&comparisonRemove=null&benchmarkSecId=&benchmarktype="
-                print('scraping bencharks for %s' % FUND_NAME)
+                if verbose == True:
+                    print('scraping bencharks for %s' % FUND_NAME)
                 response = requests.get(ratingriskurl)
                 mpt_statistics_bench = pd.read_html(response.text)
                 # Read the 0th value of the array
@@ -208,13 +272,15 @@ class html_scraper(object):
                 
             except:
                 # Those Funds which have error in finding benchmark are printed.
-                print("Index : ",i,"No Benchmark Data Found in Morningstar for Fund : ",FUND_NAME)
+                if verbose == True:
+                    print("Index : ",i,"No Benchmark Data Found in Morningstar for Fund : ",FUND_NAME)
                 exceptions.append(FUND_NAME)
 
 
         if exceptions:
             for FUND_NAME in exceptions:
-                print('Re-Scrapping ',FUND_NAME)
+                if verbose == True:
+                    print('Re-Scrapping ',FUND_NAME)
                 try:
                     ratingriskurl = "http://performance.morningstar.com/RatingRisk/fund/mpt-statistics.action?&t=XNAS:"+FUND_NAME+"&region=usa&culture=en-US&cur=&ops=clear&s=0P00001MK8&y=3&ep=true&comparisonRemove=null&benchmarkSecId=&benchmarktype="
                     response = requests.get(ratingriskurl)
@@ -228,7 +294,8 @@ class html_scraper(object):
                     df = pd.DataFrame([new_data], columns=fund_benchmark_columns)
                     fund_benchmark = fund_benchmark.append(df, ignore_index=True)
                 except AttributeError:
-                    print('No luck with ', FUND_NAME)
+                    if verbose == True:
+                        print('No luck with ', FUND_NAME)
 
         # Reset the fund_benchmark dataframe.
         fund_benchmark = fund_benchmark.reset_index(drop=True)
@@ -277,11 +344,12 @@ class java_scraper(object):
         v = []
         key = str()
         val = str()
-        print('There are ' + str(len(df_data)) + ' symbols to scrape')
+        if verbose == True:
+            print('There are ' + str(len(df_data)) + ' symbols to scrape')
         for index, row in df_data.iterrows():
             ticker = row['ticker']
-
-            print('Scraping quantitative data for %s from MorningStar' % ticker)
+            if verbose == True:
+                print('Scraping quantitative data for %s from MorningStar' % ticker)
             contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
             startTime = dt.now()
@@ -295,7 +363,8 @@ class java_scraper(object):
 
             driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
 
-            print('Scrape took ' + str(dt.now() - startTime))
+            if verbose == True:
+                print('Scrape took ' + str(dt.now() - startTime))
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
@@ -365,7 +434,8 @@ class java_scraper(object):
             ticker = row['ticker']
             tick_data = []
 
-            print('Scraping fund sector data for %s from MorningStar' % ticker)
+            if verbose == True:
+                print('Scraping fund sector data for %s from MorningStar' % ticker)
             contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
             startTime = dt.now()
@@ -379,7 +449,8 @@ class java_scraper(object):
 
             driver.switch_to_frame(driver.find_element_by_xpath("//iframe[starts-with(@id,'QT_IFRAME')]"))
 
-            print('Scrape took ' + str(dt.now() - startTime))
+            if verbose == True:
+                print('Scrape took ' + str(dt.now() - startTime))
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
 

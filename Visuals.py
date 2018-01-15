@@ -15,10 +15,6 @@ import copy
 import string
 
 
-class scope(object):
-
-	TIMESERIES = {'_6_months': 126, '_1_year': 252, '_all_years': 'nan'}
-
 
 class sp500(object):
 
@@ -61,7 +57,7 @@ def create_plots(self):
 		datapath = os.path.join(self.datafolder, filename) 
 		df_data = da.DataAccess.get_dataframe(datapath, clean=True) # get data frame
 
-		for k, v in scope.TIMESERIES.items():
+		for k, v in da.imgScope.TIMESERIES.items():
 			filename_addition = k
 			df = df_data.copy()
 			if k != '_all_years': # 'all years' data is passed as is
@@ -70,7 +66,7 @@ def create_plots(self):
 			else:
 				efficient_frontier(self, df, acctname, filename_addition)
 			
-		for k, v in scope.TIMESERIES.items():
+		for k, v in da.imgScope.TIMESERIES.items():
 			filename_addition = k
 			df = df_data.copy()
 			if k != '_all_years': # 'all years' data is passed as is
@@ -160,14 +156,11 @@ def index_plots(self): # charts the sectors themselves
 	filepath = os.path.join(self.datafolder, '$sp500_index.pkl') 
 	df_data = da.DataAccess.get_dataframe(filepath, clean=False)
 
-	for k, v in scope.TIMESERIES.items():
+	for k, v in da.imgScope.TIMESERIES.items():
 		filename_addition = k
 		df = df_data.copy()
 		if k != '_all_years': # 'all years' data is passed as is
-			print(k)
-
 			df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
-			print(df.shape)
 			for filename, columns in sp500.index.items():
 				dfx = df[columns]
 				filepath = self.indeximagefolder
@@ -241,7 +234,7 @@ def sector_component_returns(self, df, out_filepath, filename_addition): # chart
 				df_data = da.DataAccess.get_dataframe(datafile, clean=True)
 				df_market = df[sector]
 				if filename_addition != '_all_years':
-					x = scope.TIMESERIES[filename_addition]
+					x = da.imgScope.TIMESERIES[filename_addition]
 					df_data = df_data.iloc[-x:]
 					df_market = df_market.iloc[-x:]
 				
