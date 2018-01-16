@@ -61,50 +61,65 @@ class cryptoCoinList(object):
     def market_list(self):
 
         print('scraping crypto coin list...')
-        path = os.path.join(self.datafolder, 'sp500_sectors_data')
-
-        SITE = "https://coinmarketcap.com/"
-        hdr = {'User-Agent': 'Mozilla/5.0'}
+        path = self.cryptodatafolder
 
         # file = da.IndexItem.INDEX_SP500_SECTORS
         
         data_cols = ['Ticker', 'Market Cap']
-        df_data = pd.DataFrame(columns=data_cols)
+        df_data = pd.DataFrame(columns=data_cols) # create the parent dataframe
+
+        SITE = "https://coinmarketcap.com/"
+
+        df_data = cryptoCoinList.scrape_cmk(SITE, df_data) # run the scrape with original site url
+
+        for url in range(2,8): # run the scrape with altered site urls
+            aSITE = SITE + str(url)
+            df_data = cryptoCoinList.scrape_cmk(aSITE, df_data)
+
+        filename = 'marketcaplist.pkl'
+        filepath = os.path.join(path, filename)
+        df_data.to_pickle(filepath)
+
+    def scrape_cmk(SITE, df_data):
+        hdr = {'User-Agent': 'Mozilla/5.0'}
 
         req = requests.get(SITE, headers=hdr)
         soup = BeautifulSoup(req.content, "html.parser")
-        
-        table = soup.find('table', {'id': 'currencies'})
-        table_body = table.find('tbody')
-        rows = table_body.findAll('tr')
-        
-        for row in rows:
+
+        try: 
+            table = soup.find('table', {'id': 'currencies'})
+            table_body = table.find('tbody')
+            rows = table_body.findAll('tr')
             
-            items = row.findAll('td')
-            ticker = str() # create container
-            tick = items[1].text.replace(' ', '') # get raw data
-            # the ticker raw data is composed of a return character, the symbol, a return character
-            # a second return character, the name of the coin, followed by a return character.
-            ls = [] # ls and r are used to capture where the return characters are to seperate symbol from name.
-            r = 0
-            for element in tick:
-                if element.isalpha(): # filter out return character
-                    ticker += element # fill the container
-                else: # capture the index of the non alpha characters
-                    print(type(ls)) # ***********on the second Loop, ls looses its object type from list to None
-                    ls = ls.append(r)
-                r+=1
-            ticker = ticker[:ls[1]]
-                     
-            marketcap = str()
-            mcap = items[2].text.replace(' ', '')
-            for element in mcap:
-                if element.isdigit():
-                    marketcap += str(element)
-           
-            new_data = dict({'Ticker': ticker, 'Market Cap': marketcap})
-            df = pd.DataFrame([new_data])
-            df_data = df_data.append(df, ignore_index=True)
+            for row in rows:
+                items = row.findAll('td')
+                ticker = str() # create container
+                tick = items[1].text.replace(' ', '') # get raw data
+                # the ticker raw data is composed of a return character, the symbol, a return character
+                # a second return character, the name of the coin, followed by a return character.
+                ls = [] # ls and r are used to capture where the return characters are to seperate symbol from name.
+                r = 0
+                for element in tick:
+                    if element.isalpha(): # filter out return character
+                        ticker += element # fill the container
+                    else: # capture the index of the non alpha characters
+                        ls.append(r)
+                    r+=1
+
+                ticker = ticker[:(ls[2]-2)] # slice the ticker string based on where the non alpha characters were found.
+                         
+                marketcap = str()
+                mcap = items[2].text.replace(' ', '')
+                for element in mcap:
+                    if element.isdigit():# take only the numeric digits from the returned string
+                        marketcap += str(element)
+               
+                new_data = dict({'Ticker': ticker, 'Market Cap': marketcap})
+                df = pd.DataFrame([new_data])
+                df_data = df_data.append(df, ignore_index=True)
+        except:
+            pass
+        return df_data
             # print(items[0].text.replace(' ', '')) # row # /market cap rank
             # print(items[1].text.replace(' ', '')) # both ticker and coin name
             # print(items[2].text.replace(' ', '')) # market cap value

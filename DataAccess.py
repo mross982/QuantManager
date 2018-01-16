@@ -68,8 +68,7 @@ class ScrapeItem(object):
 class DataSource(object):
     STOCK = 'Google' # stock/bond data
     FUND = 'Yahoo'  # mutual fund data
-    CRYPTO = 'Cryptocompare' # daily crypto data
-    MARKETCAP = 'Marketcap' # market data crypto
+    CRYPTO = 'Crypto' # daily crypto data
 
 
 class sp500(object):
@@ -133,6 +132,7 @@ class DataAccess(object):
         if (sourcein == DataSource.FUND):
             self.source = DataSource.FUND
             self.datafolder = os.path.join(self.datadir + "\Fund")
+            self.cryptodatafolder = os.path.join(self.datadir + '\Crypto')
             self.indexdir = os.path.join(self.datafolder, 'Indexes')
             self.fundimagefolder = os.path.join(self.imagefolder + "\Fund")
             self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder
