@@ -133,6 +133,7 @@ class DataAccess(object):
             self.source = DataSource.FUND
             self.datafolder = os.path.join(self.datadir + "\Fund")
             self.cryptodatafolder = os.path.join(self.datadir + '\Crypto')
+            self.cryptoimagefolder = os.path.join(self.imagefolder + '\Crypto')
             self.indexdir = os.path.join(self.datafolder, 'Indexes')
             self.fundimagefolder = os.path.join(self.imagefolder + "\Fund")
             self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder

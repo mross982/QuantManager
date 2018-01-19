@@ -16,11 +16,12 @@ else:
 if c_dataobj.source == da.DataSource.FUND:
 
 	# # ************************************ Scrape lists of data ***********************************
-	scraper.Crypto.market_list(c_dataobj) # scrape 
+	# scraper.Crypto.market_list(c_dataobj) # scrape 
 	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
 
 	# # **************************************** API call ***********************
 	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
+	api.API.get_crypto_close(c_dataobj)
 	
 	# # *********************************** Optimize Portfolios **************************************
 	# optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio

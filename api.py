@@ -15,23 +15,8 @@ import pandas as pd
 import pandas_datareader as pdr
 import pandas_datareader.data as web
 from pandas_datareader._utils import RemoteDataError
-
-# class DateRange(object):
-# 	'''
-# 	this sets date time frames for pulling data via API
-# 	'''
-# 	NOW = dt.datetime.now()
-# 	TODAY = dt.date.today()
-# 	r1DAY = (dt.date.today() + dt.timedelta(days=-1)).strftime('%m/%d/%Y')
-# 	r1WEEK = (dt.date.today() + dt.timedelta(weeks=-1)).strftime('%m/%d/%Y')
-# 	r1MONTH = (dt.date.today() + dt.timedelta(weeks=-4.3)).strftime('%m/%d/%Y')
-# 	r3MONTH = (dt.date.today() + dt.timedelta(weeks=-13)).strftime('%m/%d/%Y')
-# 	r6MONTH = (dt.date.today() + dt.timedelta(weeks=-26)).strftime('%m/%d/%Y')
-# 	r1YEAR = dt.date.today() + dt.timedelta(weeks=-52)
-# 	r2YEAR = (dt.date.today() + dt.timedelta(weeks=-104)).strftime('%m/%d/%Y')
-# 	r3YEAR = (dt.date.today() + dt.timedelta(weeks=-156)).strftime('%m/%d/%Y')
-# 	r5YEAR = (dt.date.today() + dt.timedelta(weeks=-260)).strftime('%m/%d/%Y')
-# 	r10YEAR = (dt.date.today() + dt.timedelta(weeks=-520)).strftime('%m/%d/%Y')
+import requests
+import datetime
 
 
 class API(object):
@@ -97,16 +82,47 @@ class API(object):
 		return df
 
 	def get_crypto_close(self):
-		pass
-	# def daily_price_historical(symbol, comparison_symbol, all_data=True, limit=1, aggregate=1, exchange=''):
-	#     url = 'https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit={}&aggregate={}'\
-	#             .format(symbol.upper(), comparison_symbol.upper(), limit, aggregate)
-	#     if exchange:
-	#         url += '&e={}'.format(exchange)
-	#     if all_data:
-	#         url += '&allData=true'
-	#     page = requests.get(url)
-	#     data = page.json()['Data']
-	#     df = pd.DataFrame(data)
-	#     df['timestamp'] = [datetime.datetime.fromtimestamp(d) for d in df.time]
-	#     return df
+		'''
+		ls of symbols, comparison symbol,
+		'''
+		print('Downloading crypto data via API...')
+
+		ls_files = ['coins', 'tokens']
+		ls_tickers = []
+		comparison_symbol = 'BTC'
+		limit=1
+		all_data = True
+		aggregate=1
+		exchange=''
+		item = 'close'
+
+		for file in ls_files:
+			filename = file + 'mktcap.pkl'
+			datapath = os.path.join(self.cryptodatafolder, filename)
+			print(datapath)
+			df_data = da.DataAccess.get_dataframe(datapath, clean=False) # get data frame
+			ls_tick = df_data['Ticker'].tolist() # create a second dataframe reference to just the ticker column
+			ls_tickers.extend(ls_tick)
+
+		for ticker in ls_tickers:
+
+			url = 'https://min-api.cryptocompare.com/data/histoday?fsym={}&tsym={}&limit={}&aggregate={}'\
+				.format(ticker.upper(), comparison_symbol.upper(), limit, aggregate)
+		
+			if exchange:
+				url += '&e={}'.format(exchange)
+			if all_data:
+				url += '&allData=true'
+			page = requests.get(url)
+			data = page.json()['Data']
+			df = pd.DataFrame(data)
+			df['timestamp'] = [datetime.datetime.fromtimestamp(d) for d in df.time]
+			df_data = df['close']
+			print(df_data)
+			sys.exit(0)
+			# start here: need to combine the series's into a dataframe and use ticker as the column head.
+
+	# filepath = self.cryptodatafolder
+	# file = filename + filename_addition + '.pkl'
+	# savepath = os.path.join(out_filepath, file)
+	# index_plot(self, dfx, savepath)

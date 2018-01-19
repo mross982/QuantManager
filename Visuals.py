@@ -22,6 +22,8 @@ class sp500(object):
 	'Consumer Staples', 'Energy', 'Financials', 'Health Care', 'Industrials', 'Materials', 'Real Estate', 'Technology', 'Utilities'],
 	'sp500_Caps': ['Large Cap', 'Mid Cap', 'Small Cap'], 'sp500_style': ['Growth', 'Value'], 'sp500_volitility': ['Volitility Index']}
 
+	# crypto = {'Coins_Tokens': ['']}
+
 
 def get_returns_and_sort(df_data):
 	'''
