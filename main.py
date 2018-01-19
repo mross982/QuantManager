@@ -14,20 +14,28 @@ else:
 
 
 if c_dataobj.source == da.DataSource.FUND:
-	# **************************************** API call ***********************
-	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
-	scraper.cryptoCoinList.market_list(c_dataobj)
 
-	# *********************************** Optimize Portfolios **************************************
+	# # ************************************ Scrape lists of data ***********************************
+	scraper.Crypto.market_list(c_dataobj) # scrape 
+	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
+
+	# # **************************************** API call ***********************
+	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
+	
+	# # *********************************** Optimize Portfolios **************************************
 	# optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
 
-	# *************************************** Create Images ******************************************
+	# # *************************************** Create Images ******************************************
 	# visuals.create_plots(c_dataobj)
+	# visuals.index_plots(c_dataobj)
 
-	# ************************************** Scrap Data *******************************************
+
+	# # ************************************** Scrap Data *******************************************
 	# scraper.html_scraper.fund_desc(c_dataobj) # fund name, star rating, benchmark, alpha, beta.	
 	# scraper.java_scraper.fund_individual_desc(c_dataobj) # 30-day SEC Yield, Category, Credit Quality, Expenses, Fee Level,
-	# Investment Style, Load, Min. Inv., Status, TTM Yield, Total Assets, Total Mkt, Turnover
+	# # Investment Style, Load, Min. Inv., Status, TTM Yield, Total Assets, Total Mkt, Turnover
+
+
 
 	# *************************** Review pkl files by converting to csv *******************************
 	# Converts pkl to csv when given a filename
@@ -35,13 +43,9 @@ if c_dataobj.source == da.DataSource.FUND:
 	# filename = input('Filename: ')
 	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
 
-	# *********************************** SP500 sectors Index **************************************
-	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
-	# visuals.index_plots(c_dataobj)
 
 
-
-
+	# **************************** Work in Progress ****************************************************
 	# scraper.java_scraper.fund_holdings(c_dataobj) # work in progress
 
 	# scraper.WebScrapers.morning_star_quant_desc(c_dataobj, tickers) # JS rendererd data (SLOW)

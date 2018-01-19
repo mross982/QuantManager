@@ -46,7 +46,7 @@ def get_returns_and_sort(df_data):
 
 		
 def create_plots(self):
-	print('creating images')
+	print('Creating images...')
 
 	ls_acctdata = da.DataAccess.get_info_from_account(self)
 
@@ -150,7 +150,7 @@ def efficient_frontier(self, df_data, acct, filename_addition):
 
 def index_plots(self): # charts the sectors themselves
 	
-	print('creating S&P 500 sector plot')
+	print('Creating S&P 500 sector plot...')
 	# index_dir = self.indexdir
 	out_filepath = self.indeximagefolder
 	filepath = os.path.join(self.datafolder, '$sp500_index.pkl') 

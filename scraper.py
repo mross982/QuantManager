@@ -46,21 +46,20 @@ class WebDriver(object):
     DRIVERDIR = 'C:\\Users\\Michael\\Anaconda3\\envs\\QS\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe'
 
 
-class cryptoCoinList(object):
+class CryptoSites(object):
+    # d = {'coins': 'https://coinmarketcap.com/coins/', 'tokens': 'https://coinmarketcap.com/tokens/'}
+    d = {'tokens': 'https://coinmarketcap.com/tokens/'}
 
-    def crypto_list(self):
-        import cryptocompare
 
-        dct_coinlist = cryptocompare.get_coin_list(format=False)
-        # print(type(df))
-        df = pd.DataFrame.from_dict(dct_coinlist)
-        print(df.head())
-        # for k, v in dct_coinlist.items():
-        #     print(k)
-
+class Crypto(object):
+    '''
+    called from main.py
+    market_list() -> creates two files mkcapcoins.pkl with col = ['Market Cap', 'Ticker'] 
+    and mkcaptokens.pkl with col = ['Market Cap', 'Ticker', Platform']
+    '''
     def market_list(self):
 
-        print('scraping crypto coin list...')
+        print('Scraping crypto coin list...')
         path = self.cryptodatafolder
 
         # file = da.IndexItem.INDEX_SP500_SECTORS
@@ -68,17 +67,22 @@ class cryptoCoinList(object):
         data_cols = ['Ticker', 'Market Cap']
         df_data = pd.DataFrame(columns=data_cols) # create the parent dataframe
 
-        SITE = "https://coinmarketcap.com/"
+        # SITE = "https://coinmarketcap.com/"
+        for cat, site in CryptoSites.d.items():
+            df_data = Crypto.scrape_cmktok(site, df_data) # run the scrape with original site url
 
-        df_data = cryptoCoinList.scrape_cmk(SITE, df_data) # run the scrape with original site url
+            if cat == 'coins':
+                rng = 8
+            else:
+                rng = 2
 
-        for url in range(2,8): # run the scrape with altered site urls
-            aSITE = SITE + str(url)
-            df_data = cryptoCoinList.scrape_cmk(aSITE, df_data)
+            for url in range(2,rng): # run the scrape with altered site urls
+                aSite = site + str(url)
+                df_data = Crypto.scrape_cmktok(aSite, df_data)
 
-        filename = 'marketcaplist.pkl'
-        filepath = os.path.join(path, filename)
-        df_data.to_pickle(filepath)
+            filename = cat + 'mktcap.pkl'
+            filepath = os.path.join(path, filename)
+            df_data.to_pickle(filepath)
 
     def scrape_cmk(SITE, df_data):
         hdr = {'User-Agent': 'Mozilla/5.0'}
@@ -86,39 +90,38 @@ class cryptoCoinList(object):
         req = requests.get(SITE, headers=hdr)
         soup = BeautifulSoup(req.content, "html.parser")
 
-        try: 
-            table = soup.find('table', {'id': 'currencies'})
-            table_body = table.find('tbody')
-            rows = table_body.findAll('tr')
-            
-            for row in rows:
-                items = row.findAll('td')
-                ticker = str() # create container
-                tick = items[1].text.replace(' ', '') # get raw data
-                # the ticker raw data is composed of a return character, the symbol, a return character
-                # a second return character, the name of the coin, followed by a return character.
-                ls = [] # ls and r are used to capture where the return characters are to seperate symbol from name.
-                r = 0
-                for element in tick:
-                    if element.isalpha(): # filter out return character
-                        ticker += element # fill the container
-                    else: # capture the index of the non alpha characters
-                        ls.append(r)
-                    r+=1
+        
+        table = soup.find('table', {'id': 'currencies'})
+        table_body = table.find('tbody')
+        rows = table_body.findAll('tr')
+        
+        for row in rows:
+            items = row.findAll('td')
+            ticker = str() # create container
+            tick = items[1].text.replace(' ', '') # get raw data
+            # the ticker raw data is composed of a return character, the symbol, a return character
+            # a second return character, the name of the coin, followed by a return character.
+            ls = [] # ls and r are used to capture where the return characters are to seperate symbol from name.
+            r = 0
+            for element in tick:
+                if element.isalpha(): # filter out return character
+                    ticker += element # fill the container
+                else: # capture the index of the non alpha characters
+                    ls.append(r)
+                r+=1
 
-                ticker = ticker[:(ls[2]-2)] # slice the ticker string based on where the non alpha characters were found.
-                         
-                marketcap = str()
-                mcap = items[2].text.replace(' ', '')
-                for element in mcap:
-                    if element.isdigit():# take only the numeric digits from the returned string
-                        marketcap += str(element)
-               
-                new_data = dict({'Ticker': ticker, 'Market Cap': marketcap})
-                df = pd.DataFrame([new_data])
-                df_data = df_data.append(df, ignore_index=True)
-        except:
-            pass
+            ticker = ticker[:(ls[2]-2)] # slice the ticker string based on where the non alpha characters were found.
+                     
+            marketcap = str()
+            mcap = items[2].text.replace(' ', '')
+            for element in mcap:
+                if element.isdigit():# take only the numeric digits from the returned string
+                    marketcap += str(element)
+           
+            new_data = dict({'Ticker': ticker, 'Market Cap': marketcap})
+            df = pd.DataFrame([new_data])
+            df_data = df_data.append(df, ignore_index=True)
+
         return df_data
             # print(items[0].text.replace(' ', '')) # row # /market cap rank
             # print(items[1].text.replace(' ', '')) # both ticker and coin name
@@ -128,6 +131,55 @@ class cryptoCoinList(object):
             # print(items[5].text.replace(' ', '')) # circulating supply and ticker with spaces
             # print(items[6].text.replace(' ', '')) # % change in 24 hours
             # print(items[7].text.replace(' ', '')) # chart
+
+
+    def scrape_cmktok(SITE, df_data):
+        hdr = {'User-Agent': 'Mozilla/5.0'}
+
+        req = requests.get(SITE, headers=hdr)
+        soup = BeautifulSoup(req.content, "html.parser")
+
+        # try: 
+        table = soup.find('table', {'id': 'assets'})
+
+        table_body = table.find('tbody')
+        rows = table_body.findAll('tr')
+        
+        for row in rows:
+            items = row.findAll('td')
+            ticker = str() # create container
+            tick = items[1].text.replace(' ', '') # get raw data
+            # the ticker raw data is composed of a return character, the symbol, a return character
+            # a second return character, the name of the coin, followed by a return character.
+            ls = [] # ls and r are used to capture where the return characters are to seperate symbol from name.
+            r = 0
+            for element in tick:
+                if element.isalpha(): # filter out return character
+                    ticker += element # fill the container
+                else: # capture the index of the non alpha characters
+                    ls.append(r)
+                r+=1
+
+            ticker = ticker[:(ls[2]-2)] # slice the ticker string based on where the non alpha characters were found.
+
+            plat = str()
+            plats = items[2].text.replace(' ', '') # get the platform column
+            for p in plats:
+                if p.isalpha():
+                    plat += p
+
+                     
+            marketcap = str()
+            mcap = items[3].text.replace(' ', '') # get the marketcap column
+            for element in mcap:
+                if element.isdigit():# take only the numeric digits from the returned string
+                    marketcap += str(element)
+           
+            new_data = dict({'Ticker': ticker, 'Market Cap': marketcap, 'Platform': plat})
+            df = pd.DataFrame([new_data])
+            df_data = df_data.append(df, ignore_index=True)
+            
+        return df_data
         
 
 class IndexScrapers(object):
@@ -141,7 +193,7 @@ class IndexScrapers(object):
         included in each sector.
         '''
 
-        print('scraping S&P 500 data')
+        print('Scraping S&P 500 data...')
         path = os.path.join(self.datafolder, 'sp500_sectors_data')
 
         SITE = "http://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
@@ -213,7 +265,7 @@ class html_scraper(object):
             for ticker in ls_tickers:
                 ticker = ticker.upper()
                 if verbose == True:
-                    print('Scraping qualitative data for %s from MorningStar' % ticker)
+                    print('Scraping qualitative data for %s from MorningStar...' % ticker)
                 contenturl = 'http://www.morningstar.com/funds/XNAS/' + ticker + '/quote.html'
 
                 startTime = dt.now()
@@ -325,7 +377,7 @@ class java_scraper(object):
     @Summary: a collection of scrapers for java rendered data
     - slow, consider only updating as necessary
     '''
-    def fund_individual_desc(self):
+    def fund_individual_desc(self, verbose=True):
         '''
         this web scraper captures java rendered (i.e. slow) information about each fund in the accounts provided. Fields
         include: '30-Day SEC Yield', 'Category (i.e. large growth or allocation)', 'Credit Quality/Interest Rate Sensitivity', 'Expenses',
@@ -359,8 +411,7 @@ class java_scraper(object):
         v = []
         key = str()
         val = str()
-        if verbose == True:
-            print('There are ' + str(len(df_data)) + ' symbols to scrape')
+        print('Scraping js rendered ' + str(len(df_data)) + ' symbols SLOWLY!')
         for index, row in df_data.iterrows():
             ticker = row['ticker']
             if verbose == True:

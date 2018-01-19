@@ -1,83 +1,50 @@
-[INFO  - 2017-12-25T23:35:22.216Z] GhostDriver - Main - running on port 63060
-[INFO  - 2017-12-25T23:35:23.755Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
-[INFO  - 2017-12-25T23:35:23.755Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - page.customHeaders:  - {}
-[INFO  - 2017-12-25T23:35:23.755Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-12-25T23:35:23.755Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 4755e060-e9cc-11e7-98ef-5f12d38fa42c
-[ERROR - 2017-12-25T23:35:25.471Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - page.onError - msg: ReferenceError: Can't find variable: Intl
+[INFO  - 2018-01-16T21:06:50.213Z] GhostDriver - Main - running on port 57641
+[INFO  - 2018-01-16T21:06:51.321Z] Session [2c3158a0-fb01-11e7-9601-0fc1fe1e3e68] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2018-01-16T21:06:51.322Z] Session [2c3158a0-fb01-11e7-9601-0fc1fe1e3e68] - page.customHeaders:  - {}
+[INFO  - 2018-01-16T21:06:51.322Z] Session [2c3158a0-fb01-11e7-9601-0fc1fe1e3e68] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2018-01-16T21:06:51.322Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 2c3158a0-fb01-11e7-9601-0fc1fe1e3e68
+[ERROR - 2018-01-16T21:06:53.129Z] Session [2c3158a0-fb01-11e7-9601-0fc1fe1e3e68] - page.onError - msg: ReferenceError: Can't find variable: Intl
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:25.472Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - page.onError - stack:
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:844)
-  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:3)
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:801)
-  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:3)
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:87)
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:88)
-  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:3)
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:964)
-  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:3)
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:7)
-  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:3)
-  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1513357896036.js:5)
+[ERROR - 2018-01-16T21:06:53.130Z] Session [2c3158a0-fb01-11e7-9601-0fc1fe1e3e68] - page.onError - stack:
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:844)
+  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:3)
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:801)
+  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:3)
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:87)
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:88)
+  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:3)
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:964)
+  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:3)
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:7)
+  b (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:3)
+  (anonymous function) (http://www.morningstar.com/etc/designs/morningstar/v2/clientlibs/msiip-user.min.1514995787047.js:5)
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:31.804Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244931780
+[ERROR - 2018-01-16T21:07:00.936Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136820539
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:33.105Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244933038
+[ERROR - 2018-01-16T21:07:03.044Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136822857
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:34.258Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244934228
+[ERROR - 2018-01-16T21:07:04.655Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136824627
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:35.412Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244935385
+[ERROR - 2018-01-16T21:07:06.274Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136826243
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:36.559Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244936537
+[ERROR - 2018-01-16T21:07:08.012Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136827981
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:37.730Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244937699
+[ERROR - 2018-01-16T21:07:09.699Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136829661
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:38.338Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - page.onError - msg: ReferenceError: Can't find variable: counter
+[ERROR - 2018-01-16T21:07:11.483Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136831440
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:38.338Z] Session [4755e060-e9cc-11e7-98ef-5f12d38fa42c] - page.onError - stack:
-  frame_150 (http://content.aimatch.com/mstar/33/10-2017-bond_1/10-2017-bond_1/main.js?1494362067315:1)
-  _runActions (https://code.createjs.com/createjs-2015.11.26.min.js:17)
-  setPosition (https://code.createjs.com/createjs-2015.11.26.min.js:17)
-  setPosition (https://code.createjs.com/createjs-2015.11.26.min.js:17)
-  _updateTimeline (https://code.createjs.com/createjs-2015.11.26.min.js:14)
-  advance (https://code.createjs.com/createjs-2015.11.26.min.js:14)
-  _tick (https://code.createjs.com/createjs-2015.11.26.min.js:14)
-  _tick (https://code.createjs.com/createjs-2015.11.26.min.js:13)
-  tick (https://code.createjs.com/createjs-2015.11.26.min.js:13)
-  update (https://code.createjs.com/createjs-2015.11.26.min.js:13)
-  handleEvent (https://code.createjs.com/createjs-2015.11.26.min.js:13)
-  _dispatchEvent (https://code.createjs.com/createjs-2015.11.26.min.js:12)
-  dispatchEvent (https://code.createjs.com/createjs-2015.11.26.min.js:12)
-  _tick (https://code.createjs.com/createjs-2015.11.26.min.js:12)
-  _handleTimeout (https://code.createjs.com/createjs-2015.11.26.min.js:12)
+[ERROR - 2018-01-16T21:07:13.178Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136833167
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:38.900Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244938880
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:40.057Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244940032
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:41.212Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244941186
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:42.373Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244942345
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:43.535Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244943506
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:44.705Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244944673
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-12-25T23:35:45.852Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1514244945833
+[ERROR - 2018-01-16T21:07:14.893Z] WebElementLocator - _handleLocateCommand - Element(s) NOT Found: GAVE UP. Search Stop Time: 1516136834852
 
   phantomjs://platform/console++.js:263 in error

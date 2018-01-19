@@ -30,7 +30,7 @@ class portfolio_optimizer(object):
 		@summary: start function to optimize a portfolio. takes a data object and returns a json file of the optimized data
 
 		'''
-		print('Optimizing portfolio')
+		print('Optimizing portfolio...')
 		ls_acctdata = da.DataAccess.get_info_from_account(self)
 		
 		if len(ls_acctdata) > 1: # seperate data objects with multiple accounts to also create a combined optimization

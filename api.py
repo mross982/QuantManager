@@ -54,7 +54,7 @@ class API(object):
 		called from main.py
 		'''
 
-		print('downloading data')
+		print('Downloading fund data via API...')
 
 		ls_acctdata = da.DataAccess.get_info_from_account(self)
 		
