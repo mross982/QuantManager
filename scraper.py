@@ -71,7 +71,7 @@ class Crypto(object):
         for cat, site in CryptoSites.d.items():
             df_data = Crypto.scrape_cmktok(site, df_data) # run the scrape with original site url
 
-            if cat == 'coins':
+            if cat == 'coins': # temporary solution; prefer to place a limit on the market cap for inclusion.
                 rng = 8
             else:
                 rng = 2

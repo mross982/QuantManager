@@ -89,7 +89,10 @@ class API(object):
 
 		ls_files = ['coins', 'tokens']
 		ls_tickers = []
+		df_api_data = pd.DataFrame()
 		comparison_symbol = 'BTC'
+
+		# additional items needed for the API
 		limit=1
 		all_data = True
 		aggregate=1
@@ -99,7 +102,6 @@ class API(object):
 		for file in ls_files:
 			filename = file + 'mktcap.pkl'
 			datapath = os.path.join(self.cryptodatafolder, filename)
-			print(datapath)
 			df_data = da.DataAccess.get_dataframe(datapath, clean=False) # get data frame
 			ls_tick = df_data['Ticker'].tolist() # create a second dataframe reference to just the ticker column
 			ls_tickers.extend(ls_tick)
@@ -115,10 +117,18 @@ class API(object):
 				url += '&allData=true'
 			page = requests.get(url)
 			data = page.json()['Data']
-			df = pd.DataFrame(data)
-			df['timestamp'] = [datetime.datetime.fromtimestamp(d) for d in df.time]
-			df_data = df['close']
-			print(df_data)
+			df_tickers = pd.DataFrame(data)
+			df_tickers['timestamp'] = [datetime.datetime.fromtimestamp(d) for d in df_tickers.time]
+			df_index = df_tickers['timestamp']
+			df = df_tickers['close']
+			df_api_data = df_api_data.append(df.T)
+			print(df_api_data.T)
+			print(df_index)
+			sys.exit(0)
+			df_api_data = df_api_data.set_index(df_index)
+			# df_api_data.set_index(df_tickers['timestamp'], inplace=True)
+			# df.set_index(df_tickers['timestamp'], inplace=True)
+			print(df_api_data)
 			sys.exit(0)
 			# start here: need to combine the series's into a dataframe and use ticker as the column head.
 

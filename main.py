@@ -9,6 +9,7 @@ import os
 
 if len(sys.argv)>1:
 	c_dataobj = da.DataAccess(sys.argv[1])
+	print(sys.argv[1])
 else:
 	c_dataobj = da.DataAccess(da.DataSource.FUND)
 
@@ -16,20 +17,17 @@ else:
 if c_dataobj.source == da.DataSource.FUND:
 
 	# # ************************************ Scrape lists of data ***********************************
-	# scraper.Crypto.market_list(c_dataobj) # scrape 
-	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
+	scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
 
 	# # **************************************** API call ***********************
-	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
-	api.API.get_crypto_close(c_dataobj)
+	api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
 	
 	# # *********************************** Optimize Portfolios **************************************
-	# optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
+	optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
 
 	# # *************************************** Create Images ******************************************
-	# visuals.create_plots(c_dataobj)
-	# visuals.index_plots(c_dataobj)
-
+	visuals.create_plots(c_dataobj)
+	visuals.index_plots(c_dataobj)
 
 	# # ************************************** Scrap Data *******************************************
 	# scraper.html_scraper.fund_desc(c_dataobj) # fund name, star rating, benchmark, alpha, beta.	
@@ -38,17 +36,30 @@ if c_dataobj.source == da.DataSource.FUND:
 
 
 
-	# *************************** Review pkl files by converting to csv *******************************
-	# Converts pkl to csv when given a filename
+	# **************************** Work in Progress ****************************************************
+	# scraper.java_scraper.fund_holdings(c_dataobj) # work in progress
+
+	# scraper.WebScrapers.morning_star_quant_desc(c_dataobj, tickers) # JS rendererd data (SLOW)
+	# scraper.WebScrapers.morning_star_fund_sectors(c_dataobj, tickers)
+	
+
+
+if c_dataobj.source == da.DataSource.CRYPTO:
+
+	# # ************************************ Scrape lists of data ***********************************
+	scraper.Crypto.market_list(c_dataobj) # scrape 
+
+	# # **************************************** API call ***********************
+	api.API.get_crypto_close(c_dataobj)
+	
+
+
+	# # *************************** Review pkl files by converting to csv *******************************
+	# # Converts pkl to csv when given a filename
 	# print('Enter a filename and pathway to be converted to a csv. Don\'t include the file extension.')
 	# filename = input('Filename: ')
 	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
 
 
 
-	# **************************** Work in Progress ****************************************************
-	# scraper.java_scraper.fund_holdings(c_dataobj) # work in progress
-
-	# scraper.WebScrapers.morning_star_quant_desc(c_dataobj, tickers) # JS rendererd data (SLOW)
-	# scraper.WebScrapers.morning_star_fund_sectors(c_dataobj, tickers)
 	

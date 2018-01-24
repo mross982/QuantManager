@@ -99,18 +99,18 @@ class DataAccess(object):
         self.cachestalltime = cachestalltime
         self.fileExtension = '.pkl'
 
-        try:
-            self.rootdir = os.path.dirname(os.path.realpath(__file__))
-        except:
-            self.rootdir = os.environ['QSREPO']
-        try:
-            self.datadir = os.path.join(self.rootdir, 'QSData')
-        except:
-            self.datadir = os.environ['QSDATA']
-        try:
-            self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
-        except:
-            self.scratchdir = os.environ['QSSCRATCH']
+        # try:
+        self.rootdir = os.path.dirname(os.path.realpath(__file__))
+        # except:
+        #     self.rootdir = os.environ['QSREPO']
+        # try:
+        self.datadir = os.path.join(self.rootdir, 'QSData')
+        # except:
+        #     self.datadir = os.environ['QSDATA']
+        # try:
+        self.scratchdir = os.path.join(tempfile.gettempdir(), 'QSScratch')
+        # except:
+        #     self.scratchdir = os.environ['QSSCRATCH']
        
         self.accountdir = os.path.join(self.rootdir, 'Accounts')
         self.imagefolder = os.path.join(self.rootdir, 'Images')
@@ -142,8 +142,8 @@ class DataAccess(object):
         elif (sourcein == DataSource.CRYPTO):
             self.source = DataSource.CRYPTO
             self.datafolder = os.path.join(self.datadir + "\Crypto")
-            self.index_images = os.path.join(self.indexdir, '\Images')
-            self.accountfiles = ['test.txt', 'test2.txt']
+            # self.index_images = os.path.join(self.indexdir, '\Images')
+            # self.accountfiles = ['test.txt', 'test2.txt']
 
 
     def ensure_dir(file_path):
