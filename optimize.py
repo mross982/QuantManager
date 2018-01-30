@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import DataAccess as da
 import DataUtil as du
+import datetime as dt
 import sys
 import portfolioopt as pfopt
 import matplotlib.pyplot as plt
@@ -44,18 +45,21 @@ class portfolio_optimizer(object):
 			filename = filename.replace(' ', '')
 			filepath = os.path.join(self.datafolder, filename)				
 			df_data = da.DataAccess.get_dataframe(filepath, clean=True) # get all close data in a dataframe
-			outfilename = acct[0] + '_optimized'
+			
+
+			outfilename = acct[0] + '_Optimized_Data.pkl'
 			outfilepath = os.path.join(self.datafolder, outfilename)
-			portfolio_optimizer.main_opt(df_data, acct[0], outfilepath)
+
+			portfolio_optimizer.main_opt(df_data, outfilepath)
 
 		if combofile == True:
-			outfilename = 'combined_optimized'
+			outfilename = 'Combined_Optimized_Data.pkl'
 			outfilepath = os.path.join(self.datafolder, outfilename)
 			df_data = da.DataAccess.get_combined_dataframe(self, clean=True) # then optimize all accounts together
 			acct = 'combined'
-			portfolio_optimizer.main_opt(df_data, acct, outfilepath)
+			portfolio_optimizer.main_opt(df_data, outfilepath)
 
-	def main_opt(df_data, acct, filepath):
+	def main_opt(df_data, outfilepath):
 		df = pd.DataFrame()
 		all_days = len(df_data)
 		if all_days >= 252:
@@ -97,23 +101,30 @@ class portfolio_optimizer(object):
 			indv_std = indv_std[ls_bool] * math.sqrt(annualize) # filters the std dev seriese by the bool values, annualizes
 			# these values, then returns a series of just the optimized symbols
 
-			for x in range(len(weights)):
-				df = df.append({'Symbols':weights.index[x], 'Weights':weights.values[x],
-					'Exp_Return': indv_ret.values[x], 'Std_Deviation': indv_std.values[x], 
-					'Sharpe': indv_ret.values[x]/indv_std.values[x]}, ignore_index=True)
-			
-			title = '%s_%s_target_opt' % (acct, k)
-			df_newrow = {'Symbols': title, 'Weights': 1.0, 'Exp_Return': port_exp_return, 
-				'Std_Deviation': port_std_dev, 'Sharpe': port_sharpe}
+			t_stamp = dt.date.today()
 
-			cols = ['Symbols', 'Weights', 'Exp_Return', 'Std_Deviation', "Sharpe"]
+			for x in range(len(weights)): # first add in each weight seperately
+				df = df.append({'Time_Frame': k, 'Symbols':weights.index[x], 'Weights':weights.values[x],
+					'Exp_Return': indv_ret.values[x], 'Std_Deviation': indv_std.values[x], 
+					'Sharpe': indv_ret.values[x]/indv_std.values[x], 'Time_Stamp': t_stamp}, ignore_index=True)
+			
+			# title = '%s_%s_target_opt' % (acct, k) # then add the total
+			df_newrow = {'Time_Frame': k ,'Symbols': 'Total', 'Weights': 1.0, 'Exp_Return': port_exp_return, 
+				'Std_Deviation': port_std_dev, 'Sharpe': port_sharpe, 'Time_Stamp': t_stamp}
+
+			cols = ['Time_Frame','Symbols', 'Weights', 'Exp_Return', 'Std_Deviation', "Sharpe", 'Time_Stamp']
 			df = df[cols]
 
 			df = df.append(df_newrow, ignore_index=True)
-			
-		df.to_pickle(filepath + '.pkl')
-		# df.to_csv(filepath + '.csv')
 
+		try:	
+			df_opt = da.DataAccess.get_dataframe(outfilepath, clean=False)
+			df_opt = df_opt.append(df, ignore_index=True)
+			df_opt.to_pickle(outfilepath)
+			print(df_opt.head())
+		except:
+			df.to_pickle(outfilepath)
+		
 
 	def target_opt(df_daily_returns, target_ret=None):
 		#********* Markowitz Portfolio with target return ************************

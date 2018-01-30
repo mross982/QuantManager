@@ -274,24 +274,30 @@ class DataAccess(object):
 
         return data
 
-    def dataframe_to_csv(self, filename):
+    def dataframe_to_csv(self, filepath):
         '''
         This creates a csv file of a single dataframe.
         * Currently only used for spot checking downloaded data.
         '''
 
-        inputfile = os.path.join(self.datafolder, filename + '.pkl')
-        outputfile = os.path.join(self.datafolder, filename + '.csv')
-        df_data = DataAccess.get_dataframe(inputfile)
-        df_data.to_csv(outputfile, encoding='utf-8')
+        df_data = DataAccess.get_dataframe(filepath)
+        # outputfile = os.path.join(self.datafolder, filename + '.csv')
+        # tup_pathfile = os.path.split(os.path.abspath(inputfile))
+        outfilepath = filepath[:-3]
+        outfilepath = outfilepath + 'csv'
+
+        df_data.to_csv(outfilepath, encoding='utf-8')
 
 
-    def csv_to_dataframe(self, csv_file):
+    def csv_to_dataframe(self, csv_filepath):
         '''
         This will create a way to make edits to a pickled data frame by first converting it to csv, make any 
         corrective actions, then save the csv over the original pickled data frame.
         '''
-        pass
+        df_data = pd.read_csv(csv_filepath)
+        outfilepath = csv_filepath[:-3]
+        outfilepath = outfilepath + 'pkl'
+        df_data.to_pickle(outfilepath)
 
     def get_opt_df(self, acct, summary=None):
         '''

@@ -17,19 +17,19 @@ else:
 if c_dataobj.source == da.DataSource.FUND:
 
 	# # ************************************ Scrape lists of data ***********************************
-	scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
+	# scraper.IndexScrapers.wiki_sp500_sectors(c_dataobj) # scrape SP 500 index info and pull financial data via api
 
-	# # **************************************** API call ***********************
-	api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
+	# # # **************************************** API call ***********************
+	# api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
 	
 	# # *********************************** Optimize Portfolios **************************************
 	optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
 
-	# # *************************************** Create Images ******************************************
-	visuals.create_plots(c_dataobj)
-	visuals.index_plots(c_dataobj)
+	# # # *************************************** Create Images ******************************************
+	# visuals.create_plots(c_dataobj)
+	# visuals.index_plots(c_dataobj)
 
-	# # ************************************** Scrap Data *******************************************
+	# # ************************************** Scrap Qualitative Data *******************************************
 	# scraper.html_scraper.fund_desc(c_dataobj) # fund name, star rating, benchmark, alpha, beta.	
 	# scraper.java_scraper.fund_individual_desc(c_dataobj) # 30-day SEC Yield, Category, Credit Quality, Expenses, Fee Level,
 	# # Investment Style, Load, Min. Inv., Status, TTM Yield, Total Assets, Total Mkt, Turnover
@@ -46,20 +46,21 @@ if c_dataobj.source == da.DataSource.FUND:
 
 if c_dataobj.source == da.DataSource.CRYPTO:
 
-	# # ************************************ Scrape lists of data ***********************************
-	scraper.Crypto.market_list(c_dataobj) # scrape 
+	# # # ************************************ Scrape lists of data ***********************************
+	# scraper.Crypto.market_list(c_dataobj) # scrape 
 
-	# # **************************************** API call ***********************
-	api.API.get_crypto_close(c_dataobj)
+	# # # **************************************** API call ***********************
+	# api.API.get_crypto_close(c_dataobj)
 	
 
 
-	# # *************************** Review pkl files by converting to csv *******************************
-	# # Converts pkl to csv when given a filename
-	# print('Enter a filename and pathway to be converted to a csv. Don\'t include the file extension.')
+	# *************************** Review pkl files by converting to csv *******************************
+	# Converts pkl to csv when given a filename
+	print('Enter a filepath to be converted to a csv.')
+	filename = input('Filename: ')
+	da.DataAccess.dataframe_to_csv(c_dataobj, filename)
+
+	# # *************************** Convert csv file back to pkl *****************************************
+	# print('Enter a filepath to be converted to a pkl.')
 	# filename = input('Filename: ')
-	# da.DataAccess.dataframe_to_csv(c_dataobj, filename)
-
-
-
-	
+	# da.DataAccess.csv_to_dataframe(c_dataobj, filename)
