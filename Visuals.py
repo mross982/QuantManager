@@ -47,13 +47,15 @@ def get_returns_and_sort(df_data):
 	return df
 
 		
-def create_plots(self):
+def create_plots(self, verbose=False):
 	print('Creating images...')
 
 	ls_acctdata = da.DataAccess.get_info_from_account(self)
 
 	for acct in ls_acctdata:
 		acctname = acct[0] # get account name
+		if verbose == True:
+			print(acctname)
 		filename = acctname + '-' + da.DataItem.ADJUSTED_CLOSE + '.pkl'
 		filename = filename.replace(' ', '')
 		datapath = os.path.join(self.datafolder, filename) 
@@ -61,6 +63,8 @@ def create_plots(self):
 
 		for k, v in da.imgScope.TIMESERIES.items():
 			filename_addition = k
+			if verbose == True:
+				print('efficient frontier ' + filename_addition)
 			df = df_data.copy()
 			if k != '_all_years': # 'all years' data is passed as is
 				df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
@@ -70,6 +74,8 @@ def create_plots(self):
 			
 		for k, v in da.imgScope.TIMESERIES.items():
 			filename_addition = k
+			if verbose == True:
+				print('returns ' + filename_addition)
 			df = df_data.copy()
 			if k != '_all_years': # 'all years' data is passed as is
 				df = df.iloc[-v:] # slice the data into the timeframes described in scope.TIMESERIES
@@ -84,6 +90,8 @@ def returns(self, df_data, acct, filename_addition):
 		# chart those.
 		ls_syms = da.DataAccess.get_opt_syms(self, acct)
 		df_data = df_data[ls_syms]
+		print('worked if you see this')
+		# sys.exit(0)
 	
 	df = get_returns_and_sort(df_data)
 	

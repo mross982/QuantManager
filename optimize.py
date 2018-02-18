@@ -121,7 +121,6 @@ class portfolio_optimizer(object):
 			df_opt = da.DataAccess.get_dataframe(outfilepath, clean=False)
 			df_opt = df_opt.append(df, ignore_index=True)
 			df_opt.to_pickle(outfilepath)
-			print(df_opt.head())
 		except:
 			df.to_pickle(outfilepath)
 		

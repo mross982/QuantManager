@@ -324,6 +324,7 @@ class DataAccess(object):
     def get_opt_syms(self, acct):
         '''
         retrieves a list of unique symbols from the optimized data sets.
+        - called by visuals.returns
         '''
     
         data_path = self.datafolder
@@ -332,7 +333,8 @@ class DataAccess(object):
 
         for file in os.listdir(data_path):
             filename = str(file)
-            if filename.endswith('.pkl') and 'opt' in filename and acct in filename:
+            if filename.endswith('.pkl') and 'Optimized' in filename and acct in filename:
+                print(filename)
                 path = os.path.join(data_path, filename)
                 data = pd.read_pickle(path)
                 frames.append(data)
@@ -342,6 +344,7 @@ class DataAccess(object):
         symbols = result['Symbols']
         symbols = symbols.drop_duplicates()
         symbols = symbols[~symbols.str.contains('opt')] # removes any data with the sub string 'opt'
+        symbols = symbols[~symbols.str.contains('Total')] # removes any data with the string 'Total'
         symbols = symbols.tolist()
         return symbols
 
