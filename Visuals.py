@@ -90,8 +90,6 @@ def returns(self, df_data, acct, filename_addition):
 		# chart those.
 		ls_syms = da.DataAccess.get_opt_syms(self, acct)
 		df_data = df_data[ls_syms]
-		print('worked if you see this')
-		# sys.exit(0)
 	
 	df = get_returns_and_sort(df_data)
 	
@@ -142,6 +140,18 @@ def efficient_frontier(self, df_data, acct, filename_addition):
 
 	plt.xlabel('Risk')
 	plt.ylabel('Returns')
+
+
+	#************ Here somewhere, add this sample code below and include the target portfolio & tanget portfolio funds
+	# and percentages to the plot.
+
+	# # these are matplotlib.patch.Patch properties
+	# props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+
+	# # place a text box in upper left in axes coords
+	# ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14,
+	# verticalalignment='top', bbox=props)
+
 
 
 	for label, x, y in zip(titles, x_arr_e_port, y_arr_e_port):

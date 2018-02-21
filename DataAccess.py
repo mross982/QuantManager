@@ -69,6 +69,9 @@ class DataSource(object):
     STOCK = 'Google' # stock/bond data
     FUND = 'Yahoo'  # mutual fund data
     CRYPTO = 'Crypto' # daily crypto data
+    UTILITY = 'Utility'
+    # CSV = 'pkltocsv' # convert pkl to csv
+    # PKL = 'csvtopkl' # convert csv to pkl
 
 
 class sp500(object):
@@ -139,11 +142,15 @@ class DataAccess(object):
             self.index_images = os.path.join(self.indexdir, '\Images') # send all to the fundimagefolder
             self.accountfiles = ['403b.txt','HSA.txt'] # add HSA.txt & 403b.txt & 401k after testing
 
-        elif (sourcein == DataSource.CRYPTO):
+        if (sourcein == DataSource.CRYPTO):
             self.source = DataSource.CRYPTO
             self.datafolder = os.path.join(self.datadir + "\Crypto")
             # self.index_images = os.path.join(self.indexdir, '\Images')
             # self.accountfiles = ['test.txt', 'test2.txt']
+
+        if (sourcein == DataSource.UTILITY):
+            self.source = DataSource.UTILITY
+            self.datafolder = os.path.join(self.datadir + "Utility")
 
 
     def ensure_dir(file_path):
@@ -274,30 +281,6 @@ class DataAccess(object):
 
         return data
 
-    def dataframe_to_csv(self, filepath):
-        '''
-        This creates a csv file of a single dataframe.
-        * Currently only used for spot checking downloaded data.
-        '''
-
-        df_data = DataAccess.get_dataframe(filepath)
-        # outputfile = os.path.join(self.datafolder, filename + '.csv')
-        # tup_pathfile = os.path.split(os.path.abspath(inputfile))
-        outfilepath = filepath[:-3]
-        outfilepath = outfilepath + 'csv'
-
-        df_data.to_csv(outfilepath, encoding='utf-8')
-
-
-    def csv_to_dataframe(self, csv_filepath):
-        '''
-        This will create a way to make edits to a pickled data frame by first converting it to csv, make any 
-        corrective actions, then save the csv over the original pickled data frame.
-        '''
-        df_data = pd.read_csv(csv_filepath)
-        outfilepath = csv_filepath[:-3]
-        outfilepath = outfilepath + 'pkl'
-        df_data.to_pickle(outfilepath)
 
     def get_opt_df(self, acct, summary=None):
         '''
@@ -334,7 +317,6 @@ class DataAccess(object):
         for file in os.listdir(data_path):
             filename = str(file)
             if filename.endswith('.pkl') and 'Optimized' in filename and acct in filename:
-                print(filename)
                 path = os.path.join(data_path, filename)
                 data = pd.read_pickle(path)
                 frames.append(data)
