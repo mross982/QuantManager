@@ -39,7 +39,9 @@ class apiDateRange(object):
     r1YEAR = dt.date.today() + dt.timedelta(weeks=-52)
     r2YEAR = (dt.date.today() + dt.timedelta(weeks=-104)).strftime('%m/%d/%Y')
     r3YEAR = (dt.date.today() + dt.timedelta(weeks=-156)).strftime('%m/%d/%Y')
-    r5YEAR = (dt.date.today() + dt.timedelta(weeks=-260)).strftime('%m/%d/%Y')
+    # r5YEAR = (dt.date.today() + dt.timedelta(weeks=-260)).strftime('%m/%d/%Y')
+    # r5YEAR = (dt.date.today() + dt.timedelta(weeks=-260)).strftime('%Y/%m/%d')
+    r5YEAR = dt.datetime(2018,3,1)
     r10YEAR = (dt.date.today() + dt.timedelta(weeks=-520)).strftime('%m/%d/%Y')
     
 

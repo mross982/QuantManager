@@ -15,6 +15,7 @@ import pandas as pd
 import pandas_datareader as pdr
 import pandas_datareader.data as web
 from pandas_datareader._utils import RemoteDataError
+import fix_yahoo_finance as yf # added 2/3 2019
 import requests
 import datetime
 
@@ -75,9 +76,12 @@ class API(object):
 		'''
 		API that gets fund information from the Yahoo servers.
 		'''
-		
-		df = web.DataReader(ls_symbols, 'yahoo', start=da.apiDateRange.r5YEAR)[item]
+		yf.pdr_override()
+		# df = web.DataReader(ls_symbols, 'yahoo', start=da.apiDateRange.r5YEAR)[item]
+		# df = pdr.get_data_yahoo(ls_symbols, start=da.apiDateRange.r5YEAR)
+		df = yf.download(ls_symbols, start=da.apiDateRange.r5YEAR)
 		# error handling SymbolWarning: is done through pandas_datareader\yahoo\daily.py package
+		print(type(df))
 		df = df.sort_index()	
 		return df
 

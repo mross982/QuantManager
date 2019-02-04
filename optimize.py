@@ -117,6 +117,9 @@ class portfolio_optimizer(object):
 
 			df = df.append(df_newrow, ignore_index=True)
 
+			if '403b' in outfilepath:
+				print(df)
+
 		try:	
 			df_opt = da.DataAccess.get_dataframe(outfilepath, clean=False)
 			df_opt = df_opt.append(df, ignore_index=True)

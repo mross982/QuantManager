@@ -23,14 +23,14 @@ if c_dataobj.source == da.DataSource.FUND:
 	import api
 	api.API.get_MF_close(c_dataobj) # Get mutual fund adjusted close data
 	
-	# # *********************************** Optimize Portfolios **************************************
-	# import optimize
-	# optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
+	# *********************************** Optimize Portfolios **************************************
+	import optimize
+	optimize.portfolio_optimizer.main(c_dataobj) # Optimize portfolio
 
-	# # # *************************************** Create Images ******************************************
-	# import visuals
-	# visuals.create_plots(c_dataobj, verbose=False)
-	# visuals.index_plots(c_dataobj)
+	# # *************************************** Create Images ******************************************
+	import visuals
+	visuals.create_plots(c_dataobj, verbose=False)
+	visuals.index_plots(c_dataobj)
 
 	# # ************************************** Scrap Qualitative Data *******************************************
 	# scraper.html_scraper.fund_desc(c_dataobj) # fund name, star rating, benchmark, alpha, beta.	
